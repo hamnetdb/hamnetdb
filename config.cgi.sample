@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+# -------------------------------------------------------------------------
+# Hamnet IP database - Basic configuration
+#
+# Flori Radlherr, DL8MBT, http://www.radlherr.de
+#
+# Licensed with Creative Commons Attribution-NonCommercial-ShareAlike 3.0
+# http://creativecommons.org/licenses/by-nc-sa/3.0/
+# - you may change, distribute and use in non-commecial projects
+# - you must leave author and license conditions
+# -------------------------------------------------------------------------
+#
+$db_user= "hamnet";
+$db_name= "hamnet";
+$db_pass= "yourPassword";
+$db_host= "localhost";
+
+# -------------------------------------------------------------------------
+# Change here to integrate with your own web page layout
+sub htmlHead {
+  my $element= shift;
+  print qq(Content-Type: text/html\n\n<!DOCTYPE html>
+    <html><head>
+      <title>${element}Hamnet-DB</title>
+      <link rel="shortcut icon" href="favicon.ico" />
+      <script language="JavaScript" src="jquery.js"></script> 
+    </head><body style='margin:10px;'>
+  );
+}
+sub htmlFoot {
+  print qq(
+    </body></html>
+  );
+}
+
+# From these agent systems the checks are performed.
+# Needs an authorized ssh key to get access without password
+#@fpingAgents= (
+#  "db0fhn"
+#  , "db0zm"
+#  , "ir3dv"
+#);
+
+1;

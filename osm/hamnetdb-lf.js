@@ -1,0 +1,717 @@
+// -------------------------------------------------------------------------
+// Hamnet IP database - JavaScript parts
+//
+// Lucas Speckbacher, OE2LSP
+// Hubertus Munz
+//
+//
+// Licensed with Creative Commons Attribution-NonCommercial-ShareAlike 3.0
+// http://creativecommons.org/licenses/by-nc-sa/3.0/
+// - you may change, distribute and use in non-commecial projects
+// - you must leave author and license conditions
+// -------------------------------------------------------------------------
+//
+
+
+//todo
+//OK- mapelements->xml anpassen (offset)
+//OK- KML.js anpassen beim Popupladen inhalt nachladen
+//OK- hover
+//OK- custom element in map darstellen (info, settings)
+//OK- info übernehmen
+//OK- settings...
+//OK- permalink
+//OK- mobile
+//OK- perl mapsource
+//OK- perl position
+//OK- perl hover
+//permalink buggfix parameter t
+
+//FINISHED?
+
+//var myIcon = L.icon({
+//    iconUrl: 'leaflet/images/marker-icon.png',
+//    iconSize: [10,10],
+//    iconAnchor: [22, 94],
+//    popupAnchor: [-3, -76],
+//    shadowUrl: 'leaflet/images/marker-shadow.png',
+//    shadowSize: [68, 95],
+//    shadowAnchor: [22, 94]
+//});
+//
+
+
+var map;
+var SidebarInfo;
+var SidebarSetting;
+var hoverpop;
+var kmlUrl = "mapelements.cgi?geojson=1&rnd="+Math.random();
+
+var CoverUrl = "coverage/";
+
+
+
+var CoverageLayers = new Array();
+
+var RedCover = new L.layerGroup();
+var YellowCover = new L.layerGroup();
+var GreenCover = new L.layerGroup();
+
+function init()
+{
+  
+  var source = getParameter("source");
+  hoverpop = getParameter("hover");
+  var country = getParameter("country");
+  var as = getParameter("as");
+  var site = getParameter("site");
+  var CoverUrl= "coverage/";
+
+  if (country && country.length==2) {
+    kmlUrl+= "&only_country="+country;
+  }
+  if(source == 3)//hamnet
+  {
+	//CoverUrl="http://db0sda.ampr.org/hamnetdb/";
+	  
+    var mapnikUrl = 'http://osm.oe2xzr.ampr.at/osm/tiles/{z}/{x}/{y}.png';
+    var mapnikUrl1 = 'http://karten.db0sda.ampr.org/osm/{z}/{x}/{y}.png';
+    var landscapeUrl = 'http://osm.oe2xzr.ampr.at/osm/tiles_topo/{z}/{x}/{y}.png';
+    var cycleUrl = 'http://osm.oe2xzr.ampr.at/osm/tiles_cyclemap/{z}/{x}/{y}.pn';
+    var satUrl= 'http://osm.oe2xzr.ampr.at/osm/tiles_sat/{z}/{x}/{y}.jpg';
+    var mapnikZoom = 16 ; 
+    var landscapeZoom =16;
+    var cycleZoom = 16;
+    var satZoom = 11;
+  }
+  else
+  {
+    var mapnikUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var landscapeUrl = 'http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png';
+    var cycleUrl = 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png';
+    var satUrl= 'http://oatile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg';
+    var mapnikZoom = 18;
+    var landscapeZoom =18;
+    var cycleZoom = 18;
+    var satZoom = 11;
+  }
+
+  
+  var attribution = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'; 
+  map = new L.Map('map', {center: new L.LatLng(49.26, 12.47), zoom: 7, zoomControl:false});
+  //plugin MousePosition
+  L.control.mousePosition({position: 'bottomright'}).addTo(map);
+  //plugin Minimap
+  var miniMapnik = new L.TileLayer(mapnikUrl, {minZoom: 0, maxZoom: 13, attribution: " " });
+  var miniMap = new L.Control.MiniMap(miniMapnik, { toggleDisplay: true }).addTo(map);
+  miniMap._minimize();
+  //zoombutton top right
+  L.control.zoom({position: 'topright'}).addTo(map);
+  //scale
+  L.control.scale().addTo(map);
+  
+  var mapnikLayer = L.tileLayer(
+    mapnikUrl,
+    {
+      attribution: attribution,
+      maxZoom: mapnikZoom
+    }
+  )
+
+  var landscapeLayer = L.tileLayer(
+   landscapeUrl,
+    {
+      attribution: attribution,
+      maxZoom: landscapeZoom
+    }
+  );
+  var cycleLayer = L.tileLayer(
+    cycleUrl,
+    {
+      attribution: attribution,
+      maxZoom: cycleZoom
+    }
+  );
+  var satLayer = L.tileLayer(
+    satUrl,
+    {
+      attribution: attribution,
+      maxZoom: satZoom
+    }
+  );
+
+	
+	if(source == 3)
+	{
+    var mapnikLayer1 = L.tileLayer(
+      mapnikUrl1,
+      {
+        attribution: attribution,
+        maxZoom: mapnikZoom
+      }
+    );
+	}
+	
+  if(hoverpop == "true")
+  {
+    var hoverS = true;
+  }
+  else
+  {
+    var hoverS = false;
+  }
+  //var hamnetLayer = new L.KML(kmlUrl + "&no_tunnel=1&only_hamnet=1", {async: true, hover:hoverS});
+  var settingshamnet = {
+    style: function(feature) {
+      var color, weight;
+      switch (feature.properties.style)
+      {
+        case "Tunnel":
+          color = "#808080";
+          weight = 3.5;    
+          break;
+        case "Routing-Radio":
+          color = "#1d97ff";
+          weight = 6;
+          break;        
+        case "Routing-Tunnel":
+          color = "#808080";
+          weight = 3.5;
+          break;
+        case "Radio":
+          color = "#1d97ff";
+          weight = 6;
+          break;
+        case "Routing-ISM":
+          color = "#ad00e1";
+          weight = 6;
+          break;
+        case "ISM":
+          color = "#ad00e1";//d800ff
+          weight = 6;
+          break;
+        default:
+          color = "#f00000";
+          weight = 6;
+      } 
+      return {color: color, weight:weight};//feature.properties.GPSUserColor};
+    },
+    pointToLayer: function(feature, latlng) {
+      return L.marker(latlng, {icon: L.icon({
+          iconUrl: feature.properties.style+'.png',
+          iconSize: [19, 25],
+          iconAnchor: [10, 16],
+          popupAnchor: [0, 0]
+        }),
+        zIndexOffset:feature.properties.zIndex 
+      });
+
+    },
+    onEachFeature: function (feature, layer) {
+    layer.bindPopup("<div class=\"popup\" ><div id=\"pop_"+feature.properties.callsign+"\">loading...<div id=\"pop_alloc\">&nbsp;</div></div>\
+      <a href=\"index.cgi?q=" + feature.properties.callsign + "\" target=\"_blank\" onclick=\"return popupw(this.href);\">more information</a></div>\
+      <br> <div id=\"ShowCover\"><b> Display Coverage:</b>\
+      <br>press info-button for legend\
+      <form action=\"\" id=\"displayCoverage\" >\
+      <input name=\"Coverage\" type=\"checkbox\" name=\""+ feature.properties.callsign +"\"  onchange=\"coverage(event)\" \"> </form> </div>",
+        
+        {
+          minWidth:235,
+          maxWidth:260,
+          maxHeight:250,
+          autoPan:true
+        });
+      layer.on('popupopen', function (e) {
+        getHttpRequest("info.cgi?q=" + feature.properties.callsign,"pop_"+feature.properties.callsign );
+	 
+         if( feature.geometry.type== "LineString")
+         {   // TunnelLayer has no Coverage
+      	   document.getElementById("ShowCover").outerHTML = "";
+         }
+         else
+         {	// set Checkbox grey if no Coverage Layer available in DB; 	 	
+           getCoverage("mapcoverage.cgi?x="+feature.properties.callsign,1);
+         }
+              
+	    
+      });
+      if(hoverpop == "true")
+      {
+        layer.on('mouseover', function (e){
+          layer.openPopup();
+        });
+	//layer.on('click', function (e) {});
+      }
+    }
+  };
+  var hamnetLayer = L.geoJson.ajax(kmlUrl + "&no_tunnel=1&only_hamnet=1", settingshamnet);
+  var nohamnetLayer = L.geoJson.ajax(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
+  var tunnelLayer = L.geoJson.ajax(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
+
+
+  map.addLayer(hamnetLayer);
+  //map.addLayer(nohamnetLayer);
+  //map.addLayer(tunnelLayer);
+
+  map.addLayer(mapnikLayer);
+ 
+  RedCover.addTo(map);
+  YellowCover.addTo(map);
+  GreenCover.addTo(map);
+
+
+ 
+  if(source <=1)
+  {
+      
+    var gglLayer = new L.Google('ROADMAP');
+    var ggl2Layer = new L.Google('TERRAIN');
+    var ggl3Layer = new L.Google('SATELLITE');
+    var baseLayers = {  
+      'Mapnik': mapnikLayer,
+      'Landscape': landscapeLayer,
+      'CycleMap':cycleLayer,
+      'Satellite':satLayer,
+      'GoogleMaps': gglLayer,
+      'Google Terrain': ggl2Layer,
+      'Google Sattelite': ggl3Layer
+    };
+  }
+  else if(source == 3)
+  {
+    var baseLayers = {  
+      'Mapnik': mapnikLayer,
+      'Mapnik Mirror1': mapnikLayer1,//aachen
+      'Landscape': landscapeLayer,
+      'CycleMap':cycleLayer,
+      'Satellite':satLayer
+    };
+  }
+  else //  ==2
+  {
+    var baseLayers = {  
+      'Mapnik': mapnikLayer,
+      'Landscape': landscapeLayer,
+      'CycleMap':cycleLayer,
+      'Satellite':satLayer
+    };
+  }
+  
+  var overlayLayers = {
+    'Hamnet': hamnetLayer,
+    'tunnel connections': tunnelLayer,
+    'sites without Hamnet': nohamnetLayer
+  };
+  var layers = new L.control.layers(baseLayers, overlayLayers).addTo(map);
+  var permalink = new L.Control.Permalink({text: 'Permalink', layers: layers});
+  permalink._map = map;
+  var extPermalink = permalink.onAdd(map);
+    //  window.history.pushState("", "HamnetDB Map", url);//add by OE2LSP (end of _update_href)
+  document.getElementById('extern-permalink').appendChild(extPermalink);
+  SidebarInfo = L.control.sidebar('sidebar-info', {
+    position: 'right'
+  });  
+  SidebarInfo.addTo(map);
+  
+  SidebarSetting = L.control.sidebar('sidebar-setting',{
+  	position: 'right'
+  });
+  SidebarSetting.addTo(map);
+  map.addControl(new L.Control.LSP());
+  
+  //if as is set over GET
+  if(as != 0)
+    getAs(as); 
+  if(site != 0)
+    getSite(site); 
+ // map.setView([51.2, 7], 9);
+    
+}
+function popupSetting()
+{
+  var pop = document.getElementById("hoverpopup").checked;
+  setGetParameter('hover',pop,true);
+}
+function mapSource()
+{
+  var ms = document.getElementById("mapsource").value;
+  //var url = window.location.href + "&source=" + ms;
+  setGetParameter('source',ms,true);
+}
+function getParameter(paramName)
+{
+  var url = window.location.href;
+  //var paramValue
+  var end = url.length;
+  if (url.indexOf(paramName + "=") >= 0)
+  {
+    var start = url.indexOf(paramName + "=");
+    var bug = url.indexOf("#",start);
+    if(url.indexOf("&",start) >= 0)
+    {
+      end = url.indexOf("&", start);
+    }
+    if (bug < end && bug > start) //bug of openlayers url-function
+    {
+      end = bug;
+    }
+    paramValue = url.substring(end,start + paramName.length + 1);
+      
+  }
+  else
+  {
+    paramValue=0;
+  } 
+  return paramValue;
+}
+function setGetParameter(paramName, paramValue, reload)
+{
+    var url = window.location.href;
+    //if exists
+    if (url.indexOf(paramName + "=") >= 0)
+    {
+        var prefix = url.substring(0, url.indexOf(paramName));
+        var suffix = url.substring(url.indexOf(paramName)).substring(url.indexOf("=") + 1);
+        suffix = url.substring(url.indexOf(paramName + "=") + paramName.length +1);
+        
+        if(suffix.indexOf("&") >= 0)
+        {
+          if(suffix.indexOf("#") < suffix.indexOf("&") && suffix.indexOf("#") >= 0)
+          {
+            suffix = "&" + suffix.substring(suffix.indexOf("#"));//from next #
+          }
+          else
+            suffix = suffix.substring(suffix.indexOf("&"));//from next &
+        }
+        else //last parameter
+        {
+          suffix = "";
+        }
+        url = prefix + paramName + "=" + paramValue + suffix;
+    }
+    else
+    {
+      //empty url
+      if ((url.indexOf("?") < 0) && (url.indexOf("#") <0))
+      {
+        url += "?" + paramName + "=" + paramValue;
+      } //url without parameters with #asdasd
+      else if((url.indexOf("?") <0) && (url.indexOf("#") >= 0))
+      {
+      var prefix = url.substring(0, url.indexOf("#"));
+      var suffix = url.substring(url.indexOf("#"));
+      url = prefix + "?" +paramName + "=" + paramValue + "&" + suffix;
+      }  
+      else
+      {
+        var prefix = url.substring(0, url.indexOf("?"));
+        var suffix = url.substring(url.indexOf("?") + 1);
+        url = prefix + "?" + paramName + "=" + paramValue + "&" + suffix;
+      }
+      
+    }
+    if(reload == true)
+      window.location.href = url;
+    else
+      window.history.pushState("", "HamnetDB Map", url);
+    //alert(url);
+    //window.location = url;
+}
+
+//get Site data and center map to it
+function getSite(site) 
+{   
+  var url = kmlUrl
+  var xmlhttp = null;
+  // Mozilla
+  if (window.XMLHttpRequest) 
+  {
+    xmlhttp = new XMLHttpRequest();
+  }
+  // IE
+  else if (window.ActiveXObject) 
+  {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.open("GET", url, true);
+  xmlhttp.onreadystatechange = function(){
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //if OK
+    {
+      var lon_f = 0;
+      var lat_f = 0;
+      coor = new Array();
+      get_str = xmlhttp.responseText;
+      if (window.DOMParser)
+      {
+        parser=new DOMParser();
+        xmldoc=parser.parseFromString(get_str,"text/xml");
+      }
+      else // IE
+      {
+        xmldoc = new ActiveXObject("Microsoft.XMLDOM");
+        xmldoc.async = false;
+        xmldoc.loadXML(get_str); 
+      }
+      jsondoc = JSON.parse(get_str); 
+      
+      for(var i=0;i<jsondoc.features.length;i++)
+      {
+        if(jsondoc.features[i].geometry.type== "Point")
+        {
+          var call, lon, lat;
+          call = jsondoc.features[i].properties.callsign;
+          
+          if(call == site)
+          {
+            line = jsondoc.features[i].geometry.coordinates;
+            lon_f = line[0];  
+            lat_f = line[1];
+            break;
+          }
+        }
+      }
+      if(lon_f != 0 && lat_f != 0)//othervise error happend
+      {
+        map.setView(new L.LatLng(parseFloat(lat_f),parseFloat(lon_f)),11);
+      }
+    }
+  }  
+  xmlhttp.send(null);
+}
+
+//get as data and center map to it
+function getAs(as) 
+{   
+  var url = kmlUrl+"&only_hamnet=1&only_as="+as
+  var xmlhttp = null;
+  // Mozilla
+  if (window.XMLHttpRequest) 
+  {
+    xmlhttp = new XMLHttpRequest();
+  }
+  // IE
+  else if (window.ActiveXObject) 
+  {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.open("GET", url, true);
+  xmlhttp.onreadystatechange = function(){
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //if OK
+    {
+      var lon_min = 999;
+      var lon_max = 0;
+      var lon_f = 0;
+      var lat_min = 999;
+      var lat_max = 0;
+      var lat_f = 0;
+      coor = new Array();
+      get_str = xmlhttp.responseText;
+      if (window.DOMParser)
+      {
+        parser=new DOMParser();
+        xmldoc=parser.parseFromString(get_str,"text/xml");
+      }
+      else // IE
+      {
+        xmldoc = new ActiveXObject("Microsoft.XMLDOM");
+        xmldoc.async = false;
+        xmldoc.loadXML(get_str); 
+      }
+      jsondoc = JSON.parse(get_str); 
+      //alert(jsondoc.features.length);
+      //get maximum values of coordinate and calculate center
+      for(var i=0;i<jsondoc.features.length;i++)
+      {
+        if(jsondoc.features[i].geometry.type== "Point")
+        {
+          var line, lon, lat;
+          line = jsondoc.features[i].geometry.coordinates;
+          lon = line[0];  
+          lat = line[1];
+          
+
+          if (lon < lon_min) lon_min = lon;
+          if (lon > lon_max) lon_max = lon;
+          if (lat < lat_min) lat_min = lat;
+          if (lat > lat_max) lat_max = lat;
+        }
+      }
+      if(lon_min != 999 && lat_min != 999)//othervise error happend
+      {
+        lon_f = (parseFloat(lon_min) + parseFloat(lon_max))/2.0;
+        lat_f = (parseFloat(lat_min) + parseFloat(lat_max))/2.0;
+       // var center = new OpenLayers.LonLat(lon_f, lat_f).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+      //  map.setCenter (center, 9);
+        map.setView(new L.LatLng(lat_f,lon_f),9);
+      }
+    }
+  }  
+  xmlhttp.send(null);
+}
+
+//when AS-optionbox is changed
+function panelChange ()
+{
+  var as = document.getElementById("only_as").getElementsByTagName("select")[0].value;
+  if(as == "-All-")
+  {
+    as=0;
+  }
+  getAs(as);
+}
+function getHttpRequest(url,id) {   
+  var xmlhttp = null;
+  // Mozilla
+  if (window.XMLHttpRequest) {
+    xmlhttp = new XMLHttpRequest();
+  }
+  // IEma
+  else if (window.ActiveXObject) {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.open("GET", url, true);
+  xmlhttp.onreadystatechange = function(){
+  
+    get_data = new Array();
+
+    get_str = xmlhttp.responseText;
+    document.getElementById(id).innerHTML=get_str;
+  }  
+  xmlhttp.send(null);
+}
+function popupw (url) 
+{
+   fenster = window.open(url, "Detail Info", "scrollbars=1,width=800,height=600,resizable=yes");
+   fenster.focus();
+   return false;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function getCoverage(url, only_exist) 
+{    
+  var xmlhttp = null;
+  
+// Mozilla
+  if (window.XMLHttpRequest) 
+  {
+    xmlhttp = new XMLHttpRequest();
+  }
+  // IE
+  else if (window.ActiveXObject) 
+  {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+  xmlhttp.open("GET", url, true);
+  
+  if(only_exist == "0"){
+    xmlhttp.onreadystatechange = function(){
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //if OK
+    {
+      get_str = new Array();
+      get_str = xmlhttp.responseText;
+	
+      jsondoc = JSON.parse(get_str);	
+	
+      var imageBounds = [[jsondoc.South,jsondoc.West],[jsondoc.North,jsondoc.East]];
+      var url = CoverUrl + jsondoc.Callsign +'_'+jsondoc.Tag;
+
+      var imageUrl_red = url +'_red.png';
+      var imageUrl_green = url + '_green.png';
+      var imageUrl_yellow = url + '_yellow.png';
+
+      var image_green = L.imageOverlay(imageUrl_green,imageBounds,{attribution: 'Coverage'});
+      var image_yellow = L.imageOverlay(imageUrl_yellow,imageBounds,{attribution: 'Coverage'});
+      var image_red = L.imageOverlay(imageUrl_red,imageBounds,{attribution: 'Coverage'});
+
+      //Remove all three Grouplayers from map
+      map.removeLayer(RedCover);
+      map.removeLayer(YellowCover);
+      map.removeLayer(GreenCover);
+
+      //Add new coverage images to the coresponding layer; check for layers only necessary as 
+      //long as box is always unchecked after closing popup
+
+      if(!RedCover.hasLayer(CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + "_red"]))
+      {
+        RedCover.addLayer(image_red);
+        CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + "_red"] =  RedCover.getLayerId(image_red);
+      }
+      if(!GreenCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+jsondoc.Tag +"_green"]))
+      {
+        GreenCover.addLayer(image_green);
+        CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + '_green'] =  GreenCover.getLayerId(image_green);
+      }
+      if(!YellowCover.hasLayer(CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + "_yellow"]))
+      {
+        YellowCover.addLayer(image_yellow);
+        CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + "_yellow"] =  YellowCover.getLayerId(image_yellow);
+      }
+
+      GreenCover.addTo(map);
+      YellowCover.addTo(map);
+      RedCover.addTo(map);
+
+      image_green.setOpacity(0.8);
+      image_yellow.setOpacity(0.8);
+      image_red.setOpacity(0.8);
+      }
+    }
+  }else { //only_exist = 1
+    xmlhttp.onreadystatechange = function(){
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //if OK
+      {
+        get_str = new Array();
+        get_str = xmlhttp.responseText;
+        //hubertus shouldn't c&p
+
+        if(get_str == "0"){
+          document.getElementsByName("Coverage")[0].disabled = true;
+        }
+        else{	
+          jsondoc = JSON.parse(get_str)
+          var tags = jsondoc.Tag.split(" ");
+          var number = tags.length;
+          var text= document.getElementsByName("Coverage")[0].outerHTML;  
+          for(var i=1; i<number;i++){
+            document.getElementById("displayCoverage").innerHTML+= text;
+          }
+          for(var j=0; j<number; j++){
+            document.getElementsByName("Coverage")[0].outerHTML+=" "+tags[j];
+            document.getElementsByName("Coverage")[0].name= jsondoc.Callsign+'_'+tags[j];
+	       
+            if(RedCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+tags[j]+"_red"]))
+            {
+              document.getElementsByName(jsondoc.Callsign+'_'+tags[j])[0].checked = true;
+            }
+          }
+        } 
+      }
+    }
+  }
+  xmlhttp.send(null);
+}
+
+
+function coverage(event)
+{ 
+
+  var callsign= event.target.name;
+ 
+  if(event.target.checked)
+  {
+    //Get Coverage Data (status, coordinates) from DB by callsign; add images to CoverageLayers
+    getCoverage("mapcoverage.cgi?x="+callsign,0);
+  }
+  else
+  {
+    RedCover.removeLayer(CoverageLayers[callsign + "_red"]);
+    YellowCover.removeLayer(CoverageLayers[callsign + "_yellow"]);
+    GreenCover.removeLayer(CoverageLayers[callsign + "_green"]);
+
+    delete CoverageLayers[callsign + "_green"];
+    delete CoverageLayers[callsign + "_red"];
+    delete CoverageLayers[callsign + "_yellow"];
+  }
+  return 1;
+}

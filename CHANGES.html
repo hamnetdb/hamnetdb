@@ -1,0 +1,176 @@
+<h2>Software Release Notes for Hamnet-DB</h2>
+
+<h3>Version 3.8 (10.08.2015)</h3>
+<ul>
+<li>ISM-Sites and links 
+<li>10digit Maidenhead-locator support (sites + map)
+<li>IP-Calculator for subnets
+<li>Bugfix: changing call of site does not crash dependencies.
+<li>Better parameter check for coverge calculation
+<li>serveral small bugfixes and improvements
+</ul>
+
+<h3>Version 3.7 (31.03.2015)</h3>
+<ul>
+<li>Coverage system for sites, many thanks to Aachen specialy to Hubertus Munz.
+</ul>
+
+<h3>Version 3.6 (30.12.2014)</h3>
+<ul>
+<li>Dependency check for site deleting.
+<li>Map changed from Openlayers to Leaflet.
+</ul>
+
+<h3>Version 3.3 (02.07.2014)</h3>
+<ul>
+<li>Checkbox to toggle between the classic Google Maps display and
+the current OSM/OpenLayers implementation.
+<li>New field "Country" at AS level to group the AS by ISO-3166 tld country 
+codes. Used only for limiting generated output, see below.
+<li>Limit map content by country for generating overview sites. 
+<br>Examples: 
+<a href="lsp_map.cgi?country=at">
+http://hamnetdb.net/lsp_map.cgi?country=at</a> or 
+<a href="mapwindow.cgi?country=at">
+http://hamnetdb.net/mapwindow.cgi?country=at</a>.
+<li>Limit DNS generation (see <a href='?m=util'>Utilities</a>) to a
+particular country if country parameter is given. This gives the possibility
+to create a whole country zone like at.ampr.org.
+<li>Bugfix: Avoid coordinate input exceeding valid degree values in the
+site entry form.
+<li>Bugfix: Entering a hostname into search field shows correct result.
+<li>Bugfix: Profile image is shown at 1920px window width or greater.
+</ul>
+
+<h3>Version 3.2 (30.04.2014)</h3>
+<ul>
+<li>New map display based on OpenStreetmap and OpenLayers.
+Many thanks to Lucas, OE2LSP for design and implementation
+of this part :-)
+</ul>
+
+<h3>Version 3.1 (23.03.2014)</h3>
+<ul>
+<li>Rights management: New option "Restrict write access to list of 
+maintainers" for maintainers of AS, Subnet, Site, Host. Requires match
+of maintainer list to own callsign.
+</ul>
+
+<h3>Version 3.0 (07.01.2014)</h3>
+<ul>
+<li>Bugfix: Link was not shown when first IP of subnet was empty.
+</ul>
+
+<h3>Version 2.9 (13.06.2013)</h3>
+<ul>
+<li>Flexible SOA-serial for DNS zone file generation.
+<li>Add fqdn and aliases to /etc/hosts generation. Hint to dnsmasq usage.
+<li>Check site entry when storing host form (avoid hosts without site).
+<li>Find host names when typed into search field.
+</ul>
+
+<h3>Version 2.8 (30.05.2013)</h3>
+<ul>
+<li>Add network type AS-Packet-Radio
+<li>Add english login/password notify-mails (german text only for at/ch/de).
+<li>Default table dump including history (?hist=1 not longer necessary).
+<li>Show number of entries at each list footer.
+<li>Introduce software release notes from file CHANGES.html
+</ul>
+
+<h3>Version 2.7 (27.05.2013)</h3>
+<ul>
+<li>Add version info in copyright notice.
+<li>Introduce simple REST interface (thanks to DM8BS).
+<li>Update README.txt for installing maintainer login.
+<li>Show map window for no call sites (bugfix).
+</ul>
+
+<h3>Version 2.6 (24.05.2013)</h3>
+<ul>
+<li>Add option "No ping check" to host form.
+<li>Show hosts in subnet even if appropriate comment is present.
+</ul>
+
+<h3>Version 2.5 (21.05.2013)</h3>
+<ul>
+<li>Sort DNS zone files by site names and add comments.
+</ul>
+
+<h3>Version 2.4 (21.05.2013)</h3>
+<ul>
+<li>Correctly crop UTF-8 characters in list view.
+<li>DNS: Automatically generate site CNAME for hr.site (usual in OE).
+<li>Log/Debugging for run_check script.
+<li>Reduce ping interval (host list grows..)
+</ul>
+
+<h3>Version 2.3 (09.05.2013)</h3>
+<ul>
+<li>Full re-implement of map display (ajax instead static).
+<li>Introduce "edge" object to connect sites without transfer subnet.
+<li>Re-implement of link display in table view.
+<li>Show only AS containing objects in overview combo box.
+<li>Complete sql table structure dump.
+<li>Formal check of IP addresses.
+<li>Update help file and some cosmetics.
+</ul>
+
+<h3>Version 2.2 (17.03.2013)</h3>
+<ul>
+<li>Sites without call: Clickable and mouseover info.
+<li>Filter permissions when display maintainer list.
+<li>Remove long term history for ping checks (not needed).
+<li>Update help file and some cosmetics.
+</ul>
+
+<h3>Version 2.1 (25.02.2013)</h3>
+<ul>
+<li>Swap "last changes" and "maintainer" menu level for usability.
+<li>Show hosts contained in subnet in list (thanks to HB9XAR).
+</ul>
+
+<h3>Version 2.0 (17.02.2013)</h3>
+<ul>
+<li>Introduce popup-window when click on map items.
+<li>Show permissions and activity time span in maintainer list.
+</ul>
+
+<h3>Version 1.9 (14.02.2013)</h3>
+<ul>
+<li>Generic DNS zone content supplied in AS form.
+<li>Introduce sites without callsign for planning issues.
+<li>Add full screen map choice.
+<li>Add z-index handling for map symbols (layering on relevance).
+<li>Add mouse-over info for edited field.
+</ul>
+
+<h3>Version 1.8 (04.02.2013)</h3>
+<ul>
+<li>Add AS-comment in combo box.
+<li>Add maintainer and subnet-type mouseover info.
+<li>Generic config of check sites instead of hard coding
+<li>Default map to center europe instead of open sea ;-)
+<li>Update help file and some cosmetics.
+</ul>
+
+<h3>Version 1.7 (02.02.2013)</h3>
+<ul>
+<li>More polite callsign check for sites (allow hb9-constructs)
+<li>Allow /31 subnets.
+<li>Allow response time 0.00ms for ping check (loopback pings).
+<li>Update help file and some cosmetics.
+</ul>
+
+<h3>Version 1.6 (31.01.2013)</h3>
+<ul>
+<li>Generate serial for DNS zones from last the last host entry store date.
+<li>Automatically generate CNAME for web.site or router.site.
+<li>Check site callsign within the host and alias entries.
+<li>Remove missleading "above sea level" field.
+</ul>
+
+<h3>Version 1.5 (22.01.2013)</h3>
+<ul>
+<li>Considered as initial version.
+</ul>

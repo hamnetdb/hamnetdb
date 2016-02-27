@@ -1,0 +1,403 @@
+<h2>Infos zur Hamnet-DB</h2>
+<p>
+Diese Datenbank dient der Dokumentation und Darstellung von IP-Adressen 
+im Hamnet. Es handelt sich um ein System für Netzwerk-Insider und ist mit
+dem ausschließlichen Ziel entstanden, nützlich und hilfreich zu sein.
+<p>
+Die Koordination erfolgt ausschließlich durch die Verantwortlichen, ein
+Anspruch auf Vollständigkeit der hier eingegebenen Daten besteht nicht.
+<p>
+<h3>Objekte</h3>
+<ul>
+<li><b>Sites (Standorte)</b><br>
+Jedes Stück Hardware steht notgedrungen an einem Ort, so dass die Basis
+jeder Komponente der Standort ist. Er hat ein Amateurfunk-Rufzeichen,
+Koordinaten und ggf. eine Höhe über Grund. 
+Letztere ist vor allem zum Berechnen der Sichtline hilfreich.<br>
+- <b>Hamnet-site</b>:Standort mit mindestens einer aktiven Hamnet-Komponente. 
+Nur automatisch arbeitende Amateurfunkstellen mit entsprechender 
+Rufzeichenzuteilung. Keine persönlichen Rufzeichen. 
+Keine Clubstationsrufzeichen.<br>
+- <b>Special hamnet-site</b> (ignore position in map):
+Wie eine "Hamnet-site" nur ohne Beachtung der Koordinaten beim 
+Zentrieren der Kartenansicht (im Normalfall nicht verwenden).<br>
+- <b>ISM-site</b>: Standort mit mindestens einer aktiven Hamnet-Komponente. 
+Die Anbindung an das Hamnet erfolgt über einen ISM-WLAN-Funklink 
+mit entsprechenden Parametern.
+(im Idealfall ausserhalb des 13-cm-/6-cm-Amateurfunkbandes). 
+Keine automatisch arbeitenden Amateurfunkstellen. 
+Als Callsign bitte den verantwortlichen Funkamateur für einen Standort
+mit fortlaufender ID ab -101 angeben (z.B. dg8ngn-101, dg8ngn-102, usw.).
+Alternativ kann auch direkt ein Rufzeichen angegeben werden, 
+wenn die Koordinaten zum Standort des Rufzeichens passen 
+(z.B. persönlicher Standort: dg8ngn, Standort der Clubstation: 
+dl0abc oder Standort der automatisch arbeitenden Amateurfunkstelle 
+der Klasse E: do0xyz).<br>
+- <b>No hamnet on site</b> (e.g. FM-repeater): 
+Standort ohne aktiver Hamnet-Komponente. 
+Nur automatisch arbeitende Amateurfunkstellen mit entsprechender 
+Rufzeichenzuteilung. Keine persönlichen Rufzeichen. 
+Keine Clubstationsrufzeichen.<br>
+- <b>Site without callsign</b> (for planning): 
+Zur Linkplanung kann hier ein Standort ohne Rufzeichen eingegeben werden. 
+Bitte nach der Planungsphase wieder entfernen.
+<li><b>Hosts (einzelne IP-Adressen)</b><br>
+An einem Standort befinden sich üblicherweise mehrere IP-Adressen, die
+für unterschiedliche Zwecke genutzt werden. Grundsätzlich gibt es
+zwei Kategorien:<br>
+- <b>Routing</b>: Dient für einen anderen Knoten als Gateway, 
+hat aber i.d.R. sonst keinen Zweck.<br>
+-- <b>Type "Routing-Radio"</b>: Der Host von Standort A bildet 
+zusammen mit dem Host von Standort B eine Hamnet-Linkstrecke.<br>
+-- <b>Type "Routing-ISM"</b>: Der Host von Standort A bildet zusammen mit dem 
+Host von Standort B eine Hamnet-Linkstrecke im ISM-WLAN-Bereich 
+mit entsprechenden Parametern.<br>
+-- <b>Type "Routing-Ethernet"</b>: Der Host von Standort A bildet zusammen mit dem 
+Host von Standort B eine Hamnet-Linkstrecke im Nahbereich über Ethernet.<br>
+-- <b>Type "Routing-Tunnel"</b>: Der Host von Standort A bildet zusammen 
+mit dem Host von Standort B eine Hamnet-Linkstrecke über einen Internet-Tunnel<br>
+- <b>Service</b>: Ist als IP ansprechbar, dient aber i.d.R. nicht dem Routing.
+<br>
+Aus den Hostnamen werden u.A. DNS-Zonen generiert.<br>
+Aus den Namen im "Aliases"-Feld werden in diesem Fall CNAME-Records.
+<li><b>Subnets</b><br>
+Um die IP-Adressen herum werden Subnetze definiert. 
+Sie stehen in einer hierarchischen Beziehung zueinander, d.h. ein kleineres
+Netz kann Bestandteil eines größeren Netzes sein.<br>
+Auch bei den Subnetzen wird zwischen Routing (Backbone) und Servicenetzen
+unterschieden.<br>
+Jedes Subnetz ist Bestandteil eines AS und kann ggf. auch ein eigenes
+AS definieren.
+Die Subnetztypen "AS-Backbone", "AS-User/Services" und "AS-Packet-Radio" 
+sind in Deutschland den DL IP-Koordinatoren vorenthalten 
+(Bereiche: 44.130, 44.224, 44.225).
+<li><b>AS - Autonome Systeme</b><br>
+Fassen jeweils Routingdomänen zusammen. Diese sind nach geographischen
+Regionen aufgeteilt, in DL üblicherweise DARC-Distrikte oder Teile davon.
+Ein AS hat jeweils mindestens ein <b>AS-Backbone</b>-Subnetz für das Routing 
+und ein <b>AS-User/Services</b>-Subnetz für die Benutzerzugänge und Dienste.<br>
+</ul>
+<h3>Verbindungen</h3>
+In der Regel wird (zumindest in DL) pro Verbindung ein Transport-Subnetz
+vom Typ Backbone-Network vergeben. Im einfachsten Fall werden über ein
+solches Netz genau zwei Knoten miteinander verbunden (Point-to-Point).
+Trifft das zu, ist die Welt recht einfach, die Hamnet-DB erkennt in 
+diesem Fall automatisch dass es sich um eine Verbindung zwischen
+zwei Knoten handelt und stellt die Verbindung in Karte und Tabellen
+als solche dar.
+<p>
+Nun gibt es aber immer wieder Fälle, die sich mit obiger Gesetzmäßigkeit
+nicht abbilden lassen. Diese sind:
+<p>
+- Point-to-Multipoint Verbindungen. Hier ist aus der Netztopologie
+nicht zweifelsfrei erkennbar, wer mit wem konkret spricht.<br>
+- Strukturen, die ohne Subnetzbeziehungen auskommen, wie z.B.
+OLSR oder Bridging.
+<p>
+In diesen Fällen muss die Verbindung speziell eingetragen werden, weil
+sie für die Hamnet-DB aus der Netztopologie nicht automatisch erkennbar
+ist. Zu diesem Zweck dient das Objekt <b>Edge</b>.
+<p>
+Eine Edge kann zwischen zwei Sites eingetragen, wenn<br>
+- nicht bereits eine Linkbeziehung über ein Transportnetz besteht <b>und</b>
+<br>
+- wenn auf beiden Seiten mindestens ein Host mit IP-Adresse definiert ist.
+<p>
+Sind beide Voraussetungen erfüllt, kann in der Liste "Other sites near..."
+unter der Spalte Edge eine neue Verbindung eingefügt werden. 
+Diese wird dann für Karten- und Tabellendarstellung genutzt.
+
+<h3>Referenzen und Abhängigkeiten</h3>
+Um die gespeicherten Daten so robust wie möglich zu halten, werden nur die
+wirklich notwendigen Beziehungen (Referenzen) in der Datenbank gepeichert. 
+Das führt bei der Eingabe der Daten in manchen Fällen zu unerwartetem Verhalten.
+<p>
+Es gelten folgende Referenzbeziehungen:<br>
+- Jeder Host hat genau einen Standort (Site)<br>
+- Jedes Subnetz enthält mindestens einen Host<br>
+- Jedes Subnetz hat ein übergeordnetes AS
+<p>
+Erst über alle drei Beziehungen kann eine Beziehung zwischen AS und Site
+hergestellt werden. So taucht die Site sowohl in der Liste des AS als auch
+in dessen Karte erst auf, wenn auch die zugehörigen Hosts <u>und</u>
+Subnetze definiert sind.
+
+<h3>Eingabefelder für Maintainer und Comment</h3>
+<p>Bei AS und Site besteht die Möglichkeit, eine Liste von "Kümmerern"
+einzutragen. Das sollte eine Komma-separierte Liste von kleingeschriebenen
+Rufzeichen sein.
+<p>Zusätzlich gibt es überall ein Freitext-Kommentarfeld, das in der 
+Datenbank keine Längenbegrenzung hat. 
+Theoretisch kann hier also sehr viel stehen, doch 
+weniger ist manchmal mehr.
+<p>
+Für beide Felder gilt folgender Grundsatz:
+<p>
+<ul>
+<li>Die Felder sollten überhaupt nur befüllt werden, wenn es speziell zu 
+<u>diesem</u> Objekt etwas anzumerken gibt. 
+Ist alles bereits mit den über- oder untergeordneten Objekten gesagt, 
+dürfen und sollen diese Felder leer bleiben.
+<li>Stehen ausführliche Informationen bereits an anderweitiger Stelle
+und(!) werden sie dort auch gepflegt, dann sollten diese Informationen
+nicht kopiert, sondern verlinkt werden. Dazu wird die Web-Adresse
+einschließlich http:// in das Textfeld eingetragen, sie wird dann
+automatisch klickbar.
+<li>Generell gilt: Lieber eine fehlende als eine falsche Information.
+Vermutungen sollten als solche gekennzeichnet werden (z.B. mit ? dahinter).
+Manchmal helfen sie, meistens sollten sie aber einfach weggelassen werden.
+</ul>
+
+<h3>Versionsverwaltung</h3>
+<p>
+Alle Daten unterliegen einer Versionierung. Dabei gilt grundsätzlich,
+dass Daten nie gelöscht oder überschrieben werden. Jede Änderung wird in
+einer neuen Version gespeichert. Das macht es auch weniger schlimm, wenn
+mal jemand aus Versehen etwas Falsches eingibt.
+<p>
+Im Eingabedialog werden links unten die vorhandenen Versionen aufgelistet.
+So kann auch zu älteren Versionen zurückgesprungen werden.
+Der Knopf "Revert to this version" kopiert eine alte Version in die
+Aktuelle. Auch dabei wird wieder eine neue Version erzeugt, d.h. auch
+dieser Vorgang bleibt nachvollziehbar.
+<p>
+Die letzten Änderungen sind unter 
+<a href="?m=history">Last changes</a>
+zusammengefasst. Auch gelöschte Objekte finden sich hier wieder.
+
+<h3>Kopieren von Einträgen</h3>
+<p>
+Für die Eingabe von mehreren, ähnlichen Einträgen (z.B. 
+Transport-Subnetzen) ist es hilfreich einen vorhandenen Eintrag mit dem
+Copy-Knopf zu kopieren und anzupassen.
+<p>
+Tipp: Wird der Copy-Knopf vergessen, ist auch das nicht tragisch. Es lässt
+sich nach dem Speichern auf die vorherige Version zurückspringen, 
+diese kopieren und speichern und damit zu retten.
+
+<h3>Hostnamen, Aliases und DNS-Zonengenerierung</h3>
+<p>
+Ein Nutzen der Eingabe aller IP-Adressen und Namen ist die automatische
+Erzeugung von DNS-Zonen (siehe <a href="?m=util">Utilities</a>). 
+Dabei werden sowohl Forward- als auch Reverse-Zonen erzeugt.
+Dabei kann vorgegeben werden,
+<p>
+<ul><li>
+ob jeweils das AS als subdomain eingefügt werden soll 
+  (CGI-Parameter <b>by_as</b>=1)
+<li>
+ob nur für ein AS die Einträge erzeugt werden sollen
+  (CGI-Parameter <b>only_as</b>=&lt;AS-Nummer&gt;)
+<li>
+Die Adressen im SOA-Record
+  (CGI-Parameter <b>ns</b> und <b>mail</b>)
+<li>
+welcher Domain-Suffix hinter die Einträge gesetzt werden soll 
+  (CGI-Parameter <b>suffix</b>=de.ampr.org)
+<li>
+der Landes-Suffix, dient nur zur Erzeugung der Dateinamen
+  (CGI-Parameter <b>country</b>=de)
+</ul><p>
+Verpflichtend ist es, im Hostnamen immer das Rufzeichen der Station vorkommen
+zu lassen, um überregional eindeutige Namen zu erzeugen. Das erspart 
+in der Praxis die Eingabe vollqualifizierter Domainnamen. In der Regel
+sollen Hostnamen als &lt;dienst&gt;.rufzeichen angelegt werden.
+<p>
+Einträge in der Zeile Aliases werden grundsätzlich als CNAME erzeugt.
+Ein Eintrag wird ignoriert, wenn es bereits einen solchen Hostnamen
+gibt.
+<p>
+Gibt es an einem Standort keinen Hostnamen, der nur aus dem Rufzeichen
+der Site besteht, so wird automatisch ein CNAME mit dem Rufzeichen erzeugt.
+Dabei werden die Existenz der Einträge <i>web.rufzeichen</i> bzw. 
+<i>router.rufzeichen</i>
+geprüft und ggf. verwendet.
+<p>
+Die Verarbeitung von Hostnamen steht im Einklang mit den
+<a href="http://www.de.ampr.org/dokumentation/networks/dnsnames-hamnet">hier
+</a> und
+<a href="http://www.amateurfunk-wiki.de/index.php/DNS-Namensregeln">hier</a>
+beschriebenen Empfehlungen.
+
+<h3>Mehrere Rufzeichen an einem Standort</h3>
+<p>Eine Site wird nach ihrem Rufzeichen benannt. Sollen mehrere Rufzeichen
+an einem Standort betrieben werden, muss eine eindeutige Abbildung erfolgen.
+Das Eintragen mehrerer Sites pro Standort führt zu Konflikten und ist
+auch in der Darstellung nicht schön. Diese Vorgehensweise sollte daher 
+vermieden werden.
+<p>Die Site sollte nach dem Rufzeichen benannt werden, das die meisten
+Hamnet-Ressourcen betreibt. Alle anderen Rufzeichen können in den jeweiligen
+Hostnamen untergebracht werden. Hilfreich ist es ggf., weitere am Standort
+vorhandene Rufzeichen im Kommentar der Site zu beschreiben.
+
+<p>
+<br>
+<br>
+<h2 id="antenna">Funkabdeckung</h2>
+<h3>Überblick</h3>
+Basierend auf den eingetragenen Werten, 
+berechnet die Software auf einem Server am Institut für Hochfrequenztechnik am RWTH Aachen 
+die Funkabdeckung und speichert diese als Karten-Layer (siehe Legende der Karte).<br>
+Um eine die gewünschte Abdeckung anzuzeigen,in der Karte den gewünschten Standort auswählen und 
+die Checkbox der jeweiligen Antenne unter "Coverage" auswählen.
+Wenn die Checkbox grau ist, gibt es keine Abdeckungs-Ebene. Beachte, 
+dass es einige Zeit (bis zu 2 Stunden) dauern kann bis eine Abdeckung verfügbar ist. 
+Eine neue Abdeckung wird berechnet sobald Werte im Formular geändert werden.<br>
+Für die Berechnung stehen für folgende Länder Höhendaten zu verfügung:
+BeNeLux-Staaten, Deutschland, Frankreich, Italien, Kroatien, Österreich, Schweiz, Slowenien.
+Wenn eine Abdeckung für eine Site außerhalb dieses Gebietes berechneterer werden möchte, bitte wende dich an <a href="hamnetdb.net/impressum">Flori, DL8MBT</a>
+</p>
+<p>
+<h3>Eingabe Parameter</h3>
+<ul>
+<li><b>Label</b> ist der Name der für die Antenne angezeigt wird um diese zuzuordnen (z.B. North, West, Useraccess)</li>
+<li><b>Frequency</b> ist die Frequenz des Userzuganges in MHz. 
+Jeder Userzugang benötigt eine Frequenz (die für alle Userzugänge gleich sein kann). 
+Es können nur Integerwerte von 1000 bis 10000 eingetragen werden.</li>
+<li><b>Azimuth & Elevation</b> sind die Ausrichtung der Antenne in Azimuth (horizontal, Norden=0°, 0°...360°) 
+und Elevation (vertikal, parallel zum Boden =0°, -270°...90°).
+Eine nach unten gerichtete Antenne und auch die Richtung nach hinten ergeben einen negativen Winkel.</li>
+<li><b>Power & Cableloss</b> die Leistung wird in dBm und der Kabelverlust in dB angegeben. 
+Die Kabelverluste können auch über die Leistung angegeben werden, 
+in diesem Fall einfach die Kabelverluste auf 0 setzen</li>
+<li><b>Antennagain</b> ist der Antennengewinn in Hauptrichtung gegenüber dem Isotropenstrahler (dBi).</li>
+<li><b>Antennatype</b> verfügbare Antennentypen können aus der Datenbank ausgewählt werden. 
+Wenn keine passende Antenne vorhanden ist kann eine neue hochgeladen werden. 
+'Upload own Antenna Pattern'</li>
+<li><b>Height above Ground</b> Mitte der Abstrahlung über dem Boden in Meter.</li>
+</ul>
+</p>
+<p>
+<h3>Antennendateien</h3>
+Neue Antennendateien können unter 'Upload own Antenna Pattern' hochgeladen werden, 
+dafür muss das Antennenfile im '.ant' Format vorliegen, vergleichbar mit dem Format, 
+dass von der Software RadioMobile verwendet wird. <br>
+<ul>
+<li>Die Datei besteht aus 720 Werten getrennt durch einen Zeilenumbruch, 
+zuerst 360 Werte/Zeilen für Azimuth (beginnend bei 0°)
+danach die Werte für die Elevation.</li>
+<li>An der "stärksten" stelle steht der Wert "0"
+an der 3dB Grenze müsste also -3.0 stehen.</li>
+<li>Bestehende Antennendatein können im Uploadfenster betrachtet 
+und heruntergeladen werden</li>
+<li>Tipp: große Hersteller bieten die .ant Datein zum Download an.</li>
+<li>Für den Namen der Antenne bietet sich folgendes Schema an: <b>ubnt-120deg2G15-H</b>   
+ubnt steht hierbei für den Hersteller, 120deg für 120 Grad Öffungswinkel, 
+2G für 2GHz, 15 am ende für 15dBi Antennengewinn, H ist die Polarisation</li>
+<li>Antenne sollte im Frqeuenzbereich von 1-10GHz liegen, z.B. 2,4GHz
+ansonsten kann die Abdeckung nicht berechnet werden.</li>
+  
+  
+</p>
+
+
+<br><br><br>
+<h2>FAQ</h2>
+<h3>Was ist die Hamnet-DB?</h3>
+<ul>
+<li>Eine Datenbank-gestützte Webapplikation zur Pflege der Hamnet-Plandaten.
+<li>Ein Informationsmedium für den Überblick über die Netz-Zusammenhänge
+im Hamnet.
+<li>Ein Hilfsmittel, um die Plandaten auf Plausibilität zu prüfen.
+<li>Eine Grundlage zur Generierung von DNS-Zonendaten.
+<li>Ein einfacher Betriebsmonitor, der von ausgewählten Punkten per 
+regelmäßigen Ping die Erreichbarkeit erfasst. Einen Anspruch auf 
+Richtigkeit haben diese Daten nicht, sie können allenfalls
+der groben Orientierung dienen.
+</ul>
+
+<h3>Was ist die Hamnet-DB nicht?</h3>
+<ul>
+<li>Ein offizielles, verbindliches Verzeichnis. Alle Einträge wurden
+freiwillig nach bestem Wissen vorgenommen, der Datenbestand ist weder
+vollständig noch in jedem Fall richtig.
+<li>Ein Wiki. Wikis gibt es genug, es reicht dorthin zu verlinken.
+<li>Ein Datenspeicher. Auch hier gilt: Wer Dateien hineinladen will soll
+sie aus einer anderen Quelle im Web referenzieren.
+<li>Ein vollständiger Betriebsmonitor.
+Hier sollen hauptsächlich Plandaten gepflegt werden, eine Erfassung
+der Ist-Daten erfolgt mit Ausnahme eines einfachen Ping-Checks nicht.
+<li>Ein Werkzug zur Standort- und Funknetzplanung. Es geht vorwiegend um
+IP-Adressdaten. Geo- und Funkparameter werden zur Dokumentation mitgepflegt,
+sind aber nicht die Basis.
+<br>
+</ul>
+Der Anspruch dieses Projekts war nicht, das "unique tool for everything"
+zu schaffen. Es gibt also bewusst gezogene Grenzen, um die Sache
+nicht ausufern zu lassen.
+<h3>Ich möchte Daten pflegen, wie komme ich zu einem Login?</h3>
+Die Leute aus 
+<a href="?m=util&func=maintainer&filterPerm=maintainer">dieser Liste</a>
+haben die Berechtigung, neue Logins anzulegen. Wenn du jemanden davon
+kennst, sprich ihn am besten direkt an. Beim Anlegen muss 
+Rufzeichen, Vorname, Nachname und eMail angegeben und sollte
+die Funktion (z.B. Sysop db0xxx) im Kommentar hinterlegt werden.
+<p>Wenn dir sonst niemand zur Verfügung steht, wende dich an 
+<a href="/impressum/">Flori, DL8MBT</a>.
+
+<h3>Mein Name und eMail-Adresse ist sichtbar, kann ich das verhindern?</h3>
+Im System sollen nur Leute schreibend zugreifen, die das unter ihrem
+guten Namen tun und für Rückfragen auch per eMail erreichbar sind.
+Fake-Einträge sind nicht erwünscht und werden gelöscht.
+<p>
+Diese Daten sind aber nur für angemeldete Nutzer sichtbar. Bei anonymen
+Zugriff erscheint nur Rufzeichen und Vorname. 
+Die Felder Nachname und eMail werden unterdrückt. 
+Dadurch werden diese Daten auch nicht von Suchmaschinen oder
+Spambots gefunden.
+
+<h3>Ist die Hamnet-DB über das Hamnet erreichbar?</h3>
+Ja, derzeit ist das System unter folgenden Adressen erreichbar:<br>
+<p><a href="http://44.134.190.114/">http://44.134.190.114/</a> &nbsp;&nbsp;
+     hamnetdb.ir3dv (Kronplatz/Bruneck)
+<br><a href="http://44.225.20.196/">http://44.225.20.196/</a> &nbsp;&nbsp;
+     hamnetdb.db0zm (München Studentenstadt)
+<p>
+Der Nutzen aus dem Hamnet ist allerdings eher zweifelhaft: 
+Auch verlinkte Informationen
+sind im Zweifelsfall eher unter Internet-Adressen zu finden. Außerdem soll
+es sich ja gerade um die Grundlage handeln, um das Hamnet aufzubaun, 
+d.h. örtlich dürfte der Zugriff über Hamnet gelegentlich
+ein Henne-Ei-Problem haben.
+
+<h3>Wo wird das System betrieben, können die Daten verloren gehen?</h3>
+hamnetdb.net wird gemeinsam mit 
+<a href="http://www.foto-webcam.eu">www.foto-webcam.eu</a> auf einem 
+<a href="http://www.hetzner.de/hosting/produkte_rootserver/ex4">Hetzner EX4</a>
+root-Server betrieben. Für Notfälle steht ein Hetzner EQ4 als Standby-System
+zur Verfügung, auf dem die Daten täglich gespiegelt werden. Zusätzlich erfolgt
+zweimal täglich ein Datenabzug auf ein NAS bei <a href="/impressum/">dl8mbt</a>
+zuhause, aus dem wiederum eine Wiederherstellung des Systems möglich wäre.
+<p>
+Auch wenn es nicht auszuschließen ist, ist dennoch ein Datenverlust oder
+längerer Ausfall damit recht unwahrscheinlich.
+
+<h3>Ist der Quellcode offen und liegt er in einem SVN-Repository?</h3>
+Ja, der Quellcode ist genau wie der Dateninhalt unter der 
+<a title="Creative Commons  Attribution-NonCommercial-ShareAlike 3.0"
+   href="http://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">
+CC BY-NC-SA</a>-Lizenz 
+offengelegt und kann unter Utilities heruntergeladen werden.
+<p>
+Ein öffentlich zugreifbares Repository existiert bisher nicht.
+Gegenfrage: Hat jemand eines, das für den Zweck nutzbar ist?
+
+<h3>Ich will an der Software etwas verändern, wie gehe ich vor?</h3>
+Sowohl die Software als auch der Datenbankinhalt können unter Utilities 
+in jeweils ihrer aktuellen Fassung heruntergeladen werden. Dadurch ist es
+jederzeit möglich, das System in einer eigenen Umgebung nachzustellen.
+<p>
+Verbesserungen bitte ich <a href="/impressum/">mir</a> zukommen zu lassen, sie
+werden dann schnellstmöglich eingearbeitet.
+
+<h3>Warum ist die Software nicht gemäß moderner Designpattern strukturiert?</h3>
+Jeder, der Software nach bestem Wissen macht und offenlegt,
+setzt sich damit automatisch der Kritik derer aus, die es sauberer
+und besser gemacht hätten, wenn sie es denn gemacht hätten. 
+Haben sie aber nicht. 
+Und so siegt das Faktische: Es existiert, funktioniert und ist gut genug.
+<br>
+Und: Die Software ist nicht wirklich komplex. Sie kann problemlos von
+einem Entwickler beherrscht werden. Wer also Verbesserungsvorschläge 
+wegen dem "völlig unwartbaren Code" nicht als Patch realisieren will,
+kann sich damit auch gerne an <a href="/impressum/">mich</a> wenden.

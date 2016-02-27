@@ -1,0 +1,137 @@
+#!/usr/bin/perl
+# -------------------------------------------------------------------------
+# Hamnet IP database - Run checks of live network
+#
+# Remark: This program calls agents by ssh and relies on an installed
+# fping with setuid root and a key-based ssh connecton to the agent.
+# The agent hosts have to be defined in config.cgi
+#
+# Flori Radlherr, DL8MBT, http://www.radlherr.de
+#
+# Licensed with Creative Commons Attribution-NonCommercial-ShareAlike 3.0
+# http://creativecommons.org/licenses/by-nc-sa/3.0/
+# - you may change, distribute and use in non-commecial projects
+# - you must leave author and license conditions
+# -------------------------------------------------------------------------
+#
+# Determine current directory to run properly as cronjob
+my $home= $0;
+$home=~s/[^\/]*$//;
+chdir($home);
+
+do "lib.cgi" or die;
+
+# see config.cgi to define agent names
+foreach $agent (@fpingAgents) { 
+  # The weird sort order shall spread the ip ranges to avoid overload
+  my @all_ips= ();
+  my $sth= $db->prepare(qq(select ip,password(concat(ip,now())) as hash 
+           from hamnet_host where no_ping=0 order by hash));
+  $sth->execute;
+  while (@line= $sth->fetchrow_array) {
+    push(@all_ips, $line[0]);
+  }
+  &log($agent, "*********************************");
+
+  my $check_ips= "";
+  foreach $ip (@all_ips) {
+    if ($fpingAgentSubnets{$agent}) {
+      my $net= $fpingAgentSubnets{$agent};
+      next unless ($ip=~/^($net)/);
+    }
+    $check_ips.= " " if $check_ips;
+    $check_ips.= $ip;
+    if (length($check_ips)>1000) {        # avoid oversized commandline
+      &performCheck($check_ips, $agent);
+      $check_ips= "";
+    }
+  }
+  if ($check_ips) {
+    &performCheck($check_ips, $agent);
+  }
+}
+exit;
+
+# ------------------------------------------------------------------------
+# Do the check for a blank-separated list of ip addresses
+sub performCheck {
+  my $ips= shift;
+  my $agent= shift;
+  my $service= "ping";
+
+  my %message= ();
+  my %status= ();
+  my %value= ();
+  my $count= 0;
+  foreach $ip (split(/ /, $ips)) {
+    $message{$ip}= "No response";
+    $status{$ip}= 0;
+    $value{$ip}= 0;
+    $count++;
+  }
+
+  &log($agent, "fping  $count");
+  my $res= `ssh $agent fping -q -C2 -r4 -t3000 -i200 $ips 2>&1`;
+  my $okCount= 0;
+  foreach $line (split(/\n/, $res)) {
+    if ($line=~/sent to ([\d\.]+)\s*$/i) {
+      my $ip= $1;
+      $message{$ip}= $line;
+      $status{$ip}= 0;
+    }
+    elsif ($line=~/^([\d\.]+)\s+: *(.*)$/) {
+      my $ip= $1;
+      my $times= $2;
+
+      # take the best ping value
+      $value{$ip}= 0;
+      $status{$ip}= 0;
+      foreach $val (split(/ /, $times)) {
+        $val= 0.01 if $val eq "0.00"; # hack for loopback-responses
+        if ($val>0) {
+          if ($value{$ip}>$val || $value{$ip}==0) {
+            $value{$ip}= $val;
+          }
+          $status{$ip}= 1;
+        }
+      }
+      $message{$ip}= $line unless $message{$ip};
+    }
+    #elsif ($line=~/([\d\.]+) (error|is unreachable)$/i) {
+    #  my $ip= $1;
+    #  $message{$ip}= $line;
+    #  $status{$ip}= 0;
+    #}
+    else {
+      &log($agent, $line);
+    }
+  }
+  foreach $ip (sort split(/ /, $ips)) {
+    my $where= "ip='$ip' and agent='$agent' and service='$service'";
+    my $set=   "set ts=now(),value='$value{$ip}',message='$message{$ip}'";
+
+    my $sql= "";
+    my $sth= $db->prepare(qq(select ip from hamnet_check
+             where $where and status='$status{$ip}'));
+    $sth->execute;
+    if ($sth->fetchrow_array) {
+      $sql= "update hamnet_check $set where $where";
+    }
+    else {
+      $sql= "replace hamnet_check $set,since=now(),status='$status{$ip}',".
+            "ip='$ip',agent='$agent',service='$service'";
+    }
+    $okCount++ if $status{$ip}==1;
+    #&log($agent, $sql);
+    $db->do($sql);
+  }
+  &log($agent, "ready  $count ok=$okCount");
+}
+
+sub log {
+  my $agent= shift;
+  my $phrase= shift;
+  my $ts= strftime("%d.%m.%y %H:%M:%S", localtime);
+
+  print("$ts $agent - $phrase\n");
+}

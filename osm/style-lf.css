@@ -1,0 +1,258 @@
+body {
+  padding:0;
+  margin:0;
+}
+#map {
+  padding:0px;
+  margin:0px;
+  width:100%;
+  height:100%;
+}
+.popup {
+  font-size:12px;
+  font-family: "Helvetica Neue", arial, helvetica, sans-serif;
+}
+.popup  table {
+  font-size:12px;
+}
+.popup td {
+  max-width:120px;
+  word-break:break-all;
+}
+.popup p {
+  margin: 5px 5px;
+}
+h4 {
+  margin: 0;
+}
+.popupinfo {
+  margin-right:10px;
+  margin-top:10px;
+  float:right;
+  clear:both;
+  position:relative;
+  top:100px;
+  z-index:8;
+  border-radius:5px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+}
+#pop_alloc {
+  height: 200px;
+}
+#sidebar-info, #sidebar-info table{
+  font-size:13px;
+}
+#sidebar-info, #sindebar-setting {
+  padding-left:10px;
+  padding-right:10px;
+  font-size:13px;
+  font-family: "helvetica Neue", arial, helvetica, sans-serif;
+}
+#info_by
+{
+	position: absolute;
+	bottom: 10px;
+}
+#only_as select {
+  width:190px;
+}
+.info-toolbar-a {
+  width:36px;
+  height:36px;
+  background-image:url("images/info.png");
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  display: block;
+  color:#0078a8;
+}
+.setting-toolbar-a {
+  width:36px;
+  height:36px;
+  background-image:url("images/setting.png");
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  display: block;
+  color:#0078a8;
+}
+.info-toolbar, .setting-toolbar
+{
+    background: none repeat scroll 0 0 #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+}
+
+.info-toolbar:hover, .setting-toolbar:hover
+{
+    background-color: #F4F4F4;
+}
+
+
+.leaflet-control-permalink
+{
+   /* display:none;*/
+   font-size:12px;
+}
+
+
+/***********begin Mouseposition-plugin (Koordinates left bottom)*/
+.leaflet-container .leaflet-control-mouseposition {
+background-color: rgba(255, 255, 255, 0.7);
+box-shadow: 0 0 5px #bbb;
+padding: 0 5px;
+margin:0;
+color: #333;
+font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+/***********end Mouseposition-plugin */
+
+/***********begin Minimap-plugin*/
+.leaflet-control-minimap {
+    border:solid rgba(255, 255, 255, 1.0) 4px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    border-radius: 3px;
+    background: #f8f8f9;
+    transition: all .2s;
+}
+
+.leaflet-control-minimap a {
+    background-color: rgba(255, 255, 255, 1.0);
+    background-repeat: no-repeat;
+    z-index: 99999;
+    transition: all .2s;
+    border-radius: 3px 0px 0px 0px;
+}
+
+.leaflet-control-minimap a.minimized {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+    border-radius: 0px;
+}
+
+.leaflet-control-minimap-toggle-display {
+    background-image: url("images/toggle.png");
+    height: 19px;
+    width: 19px;
+    position: absolute;
+    bottom: 0;
+    right: 0; 
+}
+
+/* Old IE */
+.leaflet-oldie .leaflet-control-minimap {
+	border: 1px solid #999;
+}
+
+.leaflet-oldie .leaflet-control-minimap a {
+	background-color: #fff;
+}
+
+.leaflet-oldie .leaflet-control-minimap a.minimized {
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+}
+/**********end Minimap-plugin*/
+
+/**********start Sidebar-plugin*/
+.leaflet-sidebar {
+  position: absolute;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  z-index: 2000; }
+  .leaflet-sidebar.left {
+    left: -500px;
+    transition: left 0.5s, width 0.5s;
+    padding-right: 0; }
+    .leaflet-sidebar.left.visible {
+      left: 0; }
+  .leaflet-sidebar.right {
+    right: -260px;
+    transition: right 0.5s, width 0.5s;
+    padding-left: 0; }
+    .leaflet-sidebar.right.visible {
+      right: 0; }
+  .leaflet-sidebar > .leaflet-control {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 8px 24px;
+    font-size: 1.1em;
+    background: white;
+    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
+    -webkit-border-radius: 4px;
+    border-radius: 4px; }
+    .leaflet-touch .leaflet-sidebar > .leaflet-control {
+      box-shadow: none;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      background-clip: padding-box; }
+  @media (max-width: 767px) {
+    .leaflet-sidebar {
+      width: 100%;
+      padding: 0; }
+      .leaflet-sidebar.left.visible ~ .leaflet-left {
+        left: 100%; }
+      .leaflet-sidebar.right.visible ~ .leaflet-right {
+        right: 100%; }
+      .leaflet-sidebar.left {
+        left: -100%; }
+        .leaflet-sidebar.left.visible {
+          left: 0; }
+      .leaflet-sidebar.right {
+        right: -100%; }
+        .leaflet-sidebar.right.visible {
+          right: 0; }
+      .leaflet-sidebar > .leaflet-control {
+        box-shadow: none;
+        -webkit-border-radius: 0;
+        border-radius: 0; }
+        .leaflet-touch .leaflet-sidebar > .leaflet-control {
+          border: 0; } }
+  @media (min-width: 768px) and (max-width: 991px) {
+    .leaflet-sidebar {
+      width: 250px; }
+      .leaflet-sidebar.left.visible ~ .leaflet-left {
+        left: 250px; }
+      .leaflet-sidebar.right.visible ~ .leaflet-right {
+        right: 250px; } }
+  @media (min-width: 992px) and (max-width: 1199px) {
+    .leaflet-sidebar {
+      width: 250px; }
+      .leaflet-sidebar.left.visible ~ .leaflet-left {
+        left: 250px; }
+      .leaflet-sidebar.right.visible ~ .leaflet-right {
+        right: 250px; } }
+  @media (min-width: 1200px) {
+    .leaflet-sidebar {
+      width: 250px; }
+      .leaflet-sidebar.left.visible ~ .leaflet-left {
+        left: 250px; }
+      .leaflet-sidebar.right.visible ~ .leaflet-right {
+        right: 250px; } }
+  .leaflet-sidebar .close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 31px;
+    height: 31px;
+    color: #333;
+    font-size: 25pt;
+    line-height: 1em;
+    text-align: center;
+    background: white;
+    -webkit-border-radius: 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    z-index: 8; }
+
+.leaflet-left {
+  transition: left 0.5s; }
+
+.leaflet-right {
+  transition: right 0.5s; }
+/**********end Sidebar-plugin*/
