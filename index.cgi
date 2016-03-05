@@ -27,7 +27,6 @@ $hostWhere= "1";
 $siteWhere= "1";
 $subnetWhere= "1";
 $asWhere= "1";
-$testVar= "1";
 $as= $query->param("as")+0;
 &prepareWhereAS($as);
 
@@ -118,7 +117,6 @@ print qq(
      href="http://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">
   CC BY-NC-SA
   </a> license
-  $testVar
   </div>
   </div>
 );

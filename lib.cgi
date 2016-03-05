@@ -906,7 +906,6 @@ sub prepareWhere {
   if ($db->selectrow_array(
     qq(select id from hamnet_site where callsign=).$db->quote($search))) {
     $search= "site:$search";
-    $testVar=$search;
   }
   elsif ($db->selectrow_array(
     qq(select id from hamnet_maintainer where callsign=).$db->quote($search))){
@@ -972,7 +971,6 @@ sub prepareWhereAS {
   
   if ($search=~/^(as|)(\d\d\d\d\d(\d\d\d\d\d)?)$/i) {
     my $as= $2;
-    $testVar="$as";
     $asWhere= "as_num='$as'";
     $subnetWhere= "as_parent='$as'";
 
