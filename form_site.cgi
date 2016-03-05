@@ -296,10 +296,10 @@ while($lines)
     }
     
   }
-  if($counter==5)
-  {
-    last;
-  }
+#  if($counter==5)
+#  {
+#    last;
+#  }
   
 }
 

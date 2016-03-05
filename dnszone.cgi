@@ -173,10 +173,13 @@ while (@line= $sth->fetchrow_array) {
       my $name= "dhcp-$netipSlash$i.$lastSite";
       my $rawip= &aton($ip);
 
-      $namesRaw{"$lastSite:$rawip"}= $name;
-      $ipByName{$name}= $ip;
-      $ipByRaw{$rawip}= $ip;
-      $siteByRaw{$rawip}= $lastSite;
+      unless($ipByRaw{$rawip})
+      {
+        $namesRaw{"$lastSite:$rawip"}= $name;
+        $ipByName{$name}= $ip;
+        $ipByRaw{$rawip}= $ip;
+        $siteByRaw{$rawip}= $lastSite;
+      }
     }
   }
 }

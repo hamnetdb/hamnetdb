@@ -93,7 +93,8 @@ $as_num= "" unless $as_num;
 print qq(
   <td valign="top" align="left" nowrap>
   User-access DHCP-range (last ip digit start-end or empty):<br>
-  <input type="text" name="dhcp_range" value="$dhcp_range" size=20$chtrack>
+  <input type="text" name="dhcp_range" value="$dhcp_range" size=20 onchange="uncheckDHCP();">
+  fillup range<input type="checkbox" name="dhcp_fillup" id="dhcp_fillup" onchange="calcfromIP();">
   </td>
   <td></td>
   </tr>
@@ -130,6 +131,13 @@ print qq(
   <textarea name="comment" class="txt" $chtrack
             style="width:100%; height:170px;">$comment</textarea>
   </td></tr>
+  </table>
+  <script language='JavaScript'>
+    window.onload=function(e){
+      calcfromIP();
+    }
+  </script>
+  <table>
 );
 &afterForm;
 exit;
@@ -177,6 +185,64 @@ sub checkValues {
     }
   }
   unless ($inputStatus) {
+    if ($dhcp_range) {
+      unless ($dhcp_range=~/^\d+\-\d+$/) {
+        $inputStatus= "DHCP range must be <begin>-<end> of last IP digit";
+      }
+    }
+  }
+  unless ($inputStatus) {
+    if ($dhcp_range) {
+      if ($bits < 24) {
+        $inputStatus= "DHCP-range can't be activated for subnets bigger than 24 bits"
+      }
+    }
+  }
+  unless ($inputStatus) {
+    if ($dhcp_range) {
+      my @dhcp_segments= split /-/, $dhcp_range;
+      my @base_ip_segments= split /\./, $base_ip;
+      $end_segment= 2**(32.0-$bits)-1;
+      if($dhcp_segments[0] < $base_ip_segments[3]+1 || $dhcp_segments[1] > ($base_ip_segments[3]+$end_segment))
+      {
+        $inputStatus= "DHCP-range can't be bigger than subnet"
+      }
+    }
+  }
+  unless ($inputStatus) {
+    $begin_ip= &aton($base_ip);
+    $end_ip= $begin_ip + (1<<(32-$bits));
+    
+    if ($db->selectrow_array("select id from $table ".
+            "where begin_ip <= '$begin_ip' and end_ip >='$end_ip' ".
+            "and (begin_ip <> '$begin_ip' or end_ip <> '$end_ip' ) ".
+            "and dhcp_range <> '' and id <> '$id' ")) {
+      $inputStatus= "There is a parent subnet with activated DHCP-range, please remove DHCP-range first";
+    }  
+    #$inputStatus="$begin_ip   $end_ip $id " 
+  }
+  unless ($inputStatus) {
+    if ($dhcp_range) {
+      $begin_ip= &aton($base_ip);
+      $end_ip= $begin_ip + (1<<(32-$bits));
+      $id = 0 unless $id;
+      if ($db->selectrow_array("select id from $table ".
+              "where begin_ip >= '$begin_ip' and end_ip <='$end_ip' ".
+              "and (begin_ip <> '$begin_ip' or end_ip <> '$end_ip'".
+              "and id <> '$id' )")) {
+        $inputStatus= "Subnet contains a smaller subnet, can't enable DHCP-range";
+      }    
+    } 
+  }
+  unless ($inputStatus) {
+    if($dhcp_range){
+      if(!$db->selectrow_array("select ip from hamnet_host ".
+                "where rawip >= '$begin_ip' and rawip <= '$end_ip' ")) {
+        $inputStatus= "Subnet not assigned to Site, there must be at least one host in subnet";
+      }
+    }
+  }
+  unless ($inputStatus) {
     $ip= $base_ip."/".$bits;
 
     if ($db->selectrow_array("select ip from $table ".
@@ -186,11 +252,7 @@ sub checkValues {
     $begin_ip= &aton($base_ip);
     $end_ip=   $begin_ip + (1<<(32-$bits));
   }
-  if ($dhcp_range) {
-    unless ($dhcp_range=~/^\d+\-\d+$/) {
-      $inputStatus= "DHCP range must be <begin>-<end> of last IP digit";
-    }
-  }
+  
   
   $radioparam= &alignRadioparam($radioparam);
 

@@ -179,7 +179,7 @@ sub beforeForm {
   <input type="hidden" name="sessiontoken" value="$sessionToken">
 
   <script language="JavaScript">
-	  function calcfromIP()
+	  function calcfromIP() //subnet calc
 	  {
       changed();
 	    ip = document.getElementById("base_ip").value;
@@ -214,8 +214,21 @@ sub beforeForm {
 	            broadcast[i]=num*(seg+1)-1;
 	          }
 	        }
-          document.getElementById("netaddr_limits").innerHTML="Networkaddress: " + netaddress[0]+"."+netaddress[1]+"."+netaddress[2]+"."+netaddress[3] + "<br>Broadcast: "  + broadcast[0]+"."+broadcast[1]+"."+broadcast[2]+"."+broadcast[3];
-	      }
+          document.getElementById("netaddr_limits").innerHTML="Networkaddress: " + \
+            netaddress[0]+"."+netaddress[1]+"."+netaddress[2]+"."+netaddress[3] + \
+            "<br>Broadcast: "  + broadcast[0]+"."+broadcast[1]+"."+broadcast[2]+"."+broadcast[3];
+	        dhcp_fillup = document.getElementById("dhcp_fillup").checked;
+          if(dhcp_fillup && cidr >= 24 && cidr < 31)
+          {
+            var dhcp_start = netaddress[3]+1;
+            var dhcp_stop = broadcast[3]-1;
+            document.getElementsByName("dhcp_range")[0].value=dhcp_start + "-" + dhcp_stop;
+          }
+          else if(dhcp_fillup && ( cidr==31 || cidr<=23))
+          {
+            document.getElementsByName("dhcp_range")[0].value="";
+          }
+        }
 	    }
 	    else
 	    {
@@ -245,7 +258,7 @@ sub beforeForm {
 	    splitted[3]=ip;
 	    return splitted;
 	  }
-    function calcNetmask(cidr)
+    function calcNetmask(cidr) //subnet calc
     {
       if(cidr > 24)
       {
@@ -268,6 +281,11 @@ sub beforeForm {
         netmask= dyn+".0.0.0";
       }
       return netmask;
+    }
+    function uncheckDHCP()
+    {
+      changed();
+      document.getElementById("dhcp_fillup").checked=false;
     }
     var locator_global="";
     function degmin2dec(degmin)

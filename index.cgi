@@ -22,11 +22,12 @@ $sortDefault= "c";
 $m= $query->param("m");
 $m= "as" unless $m;
 $m=~s/[^a-z]//i;
-
+my $debuglsp= "tttt";
 $hostWhere= "1";
 $siteWhere= "1";
 $subnetWhere= "1";
 $asWhere= "1";
+$testVar= "1";
 $as= $query->param("as")+0;
 &prepareWhereAS($as);
 
@@ -117,6 +118,7 @@ print qq(
      href="http://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">
   CC BY-NC-SA
   </a> license
+  $testVar
   </div>
   </div>
 );
@@ -928,6 +930,7 @@ sub asShow {
     select id,name,as_num,comment,maintainer,editor,date(edited)
     from hamnet_$t where as_num=).$db->quote($search)
   );
+ 
   $sth->execute;
 
   while (@line= $sth->fetchrow_array) {
@@ -956,7 +959,6 @@ sub asShow {
     print qq(
       </div>
     );
-
     &siteList("", "Sites".&addIcon("site"));
     &subnetList("", "Subnets".&addIcon("subnet", "&as=$as_num"));
     &hostList("", "Hosts".&addIcon("host"));
@@ -971,18 +973,17 @@ sub siteList {
   my @list= ();
   my @line= ();
   my $t= "site";
-
   my $hw= $siteWhere;
   $hw=~s/callsign/site/g;
   my %siteStatus= &hostsStatus($hw, 1);
-
+  
   my $sth= $db->prepare(qq(
     select id,name,callsign,longitude,latitude,elevation,no_check,
     radioparam,comment,maintainer,editor,unix_timestamp(edited) 
     from hamnet_${t} where $siteWhere
   ));
   $sth->execute;
-
+  
   while (@line= $sth->fetchrow_array) {
     my $idx= 0;
     my $id= $line[$idx++];
@@ -998,7 +999,7 @@ sub siteList {
     my $editor= $line[$idx++];
     my $edited= $line[$idx++];
     $maintainer=~s/[\s,]+/,/g;
-
+#/
     my $in= "";
     $in= " inactive" if $no_check>1 && $no_check<4;
     
@@ -1098,6 +1099,7 @@ sub subnetList {
 
     $radioparam=~s/\s*mhz/MHz/gi;
     $radioparam=~s/\s*,\s*/,/g;
+#/
     $radioparam.= " - " if $radioparam && $comment;
     $radioparam.= $comment if $comment;
 
@@ -1186,6 +1188,7 @@ sub hostList {
   my $search= shift;
   my $caption= shift;
   my $dhcpFromSubnetWhere= shift;
+  my @ipHasHost= ();
 
   my @list= ();
   my @line= ();
@@ -1219,7 +1222,7 @@ sub hostList {
     $radioparam.= $comment if $comment;
 
     my $ret= qq(<tr id='tr_${t}_$id' class='listentry'>).&editIcon($t, $id);
-
+    $ipHasHost{$ip}= 1;
     $ret.= "<td valign=top>".
            "<a class='ovinfo' href='?m=$t&q=$ip'>$ip</a></td>\n"; 
     $sort= sprintf("%8d", $rawip) if ($scrit eq "c");
@@ -1270,31 +1273,34 @@ sub hostList {
 
         for ($i= $begin; $i<=$end; $i++) {
           my $ip= $netip.$i;
-         my $netipSlash = $netip;
-         $netipSlash=~s/\./-/g;
-          my $name= "dhcp-$netipSlash$i.$lastSite";
-
-          my $ret= qq(<tr class='listentry'>);
-          $ret.= qq(<td></td>) if &editIcon($t);
-          $ret.= qq(<td>$ip</td>);
-          $sort= sprintf("%8d", &aton($ip)) if ($scrit eq "c");
+          my $netipSlash = $netip;
+          $netipSlash=~s/\./-/g;
           
-          $ret.= "<td></td><td valign=top>$name</td>\n"; 
-          $sort= $name if ($scrit eq "n");
+          unless ($ipHasHost{$ip}) {
+            my $name= "dhcp-$netipSlash$i.$lastSite";
 
-          $ret.= "<td valign=top>DHCP-Range</td>\n"; 
-          $sort= $typ if ($scrit eq "t");
+            my $ret= qq(<tr class='listentry'>);
+            $ret.= qq(<td></td>) if &editIcon($t);
+            $ret.= qq(<td>$ip</td>);
+            $sort= sprintf("%8d", &aton($ip)) if ($scrit eq "c");
+            
+            $ret.= "<td></td><td valign=top>$name</td>\n"; 
+            $sort= $name if ($scrit eq "n");
 
-          $ret.= "<td valign=top>$lastSite</td>";
-          $sort= $lastSite if ($scrit eq "s");
+            $ret.= "<td valign=top>DHCP-Range</td>\n"; 
+            $sort= $typ if ($scrit eq "t");
 
-          $ret.= "<td valign=top>$comment</td>\n"; 
-          $sort= $comment if ($scrit eq "k");
+            $ret.= "<td valign=top>$lastSite</td>";
+            $sort= $lastSite if ($scrit eq "s");
 
-          $ret.= "<td>0s system</td>";
-          $sort= $edited if $scrit eq "z";
+            $ret.= "<td valign=top>$comment</td>\n"; 
+            $sort= $comment if ($scrit eq "k");
 
-          push(@list, $sort.":}".$ret."</tr>\n");
+            $ret.= "<td>0s system</td>";
+            $sort= $edited if $scrit eq "z";
+
+            push(@list, $sort.":}".$ret."</tr>\n");
+          }
         }
       }
     }
@@ -1461,6 +1467,7 @@ sub asList {
     $sort= $name if ($scrit eq "n");
 
     $maintainer=~s/,\s+/,/g;
+#/
     $ret.= "<td valign=top>".&maxlen($maintainer,$maintainMax)."</td>\n"; 
     $sort= $maintainer if ($scrit eq "m");
 

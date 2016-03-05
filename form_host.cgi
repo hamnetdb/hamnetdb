@@ -30,7 +30,15 @@ if ($site) {
   ($maintainer)= $db->selectrow_array(qq(select maintainer from hamnet_site
     where rw_maint>0 and callsign=).$db->quote($site));
 
+  #$name= ".$site" unless $id;
+  unless($id) {
+      $name= ".$site" unless $ip;
+  }
+  #if($id1) {
+  #  $name= ".$site"
+  #}
   &checkMaintainerRW($rw_maint, $maintainer);
+  
 }
 unless ($maintainer) {
   $rw_maint= 0;
@@ -61,7 +69,7 @@ else {
 }
 
 $caption= "Change $suffix '$name'";
-$caption= "New $suffix" unless $id;
+$caption= "New $suffix $maintainer" unless $id;
 &beforeForm($caption);
 
 print qq(
@@ -179,7 +187,7 @@ sub checkValues {
   $radioparam= &alignRadioparam($radioparam);
   &checkMaintainerRW($rw_maint, $maintainer);
 
-  unless ($name=~/[a-z][0-9]+[a-z]+$/) {
+  unless ($name=~/[a-z][0-9]+[a-z]+-*\d*$/) {
     $inputStatus= 
       "Host name must end with a callsign to be globally unique";
   }
@@ -194,6 +202,12 @@ sub checkValues {
       $inputStatus= "Invalid mac address - empty or 12 hex digits";
     }
   }
+  unless ($inputStatus) {
+    if ($name=~/^\./) {
+      $inputStatus= "first charater of Host name can't be '.' ";
+    }
+  }
+    
   unless ($inputStatus) {
     if ($db->selectrow_array("select ip from $table ".
           "where ip='$ip' and id<>'$id'")) {

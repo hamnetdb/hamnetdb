@@ -236,6 +236,11 @@ function init(netsource,store_lat,store_lon)
       icon: maker_icon,
       draggable: true
     }).addTo(map);
+    marker.on("dragend", function(e){
+      var marker_tmp = e.target;
+      var position = marker_tmp.getLatLng();
+      makemarker(position.lat,position.lng);
+    });
     makemarker(store_lat,store_lon);
     //map.panTo(new L.LatLng(store_lat, store_lon),12);
     map.setView([store_lat, store_lon],15);
@@ -245,6 +250,7 @@ function init(netsource,store_lat,store_lon)
 }
 function makemarker(lat,lng)
 {
+  //alert("1")
   lat = parseFloat(lat).toFixed(5);
   lng = parseFloat(lng).toFixed(5);
   //var result = document.getElementById('positionresult');

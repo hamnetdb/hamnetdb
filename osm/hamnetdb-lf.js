@@ -677,7 +677,7 @@ function getCoverage(url, only_exist)
             document.getElementById("displayCoverage").innerHTML+= text;
           }
           for(var j=0; j<number; j++){
-            document.getElementsByName("Coverage")[0].outerHTML+=" "+tags[j];
+            document.getElementsByName("Coverage")[0].outerHTML+=" "+tags[j]+"<br>";
             document.getElementsByName("Coverage")[0].name= jsondoc.Callsign+'_'+tags[j];
 	       
             if(RedCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+tags[j]+"_red"]))

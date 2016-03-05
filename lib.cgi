@@ -56,6 +56,7 @@ $db= DBI->connect("DBI:mysql:database=$db_name;host=$db_host;charset=utf8",
   - edit <b>config.cgi</b>: Fill in your database credentials.<br><br>
   Current configured user name: <b>$db_user</b> on host: <b>$db_host</b><br>
 ));
+$db->{mysql_auto_reconnect}= 1;
 
 # Sometimes the current URI is needed for redirects etc.
 $baseUri= $ENV{"REQUEST_URI"};
@@ -198,7 +199,7 @@ sub sortq {
   my $crit=   shift;
   my $phrase= shift;
   my $tdadd=  shift;
-  my $col=    "000000";
+  my $col=    "0000000000";
   my $title= "Sort by $phrase";
   my $sname= $0;
 
@@ -840,11 +841,13 @@ sub asCombo {
     select hamnet_as.as_num,hamnet_as.name,hamnet_as.comment 
     from hamnet_as 
     left join hamnet_subnet on hamnet_as.as_num=as_parent
-    left join hamnet_host on rawip between begin_ip and end_ip
-    where hamnet_host.name is not null or $showAll
+    where hamnet_subnet.begin_ip is not null or $showAll
     group by hamnet_as.as_num
     order by hamnet_as.as_num
   ));
+  # 10.2.16 dl8mbt: aus performancegruenden deaktiviert
+  #  left join hamnet_host on rawip between begin_ip and end_ip
+  #  where hamnet_host.name is not null or $showAll
   $sth->execute;
   while (@line= $sth->fetchrow_array) {
     my $c= &maxlen($line[2], 22);
@@ -903,6 +906,7 @@ sub prepareWhere {
   if ($db->selectrow_array(
     qq(select id from hamnet_site where callsign=).$db->quote($search))) {
     $search= "site:$search";
+    $testVar=$search;
   }
   elsif ($db->selectrow_array(
     qq(select id from hamnet_maintainer where callsign=).$db->quote($search))){
@@ -965,9 +969,10 @@ sub prepareWhere {
 # ---------------------------------------------------------------------------
 sub prepareWhereAS {
   my $search= shift;
-  if ($search=~/^(as|)(\d\d\d\d\d)$/i) {
+  
+  if ($search=~/^(as|)(\d\d\d\d\d(\d\d\d\d\d)?)$/i) {
     my $as= $2;
-
+    $testVar="$as";
     $asWhere= "as_num='$as'";
     $subnetWhere= "as_parent='$as'";
 

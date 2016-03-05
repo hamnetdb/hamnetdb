@@ -44,8 +44,8 @@ print qq(
   <td valign="top" align="left" nowrap>Descriptive Name:<br>
   <input type="text" name="name" value="$name" size=30$chtrack>
   </td>
-  <td valign="top" align="left" nowrap>Country (iso-3166 tld)<br>
-  <input type="text" name="country" value="$country" size=4$chtrack>
+  <td valign="top" align="left" nowrap>Country (iso-3166 alpha-2)<br>
+  <input type="text" name="country" value="$country" size=4$chtrack><small>Hint: tld</small>
   </td>
   <td valign="top" align="left" nowrap>
   </td>
