@@ -53,10 +53,10 @@ $caption= "New $suffix" unless $id;
 print qq(
   <tr>
   <td valign="top" align="left" nowrap>Base IP:<br>
-  <input type="text" name="base_ip" value="$base_ip" size=20$chtrack id="base_ip" onkeyup="calcfromIP();"> / 
+  <input type="text" name="base_ip" value="$base_ip" size=20$chtrack id="base_ip" onkeyup="calcfromIPchanged();"> / 
   </td>
   <td valign="top" align="left" nowrap>Address mask:<br>
-  <select name="bits" onchange="calcfromIP();"  >
+  <select name="bits" onchange="calcfromIPchanged();"  >
 );
 
 my $netmask= 0xffffffff;
@@ -94,7 +94,7 @@ print qq(
   <td valign="top" align="left" nowrap>
   User-access DHCP-range (last ip digit start-end or empty):<br>
   <input type="text" name="dhcp_range" value="$dhcp_range" size=20 onchange="uncheckDHCP();">
-  fillup range<input type="checkbox" name="dhcp_fillup" id="dhcp_fillup" onchange="calcfromIP();">
+  fillup range<input type="checkbox" name="dhcp_fillup" id="dhcp_fillup" onchange="calcfromIPchanged();">
   </td>
   <td></td>
   </tr>

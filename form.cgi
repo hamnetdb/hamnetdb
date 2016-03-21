@@ -179,9 +179,13 @@ sub beforeForm {
   <input type="hidden" name="sessiontoken" value="$sessionToken">
 
   <script language="JavaScript">
+    function calcfromIPchanged()
+    {
+      changed();
+      calcfromIP();
+    }
 	  function calcfromIP() //subnet calc
 	  {
-      changed();
 	    ip = document.getElementById("base_ip").value;
 	    if(checkIP(ip))
 	    {
