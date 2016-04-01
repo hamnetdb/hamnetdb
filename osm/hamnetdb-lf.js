@@ -89,9 +89,11 @@ function init()
     var mapnikUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var landscapeUrl = 'http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png';
     var cycleUrl = 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png';
+    var outdoorUrl = 'http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png';
     var satUrl= 'http://oatile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg';
     var mapnikZoom = 18;
     var landscapeZoom =18;
+    var outdoorZoom =18;
     var cycleZoom = 18;
     var satZoom = 11;
   }
@@ -130,6 +132,13 @@ function init()
     {
       attribution: attribution,
       maxZoom: cycleZoom
+    }
+  );
+  var outdoorLayer = L.tileLayer(
+    outdoorUrl,
+    {
+      attribution: attribution,
+      maxZoom: outdoorZoom
     }
   );
   var satLayer = L.tileLayer(
@@ -271,6 +280,7 @@ function init()
       'Mapnik': mapnikLayer,
       'Landscape': landscapeLayer,
       'CycleMap':cycleLayer,
+      'Outdoor':outdoorLayer, 
       'Satellite':satLayer,
       'GoogleMaps': gglLayer,
       'Google Terrain': ggl2Layer,
@@ -293,6 +303,7 @@ function init()
       'Mapnik': mapnikLayer,
       'Landscape': landscapeLayer,
       'CycleMap':cycleLayer,
+      'Outdoor':outdoorLayer,
       'Satellite':satLayer
     };
   }
