@@ -22,7 +22,6 @@ $sortDefault= "c";
 $m= $query->param("m");
 $m= "as" unless $m;
 $m=~s/[^a-z]//i;
-my $debuglsp= "tttt";
 $hostWhere= "1";
 $siteWhere= "1";
 $subnetWhere= "1";
@@ -1943,7 +1942,7 @@ sub neighbourList {
     $in= " inactive" if $siteno_check{$callsign}>1 &&$siteno_check{$callsign}<4 ;
 
     next if $callsign eq $site;
-    next if $dist>150;
+    next if $dist>200;
 
     my $bear= &bearing($siteLat{$site},$siteLong{$site},
                        $latitude, $longitude);
@@ -2008,6 +2007,9 @@ sub neighbourList {
   &sortq("l", "");
   &listHeaderEnd;
   $maxLines= 100;
+  if ($query->param("func")=~/all/) {
+    $maxLines= 1000;
+  }  
   &listOut("", @list);
 }
 

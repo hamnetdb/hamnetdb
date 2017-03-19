@@ -148,18 +148,20 @@ sub listHeaderEnd {
 sub listOut {
   my $search= shift;
   my $linecount= 0;
+  my $allLines= ($ENV{"REQUEST_URI"}=~/showAllLines/)?1:0;
+
   foreach $line ($srev?(reverse sort @_):(sort @_)) {
     $line=~s/\n/ /g; $line=~s/^.*:\}//g; $line.="\n";
     my $y= "<b style='background-color:yellow'>";
     if (!$search || $line=~/FOUND/) {
       print($line);
       $linecount++;
-      last if $linecount>=$maxLines && $maxLines;
     }
     elsif ($line=~s/(>[^<]*)($search)/$1$y$2<\/b>/gi) {
       print($line);
       $linecount++;
     }
+    last if ($maxLines && $linecount>=$maxLines && !$allLines);
   }
   print qq(<tr><td colspan="4" style="background:white;border:0">);
   if ($linecount==0) {
@@ -169,7 +171,21 @@ sub listOut {
     print qq(1 entry.);
   }
   else {
-    print qq($linecount entries.);
+    if ($linecount>=$maxLines && !$allLines) {
+      my $uri= $ENV{"REQUEST_URI"};
+      if ($uri=~/\?/) {
+        $uri.= "&showAllLines=1";
+      }
+      else {
+        $uri.= "?showAllLines=1";
+      }
+      my $allLines= int(@_);
+      print qq(First $linecount entries shown, 
+               <a href='$uri'><b>show all $allLines entries</b>.</a>);
+    }
+    else {
+      print qq($linecount entries.);
+    }
   }
   print qq(</td></tr></table>);
 }

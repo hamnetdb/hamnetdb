@@ -81,6 +81,7 @@ chdir($dirname) or &fatal("cannot chdir $dirname");
 my $sth= $db->prepare(qq(select as_num,dns_add,country from hamnet_as));
 $sth->execute or &fatal("cannot select from hamnet_as");
 while (@line= $sth->fetchrow_array) {
+  push(@as_number, $line[0]);
   $as_dns_add{$line[0]}= $line[1];
   $as_country{$line[0]}= $line[2];
 }
@@ -352,6 +353,19 @@ sub createZone {
   # Write additional records directly into zone
   if ($as && $as_dns_add{$as}) {
     $content.= "\n".$as_dns_add{$as}."\n";
+  }
+  else
+  {
+    #for every as 
+    foreach my $as_cnt (@as_number) { 
+      if($country && $as_country{$as_cnt} eq $country) {
+        $content.= "\n".$as_dns_add{$as_cnt}."\n";
+      }
+      #no country set => export everything
+      unless ($country) {
+        $content.= "\n".$as_dns_add{$as_cnt}."\n";
+      }  
+    }
   }
 
   # Write zone if not empty

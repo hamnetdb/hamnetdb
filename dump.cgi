@@ -26,4 +26,12 @@ if ($query->param("tables")) {
   $no_data= "--no-data";
 }
 
-exec("mysqldump $no_data -u $db_user --password=$db_pass $db_name $tables");
+$tmpname= "/tmp/hamnetdb-dump-$$.sql";
+system("mysqldump $no_data -u $db_user --password=$db_pass $db_name $tables >$tmpname");
+
+open(F, "<$tmpname") || die("cannot open dump file");
+while (read(F, $buffer, 16384)) {
+  print $buffer;
+}
+close(F);
+unlink($tmpname);
