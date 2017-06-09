@@ -354,7 +354,7 @@ sub createZone {
   if ($as && $as_dns_add{$as}) {
     $content.= "\n".$as_dns_add{$as}."\n";
   }
-  else
+  unless($as)
   {
     #for every as 
     foreach my $as_cnt (@as_number) { 
