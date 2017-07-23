@@ -86,7 +86,7 @@ function init()
   }
   else
   {
-    var mapnikUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var mapnikUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var landscapeUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
     var cycleUrl = 'https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
     var outdoorUrl = 'https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';

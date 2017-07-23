@@ -133,27 +133,33 @@ print qq(
     <a target="_blank" href="index.cgi?m=help#antenna">"Help"</a></td><td></tr>
 
 </table>
+<script src="osm/leaflet.js"></script>
 );
+
+unless(checkMapSource())
+{
+  print qq(
+    <script src="osm/es6-promise.auto.js"></script><script>ES6Promise.polyfill();</script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA58LI1avl5xzd8mj9LLidnBVhRHGoaAsA" async defer></script> 
+    <script src="osm/Leaflet.GoogleMutant.js"></script>
+  );
+}
 
 
 print qq(
 <link rel="stylesheet" type="text/css" href="osm/leaflet.css" />
 <link rel="stylesheet" type="text/css" href="osm/style-lf.css" />
-<script src="osm/leaflet.js"></script>
-<script src="osm/L.GeoJSON.js"></script>
-<script src="osm/L.ajax.js"></script>
-<script src="osm/L.promise.js"></script>
+<script type="text/javascript" src="osm/leaflet.ajax.js"></script>
 <script src="osm/L.Control.MousePosition.js"></script>
+<script src="osm/L.Control.MiniMap.js"></script>
+<script src="osm/L.Control.Sidebar.js"></script>
+<script src="osm/Permalink.js"></script>
+<script src="osm/Permalink.Marker.js"></script>
+<script src="osm/Permalink.Layer.js"></script>
+<script src="osm/Permalink.Overlay.js"></script>
 <script src="osm/L.Control.LSP.js"></script>
 <script src="osm/hamnetdb-position.js"></script>
 );
-unless(checkMapSource())
-{
-  print qq(
-    <script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> 
-    <script src="osm/L.Google.js"></script>
-  );
-}
 
 
 print qq(
