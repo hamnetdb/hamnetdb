@@ -265,13 +265,10 @@ function init()
       }
     }
   };
-  //var hamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1",settingshamnet);
-  //var nohamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
-  //var tunnelLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
-  var hamnetLayer = new L.GeoJSON.AJAX("osm_new/mapelements_1.json",settingshamnet);
-  var nohamnetLayer = new L.GeoJSON.AJAX("osm_new/mapelements_2.json", settingshamnet);
-  var tunnelLayer = new L.GeoJSON.AJAX("osm_new/mapelements_3.json", settingshamnet);
-
+  var hamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1",settingshamnet);
+  var nohamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
+  var tunnelLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
+  
   map.addLayer(hamnetLayer);
   //map.addLayer(nohamnetLayer);
   //map.addLayer(tunnelLayer);
