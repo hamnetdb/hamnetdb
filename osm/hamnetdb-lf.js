@@ -87,15 +87,15 @@ function init()
   else
   {
     var mapnikUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var landscapeUrl = 'http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png';
-    var cycleUrl = 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png';
-    var outdoorUrl = 'http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png';
-    var satUrl= 'http://oatile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg';
+    var landscapeUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
+    var cycleUrl = 'https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
+    var outdoorUrl = 'https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
+    var opentopoURL = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
     var mapnikZoom = 18;
-    var landscapeZoom =18;
-    var outdoorZoom =18;
+    var landscapeZoom = 18;
+    var outdoorZoom = 18;
     var cycleZoom = 18;
-    var satZoom = 11;
+    var opentopoZoom = 17;
   }
 
   
@@ -141,8 +141,8 @@ function init()
       maxZoom: outdoorZoom
     }
   );
-  var satLayer = L.tileLayer(
-    satUrl,
+  var openttopoLayer = L.tileLayer(
+    opentopoURL,
     {
       attribution: attribution,
       maxZoom: satZoom
@@ -172,7 +172,7 @@ function init()
   //var hamnetLayer = new L.KML(kmlUrl + "&no_tunnel=1&only_hamnet=1", {async: true, hover:hoverS});
   var settingshamnet = {
     style: function(feature) {
-      var color, weight;
+      var color, weight, opacity;
       switch (feature.properties.style)
       {
         case "Tunnel":
@@ -202,9 +202,11 @@ function init()
         default:
           color = "#f00000";
           weight = 6;
-      } 
-      return {color: color, weight:weight};//feature.properties.GPSUserColor};
+      }
+      opacity= 0.5; 
+      return {color: color, weight:weight, opacity:opacity};//feature.properties.GPSUserColor};
     },
+
     pointToLayer: function(feature, latlng) {
       return L.marker(latlng, {icon: L.icon({
           iconUrl: feature.properties.style+'.png',
@@ -225,23 +227,33 @@ function init()
       <input name=\"Coverage\" type=\"checkbox\" name=\""+ feature.properties.callsign +"\"  onchange=\"coverage(event)\" \"> </form> </div>",
         
         {
-          minWidth:235,
+          minWidth:250,
           maxWidth:260,
           maxHeight:250,
-          autoPan:true
+          popupClass: '',
+          popupValidity: 100,
+          autoPan:!hoverpop  //don't move popup if hoverpop
         });
       layer.on('popupopen', function (e) {
         getHttpRequest("info.cgi?q=" + feature.properties.callsign,"pop_"+feature.properties.callsign );
 	 
-         if( feature.geometry.type== "LineString")
-         {   // TunnelLayer has no Coverage
-      	   document.getElementById("ShowCover").outerHTML = "";
-         }
-         else
-         {	// set Checkbox grey if no Coverage Layer available in DB; 	 	
-           getCoverage("mapcoverage.cgi?x="+feature.properties.callsign,1);
-         }
-              
+        if( feature.geometry.type== "LineString")
+        {   // TunnelLayer has no Coverage
+      	  document.getElementById("ShowCover").outerHTML = "";
+        }
+        else
+        {	// set Checkbox grey if no Coverage Layer available in DB; 	 	
+          getCoverage("mapcoverage.cgi?x="+feature.properties.callsign,1);
+        }
+        if(feature.properties.callsign.match(':')) //link not site
+        {
+          document.getElementById("ShowCover").style.visibility = "hidden";
+        }
+        else //site
+        {
+          document.getElementById("ShowCover").style.visibility = "visible";
+          document.getElementsByName("Coverage")[0].style.visibility = "hidden";   
+        }
 	    
       });
       if(hoverpop == "true")
@@ -253,10 +265,12 @@ function init()
       }
     }
   };
-  var hamnetLayer = L.geoJson.ajax(kmlUrl + "&no_tunnel=1&only_hamnet=1", settingshamnet);
-  var nohamnetLayer = L.geoJson.ajax(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
-  var tunnelLayer = L.geoJson.ajax(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
-
+  //var hamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1",settingshamnet);
+  //var nohamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
+  //var tunnelLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
+  var hamnetLayer = new L.GeoJSON.AJAX("osm_new/mapelements_1.json",settingshamnet);
+  var nohamnetLayer = new L.GeoJSON.AJAX("osm_new/mapelements_2.json", settingshamnet);
+  var tunnelLayer = new L.GeoJSON.AJAX("osm_new/mapelements_3.json", settingshamnet);
 
   map.addLayer(hamnetLayer);
   //map.addLayer(nohamnetLayer);
@@ -272,19 +286,35 @@ function init()
  
   if(source <=1)
   {
-      
-    var gglLayer = new L.Google('ROADMAP');
-    var ggl2Layer = new L.Google('TERRAIN');
-    var ggl3Layer = new L.Google('SATELLITE');
+    var roadMutant = L.gridLayer.googleMutant({
+      maxZoom: 24,
+      type:'roadmap'
+    });
+    var satMutant = L.gridLayer.googleMutant({
+      maxZoom: 24,
+      type:'satellite'
+    });
+    var terrainMutant = L.gridLayer.googleMutant({
+      maxZoom: 24,
+      type:'terrain'
+    });
+    var hybridMutant = L.gridLayer.googleMutant({
+      maxZoom: 24,
+      type:'hybrid'
+    });
+    //var gglLayer = new L.Google('ROADMAP');
+    //var ggl2Layer = new L.Google('TERRAIN');
+    //var ggl3Layer = new L.Google('SATELLITE');
     var baseLayers = {  
       'Mapnik': mapnikLayer,
       'Landscape': landscapeLayer,
       'CycleMap':cycleLayer,
       'Outdoor':outdoorLayer, 
-      'Satellite':satLayer,
-      'GoogleMaps': gglLayer,
-      'Google Terrain': ggl2Layer,
-      'Google Sattelite': ggl3Layer
+      'OpenTopo':openttopoLayer,
+      'GoogleMaps': roadMutant,
+      'Google Terrain': terrainMutant,
+      'Google Sattelite': satMutant,
+      'Google Hybrid': hybridMutant
     };
   }
   else if(source == 3)
@@ -304,7 +334,7 @@ function init()
       'Landscape': landscapeLayer,
       'CycleMap':cycleLayer,
       'Outdoor':outdoorLayer,
-      'Satellite':satLayer
+      'OpenTopo':openttopoLayer,
     };
   }
   
@@ -678,8 +708,10 @@ function getCoverage(url, only_exist)
 
         if(get_str == "0"){
           document.getElementsByName("Coverage")[0].disabled = true;
+          document.getElementsByName("Coverage")[0].style.visibility = "hidden";   
         }
         else{	
+          document.getElementsByName("Coverage")[0].style.visibility = "visible";   
           jsondoc = JSON.parse(get_str)
           var tags = jsondoc.Tag.split(" ");
           var number = tags.length;

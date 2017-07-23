@@ -134,7 +134,8 @@ foreach $site (keys %allSites) {
 }
 
 # Site names
-my $sth= $db->prepare(qq(select callsign,name from hamnet_site));
+my $sth= $db->prepare(qq(select callsign,name from hamnet_site
+  order by callsign asc));
 $sth->execute or &fatal("cannot select from hamnet_site");
 while (@line= $sth->fetchrow_array) {
   my $idx= 0;

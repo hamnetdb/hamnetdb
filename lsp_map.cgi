@@ -53,24 +53,26 @@ $sourceselect[$source] = 'selected="selected"';
 
 
 print qq(
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
      <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta http-equiv="cache-control" content="max-age=0" />
      <meta http-equiv="cache-control" content="no-cache" />
      <meta http-equiv="expires" content="0" />  
      <meta http-equiv="Pragma" content="no-cache">
 
      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-     <meta http-equiv="content-language" content="de" />
-     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+     <meta http-equiv="content-language" content="en" />
 	  <title>HamnetDB Map</title>
 	  <link rel="stylesheet" type="text/css" href="osm/leaflet.css" />
 	  <link rel="stylesheet" type="text/css" href="osm/style-lf.css" />
-      <script src="osm/leaflet.js"></script>
-      <script src="osm/L.GeoJSON.js"></script>
-      <script src="osm/L.ajax.js"></script>
-      <script src="osm/L.promise.js"></script>
+    <script src="osm/leaflet.js"></script>
+    
+    <!--<script src="osm/GeoJSON.Style.js"></script>
+    <script src="osm/GeoJSON.Ajax.js"></script>
+    <script src="osm/Control.Layers.argsGeoJSON.js"></script>-->
       
 );
 
@@ -90,18 +92,25 @@ print qq(
 #print('</script>');
 
 if ($source eq 1) {
-  print('<script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> <script src="osm/L.Google.js"></script>');
+  print('<script src="osm/es6-promise.auto.js"></script><script>ES6Promise.polyfill();</script>');
+  print('<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA58LI1avl5xzd8mj9LLidnBVhRHGoaAsA" async defer></script> <script src="osm/Leaflet.GoogleMutant.js"></script>');
+#  print('<script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> <script src="osm/L.Google.js"></script>');
 }
 print qq(
-     
-      <script src="osm/hamnetdb-lf.js"></script>
-      <script src="osm/L.Control.MousePosition.js"></script>
-      <script src="osm/L.Control.MiniMap.js"></script>
+     <script type="text/javascript" src="osm/leaflet.ajax.js"></script>
+    <!--<script src="osm/spin.js"></script>
+    <script src="osm/leaflet.spin.js"></script>-->
+
+      
+    <script src="osm/L.Control.MousePosition.js"></script>
+    <script src="osm/L.Control.MiniMap.js"></script>
 	  <script src="osm/L.Control.Sidebar.js"></script>
-	  <script src="osm/L.Permalink.js"></script>
-      <script src="osm/L.Permalink.Layer.js"></script>
-      <script src="osm/L.Permalink.Overlay.js"></script>
+    <script src="osm/Permalink.js"></script>
+    <script src="osm/Permalink.Marker.js"></script>
+    <script src="osm/Permalink.Layer.js"></script>
+    <script src="osm/Permalink.Overlay.js"></script>
 	  <script src="osm/L.Control.LSP.js"></script>
+    <script src="osm/hamnetdb-lf.js"></script>
 	 
 	</head>
 	<body onload="init()">
@@ -156,6 +165,16 @@ print qq(
       </div>
       <div id="map">
 
+      </div>
+      <div class="hidden">
+        <img src="site-user-red.png" />
+        <img src="site-user-grey.png" />
+        <img src="site-user-green.png" />
+        <img src="site-user.png" />
+        <img src="site-red.png" />
+        <img src="site-grey.png" />
+        <img src="site-green.png" />
+        <img src="site.png" />
       </div>
 	  <noscript><h1>Für diese Webseite benötigst du Javascript!</h1></noscript>
 	</body>
