@@ -1070,7 +1070,7 @@ sub subnetList {
     LEFT JOIN hamnet_host h_h 
       ON  (
         h_s.typ NOT IN ("AS-Backbone","AS-User/Services","AS-Packet-Radio") AND
-        h_h.rawip BETWEEN h_s.begin_ip AND h_s.end_ip
+        h_h.rawip BETWEEN h_s.begin_ip AND h_s.end_ip-1
       )
     WHERE $subnetWhere
     GROUP BY h_s.ip
