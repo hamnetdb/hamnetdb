@@ -2039,6 +2039,5 @@ sub mapMenu {
     }
   </script>);
   my $tab= &subMenu("tab:Show", "map:Map","full:Fullscreen Map");
-  &checkBox("OSM","osm",1,1);
   print qq(</div>);
 }

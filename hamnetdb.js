@@ -159,9 +159,8 @@ hamnetdb.openMap= function(fullscreen,as,site,hamnet) {
   else if (site!="") {
     para= "?site="+site;
   }
-  var map= "mapwindow.cgi";
-  if ($("#_osm").prop("checked") && hamnet) { //map-source=hamnet
-    map= "lsp_map.cgi";
+  var map= "map.cgi";
+  if (hamnet) { //map-source=hamnet
     if(para != "")
     {
       para= para+"&source=3";
@@ -170,10 +169,6 @@ hamnetdb.openMap= function(fullscreen,as,site,hamnet) {
     {
       para= "?source=3";
     }
-  }
-  else if($("#_osm").prop("checked"))
-  {
-    map= "lsp_map.cgi";  
   }
   
   var win= window.open(map+para, 'hdmap'+fs,
