@@ -1942,7 +1942,7 @@ sub neighbourList {
     $in= " inactive" if $siteno_check{$callsign}>1 &&$siteno_check{$callsign}<4 ;
 
     next if $callsign eq $site;
-    next if $dist>200;
+    next if $dist>400;
 
     my $bear= &bearing($siteLat{$site},$siteLong{$site},
                        $latitude, $longitude);
