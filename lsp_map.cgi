@@ -132,9 +132,10 @@ print qq(
           <h4> Coverage </h4>
 	        <table>
 	        	<tr> <td>The receive signal power is based on a 16dBi, 60km maximum radius</td></tr>
-	        	<tr> <td> Red: Received power level better than -75 dBm.</td></tr> 
-	        	<tr> <td> Yellow: Received power level better than -85 dBm.</td></tr>   
-	        	<tr> <td> Green: Received power level better than -92 dBm.</td></tr>
+            <tr> <td> Green: Received power level better than -70 dBm.</td></tr> 
+	        	<tr> <td> Cyan: Received power level better than -75 dBm.</td></tr> 
+	        	<tr> <td> Dark Blue: Received power level better than -81 dBm.</td></tr>   
+	        	<tr> <td> Purple: Received power level better than -89 dBm.</td></tr>
 	        </table>
         </div>
         <div id="info_by">HamnetDB by DL8MBT <br />Map by OE2LSP</div>

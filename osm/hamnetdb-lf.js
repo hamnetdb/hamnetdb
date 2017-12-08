@@ -53,8 +53,6 @@ var CoverUrl = "coverage/";
 
 var CoverageLayers = new Array();
 
-var RedCover = new L.layerGroup();
-var YellowCover = new L.layerGroup();
 var GreenCover = new L.layerGroup();
 
 function init()
@@ -275,8 +273,6 @@ function init()
 
   map.addLayer(mapnikLayer);
  
-  RedCover.addTo(map);
-  YellowCover.addTo(map);
   GreenCover.addTo(map);
 
 
@@ -654,45 +650,26 @@ function getCoverage(url, only_exist)
       var imageBounds = [[jsondoc.South,jsondoc.West],[jsondoc.North,jsondoc.East]];
       var url = CoverUrl + jsondoc.Callsign +'_'+jsondoc.Tag;
 
-      var imageUrl_red = url +'_red.png';
       var imageUrl_green = url + '_green.png';
-      var imageUrl_yellow = url + '_yellow.png';
 
       var image_green = L.imageOverlay(imageUrl_green,imageBounds,{attribution: 'Coverage'});
-      var image_yellow = L.imageOverlay(imageUrl_yellow,imageBounds,{attribution: 'Coverage'});
-      var image_red = L.imageOverlay(imageUrl_red,imageBounds,{attribution: 'Coverage'});
 
       //Remove all three Grouplayers from map
-      map.removeLayer(RedCover);
-      map.removeLayer(YellowCover);
       map.removeLayer(GreenCover);
 
       //Add new coverage images to the coresponding layer; check for layers only necessary as 
       //long as box is always unchecked after closing popup
 
-      if(!RedCover.hasLayer(CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + "_red"]))
-      {
-        RedCover.addLayer(image_red);
-        CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + "_red"] =  RedCover.getLayerId(image_red);
-      }
       if(!GreenCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+jsondoc.Tag +"_green"]))
       {
         GreenCover.addLayer(image_green);
         CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + '_green'] =  GreenCover.getLayerId(image_green);
       }
-      if(!YellowCover.hasLayer(CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + "_yellow"]))
-      {
-        YellowCover.addLayer(image_yellow);
-        CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + "_yellow"] =  YellowCover.getLayerId(image_yellow);
-      }
+      
 
       GreenCover.addTo(map);
-      YellowCover.addTo(map);
-      RedCover.addTo(map);
-
+      
       image_green.setOpacity(0.8);
-      image_yellow.setOpacity(0.8);
-      image_red.setOpacity(0.8);
       }
     }
   }else { //only_exist = 1
@@ -720,7 +697,7 @@ function getCoverage(url, only_exist)
             document.getElementsByName("Coverage")[0].outerHTML+=" "+tags[j]+"<br>";
             document.getElementsByName("Coverage")[0].name= jsondoc.Callsign+'_'+tags[j];
 	       
-            if(RedCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+tags[j]+"_red"]))
+            if(GreenCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+tags[j]+"_green"]))
             {
               document.getElementsByName(jsondoc.Callsign+'_'+tags[j])[0].checked = true;
             }
@@ -745,13 +722,9 @@ function coverage(event)
   }
   else
   {
-    RedCover.removeLayer(CoverageLayers[callsign + "_red"]);
-    YellowCover.removeLayer(CoverageLayers[callsign + "_yellow"]);
     GreenCover.removeLayer(CoverageLayers[callsign + "_green"]);
 
     delete CoverageLayers[callsign + "_green"];
-    delete CoverageLayers[callsign + "_red"];
-    delete CoverageLayers[callsign + "_yellow"];
   }
   return 1;
 }
