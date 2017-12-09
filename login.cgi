@@ -118,10 +118,17 @@ $fullname= "";
 
 if ($fullname) {
   $sessionToken= &pwGenerate(20)."_".time;
-  $db->do(qq(insert hamnet_session set 
-     callsign='$login',ip='$ip', token='$sessionToken',
-     begin=now(), is_valid=1,
-     expires=date_add(now(),interval $sessionExp)));
+  if ($db->do(qq(insert hamnet_session set 
+     callsign='$login',last_ip='$ip',ip='$ip',token='$sessionToken',
+     last_act=now(),begin=now(), is_valid=1,
+     expires=date_add(now(),interval $sessionExp)))) {
+  }
+  else {
+    print qq(Status: 302 Moved\n).
+          qq(Set-Cookie: HAMNETDB_SESSION=; path=$baseUri/;\n).
+          qq(Location: $baseUri/?m=Login&errMsg=Cannot+store+session.\n\n);
+    exit;
+  }
   $db->do(qq(update hamnet_maintainer set
      last_login=now() where callsign='$login'));
 
