@@ -103,7 +103,7 @@ while (@line= $sth->fetchrow_array) {
   my $site= $line[$idx++];
   my $edited= $line[$idx++];
 
-  $namesRaw{"$site:$rawip"}= $name;
+  $namesRaw{$rawip}= $name;
   $ipByRaw{$rawip}= $ip;
   $siteByRaw{$rawip}= $site;
   $ipByName{$name}= $ip;
@@ -116,7 +116,6 @@ while (@line= $sth->fetchrow_array) {
     $allNames{$alias}= 1;
   }
 }
-
 
 # If no "site"-Hostname is present, try CNAME to web.site or router.site
 foreach $site (keys %allSites) {
@@ -175,9 +174,8 @@ while (@line= $sth->fetchrow_array) {
       my $name= "dhcp-$netipSlash$i.$lastSite";
       my $rawip= &aton($ip);
 
-      unless($ipByRaw{$rawip})
-      {
-        $namesRaw{"$lastSite:$rawip"}= $name;
+      unless($ipByRaw{$rawip}) {
+        $namesRaw{$rawip}= $name;
         $ipByName{$name}= $ip;
         $ipByRaw{$rawip}= $ip;
         $siteByRaw{$rawip}= $lastSite;
@@ -187,8 +185,9 @@ while (@line= $sth->fetchrow_array) {
 }
 
 # Determine AS for each IP address
-my $sth= $db->prepare(qq(select ip,as_parent,begin_ip,end_ip,typ
+my $sth= $db->prepare(qq(select ip,as_parent,begin_ip,end_ip,typ,as_root
          from hamnet_subnet
+         left join hamnet_as on as_parent=hamnet_as.as_num
          where typ in ('AS-User/Services','AS-Backbone','AS-Packet-Radio') 
          order by begin_ip));
 $sth->execute or &fatal("cannot select from hamnet_subnet");
@@ -199,6 +198,8 @@ while (@line= $sth->fetchrow_array) {
   my $begin= $line[$idx++];
   my $end= $line[$idx++];
   my $typ= $line[$idx++];
+  my $as_root= $line[$idx++];
+  $as= $as_root if $as_root>0;
   $netAs{$ip}= $as;
   my $nt= "bb";
   $nt= "us" if $typ=~/User/i;
@@ -263,13 +264,11 @@ foreach $net (sort keys %nets) {
   my $minaddress= &aton("$net.0");
   my $maxaddress= $minaddress+256;
 
-  foreach $key (sort keys %namesRaw) {
-    my $rawip= $key;
-    $rawip=~s/.*://;
+  foreach $rawip (keys %ipByRaw) {
     next if $rawip<$minaddress;
     next if $rawip>$maxaddress;
     next if ($country && $country ne $as_country{$netAs{$net}});
-    my $ip= &ntoa($rawip);
+    my $ip= $ipByRaw{$rawip};
     my $as= $hostas{$rawip};
     $newestEdited= $editedByRaw{$rawip} if $editedByRaw{$rawip}>$newestEdited;
     if ($as && $by_as) {
@@ -278,15 +277,11 @@ foreach $net (sort keys %nets) {
     else {
       $as= "";
     }
-    if ($siteByRaw{$rawip} ne $lastSite) {
-      $lastSite= $siteByRaw{$rawip};
-      $content.= "\n; $lastSite - $siteName{$lastSite}\n";
-    }
     if ($ip=~/(\d+)\.(\d+)\.(\d+)\.(\d+)/) {
       my $rev= $4;
       $name=~s/:.*//;
 
-      $content.= sprintf("%-7s IN PTR $namesRaw{$key}$as.$suffix.\n", $rev);
+      $content.= sprintf("%-7s IN PTR $namesRaw{$rawip}$as.$suffix.\n", $rev);
     }
   }
 
@@ -327,25 +322,18 @@ sub createZone {
   my $lastSite= "";
 
   $newestEdited= 0;
-  foreach $key (sort keys %namesRaw) {
-    my $rawip= $key;
-    $rawip=~s/.*://;
-
+  foreach $rawip (sort keys %namesRaw) {
     if ($country && $as_country{$hostas{$rawip}} ne $country) {
       next;
     }
     if (!$as || ($as eq $hostas{$rawip})) {
-      if ($siteByRaw{$rawip} ne $lastSite) {
-        $lastSite= $siteByRaw{$rawip};
-        $content.= "\n; $lastSite - $siteName{$lastSite}\n";
-      }
       my $ip= &ntoa($rawip);
-      $content.= sprintf("%-23s IN A $ip\n", $namesRaw{$key});
+      $content.= sprintf("%-23s IN A $ip\n", $namesRaw{$rawip});
       $newestEdited= $editedByRaw{$rawip} if $editedByRaw{$rawip}>$newestEdited;
 
       foreach $cname (keys %{$cnames{$ip}}) {
         unless ($ipByName{$cname}) {
-          $content.= sprintf("%-23s IN CNAME $namesRaw{$key}\n", $cname);
+          $content.= sprintf("%-23s IN CNAME $namesRaw{$rawip}\n", $cname);
         }
       }
     }
@@ -355,11 +343,10 @@ sub createZone {
   if ($as && $as_dns_add{$as}) {
     $content.= "\n".$as_dns_add{$as}."\n";
   }
-  unless($as)
-  {
+  unless($as) {
     #for every as 
     foreach my $as_cnt (@as_number) { 
-      if($country && $as_country{$as_cnt} eq $country) {
+      if ($country && $as_country{$as_cnt} eq $country) {
         $content.= "\n".$as_dns_add{$as_cnt}."\n";
       }
       #no country set => export everything

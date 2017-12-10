@@ -184,44 +184,44 @@ sub beforeForm {
       changed();
       calcfromIP();
     }
-	  function calcfromIP() //subnet calc
-	  {
-	    ip = document.getElementById("base_ip").value;
-	    if(checkIP(ip))
-	    {
-	      cidr = document.getElementsByName("bits")[0].value;
-	      //calcHosts(cidr); //why that
-	      if(checkInt(cidr) && cidr > 0 && cidr <= 32)//the easiest way to check if everything is ok
-	      {
-	        netmask = calcNetmask(cidr);
-	        sp_ip = splitIP(ip);
-	        sp_nm = splitIP(netmask);
-	        var netaddress = new Array();
-	        var broadcast = new Array();
-	        for(i=0;i<4;i++)
-	        {
-	          if(sp_nm[i] == 255)//part stays unchanged
-	          {
-	            netaddress[i]=sp_ip[i];
-	            broadcast[i]=sp_ip[i];
-	          }
-	          else if(sp_nm[i] == 0)
-	          {
-	            netaddress[i]=0;
-	            broadcast[i]=255;
-	          }
-	          else //lets calc
-	          {
-	            num=256-sp_nm[i];
-	            seg=Math.floor(sp_ip[i]/num);
-	            netaddress[i]=num*seg;
-	            broadcast[i]=num*(seg+1)-1;
-	          }
-	        }
+    function calcfromIP() //subnet calc
+    {
+      ip = document.getElementById("base_ip").value;
+      if(checkIP(ip))
+      {
+        cidr = document.getElementsByName("bits")[0].value;
+        //calcHosts(cidr); //why that
+        if(checkInt(cidr) && cidr > 0 && cidr <= 32)//the easiest way to check if everything is ok
+        {
+          netmask = calcNetmask(cidr);
+          sp_ip = splitIP(ip);
+          sp_nm = splitIP(netmask);
+          var netaddress = new Array();
+          var broadcast = new Array();
+          for(i=0;i<4;i++)
+          {
+            if(sp_nm[i] == 255)//part stays unchanged
+            {
+              netaddress[i]=sp_ip[i];
+              broadcast[i]=sp_ip[i];
+            }
+            else if(sp_nm[i] == 0)
+            {
+              netaddress[i]=0;
+              broadcast[i]=255;
+            }
+            else //lets calc
+            {
+              num=256-sp_nm[i];
+              seg=Math.floor(sp_ip[i]/num);
+              netaddress[i]=num*seg;
+              broadcast[i]=num*(seg+1)-1;
+            }
+          }
           document.getElementById("netaddr_limits").innerHTML="Networkaddress: " + \
             netaddress[0]+"."+netaddress[1]+"."+netaddress[2]+"."+netaddress[3] + \
             "<br>Broadcast: "  + broadcast[0]+"."+broadcast[1]+"."+broadcast[2]+"."+broadcast[3];
-	        dhcp_fillup = document.getElementById("dhcp_fillup").checked;
+          dhcp_fillup = document.getElementById("dhcp_fillup").checked;
           if(dhcp_fillup && cidr >= 24 && cidr < 31)
           {
             var dhcp_start = netaddress[3]+1;
@@ -233,35 +233,35 @@ sub beforeForm {
             document.getElementsByName("dhcp_range")[0].value="";
           }
         }
-	    }
-	    else
-	    {
-	      document.getElementById("netaddr_limits").innerHTML="";
-	    }
-	  }
-	  function checkIP(ip)
-	  {
-	    var pattern =/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/;
-	    return pattern.test(ip);
-	  }
-	  function checkInt(val)
-	  {
-	    var pattern =/^[0-9]+/;
+      }
+      else
+      {
+        document.getElementById("netaddr_limits").innerHTML="";
+      }
+    }
+    function checkIP(ip)
+    {
+      var pattern =/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/;
+      return pattern.test(ip);
+    }
+    function checkInt(val)
+    {
+      var pattern =/^[0-9]+/;
       return pattern.test(val);  
-	  }
+    }
     function splitIP(ip)
-	  {
-	    var splitted =new Array();
-	    
-	    for(var i=0;i<3;i++)
-	    {
-	      dotpos=ip.indexOf(".");
-	      splitted[i]=ip.substring(0,dotpos);
-	      ip=ip.substring(dotpos+1);
-	    }
-	    splitted[3]=ip;
-	    return splitted;
-	  }
+    {
+      var splitted =new Array();
+      
+      for(var i=0;i<3;i++)
+      {
+        dotpos=ip.indexOf(".");
+        splitted[i]=ip.substring(0,dotpos);
+        ip=ip.substring(dotpos+1);
+      }
+      splitted[3]=ip;
+      return splitted;
+    }
     function calcNetmask(cidr) //subnet calc
     {
       if(cidr > 24)
@@ -303,10 +303,10 @@ sub beforeForm {
       return degmin
     }
     function calcCoordinates()
-	  {
-	    changed();
-	    var locator = document.getElementById('locator').value;
-	    locator = locator.toUpperCase();
+    {
+      changed();
+      var locator = document.getElementById('locator').value;
+      locator = locator.toUpperCase();
       if(locator == locator_global)//check if has changed
       {
         return;
@@ -315,13 +315,13 @@ sub beforeForm {
       {
         locator_global=locator;
       }
-	    if(/[A-R]{2}[0-9]{2}/i.test(locator))
+      if(/[A-R]{2}[0-9]{2}/i.test(locator))
       {
       //  var lat= (locator.charCodeAt(1)-65)*10 -90; //Char
      //   var lon= (locator.charCodeAt(0)-65) * 20 -180;//char
       //  lat+= (locator.charCodeAt(3) -48); //number
       //  lon+= (locator.charCodeAt(2)-48) * 2; //number
-	    }
+      }
       if(/[A-R]{2}[0-9]{2}[A-X]{2}/i.test(locator))
       {
       //  lat+= (locator.charCodeAt(5)-65) /24; //char
@@ -356,58 +356,58 @@ sub beforeForm {
         document.getElementById("latitude").value=lat;
       }
 
-	  }
-	  function calcLocatorjs()
-	  {
-	    lon = document.getElementById("longitude").value;
-	    lat = document.getElementById("latitude").value;
+    }
+    function calcLocatorjs()
+    {
+      lon = document.getElementById("longitude").value;
+      lat = document.getElementById("latitude").value;
       lon = degmin2dec(lon);
       lat = degmin2dec(lat);
-	    var locator = "";
-			lon=parseFloat(lon);
-			lat=parseFloat(lat);
-			lat += 90;
-			lon += 180;
-			locator += String.fromCharCode(65 + Math.floor(lon / 20));
-			locator += String.fromCharCode(65 + Math.floor(lat / 10));
-			lon = lon % 20;
-			if (lon < 0) lon += 20;
-			lat = lat % 10;
-			if (lat < 0) lat += 10;
+      var locator = "";
+      lon=parseFloat(lon);
+      lat=parseFloat(lat);
+      lat += 90;
+      lon += 180;
+      locator += String.fromCharCode(65 + Math.floor(lon / 20));
+      locator += String.fromCharCode(65 + Math.floor(lat / 10));
+      lon = lon % 20;
+      if (lon < 0) lon += 20;
+      lat = lat % 10;
+      if (lat < 0) lat += 10;
 
-			locator += String.fromCharCode(48 + Math.floor(lon / 2));
-			locator += String.fromCharCode(48 + Math.floor(lat / 1));
-			lon = lon % 2;
-			if (lon < 0) lon += 2;
-			lat = lat % 1;
-			if (lat < 0) lat += 1;
+      locator += String.fromCharCode(48 + Math.floor(lon / 2));
+      locator += String.fromCharCode(48 + Math.floor(lat / 1));
+      lon = lon % 2;
+      if (lon < 0) lon += 2;
+      lat = lat % 1;
+      if (lat < 0) lat += 1;
 
-			locator += String.fromCharCode(65 + Math.floor(lon * 12));
-			locator += String.fromCharCode(65 + Math.floor(lat * 24));
-			lon = lon % ( 1 / 12);
-			if (lon < 0) lon +=  1 / 12;
-			lat = lat % ( 1 / 24);
-			if (lat < 0) lat += 1 / 24;
+      locator += String.fromCharCode(65 + Math.floor(lon * 12));
+      locator += String.fromCharCode(65 + Math.floor(lat * 24));
+      lon = lon % ( 1 / 12);
+      if (lon < 0) lon +=  1 / 12;
+      lat = lat % ( 1 / 24);
+      if (lat < 0) lat += 1 / 24;
 
-			locator += String.fromCharCode(48 + Math.floor(lon * 120));
-			locator += String.fromCharCode(48 + Math.floor(lat * 240));
-			lon = lon % (1 / 120);
-			if (lon < 0) lon +=  1 / 120;
-			lat = lat %( 1 / 240);
-			if (lat < 0) lat += 1 / 240;
+      locator += String.fromCharCode(48 + Math.floor(lon * 120));
+      locator += String.fromCharCode(48 + Math.floor(lat * 240));
+      lon = lon % (1 / 120);
+      if (lon < 0) lon +=  1 / 120;
+      lat = lat %( 1 / 240);
+      if (lat < 0) lat += 1 / 240;
 
-			locator += String.fromCharCode(65 + Math.floor(lon * 120 * 24));
-			locator += String.fromCharCode(65 + Math.floor(lat * 240 * 24));
-			lon = lon % ( 1 / 120 / 24);
-			if (lon < 0) lon +=  1 / 120 / 24;
-			lat = lat % (1 / 240 / 24);
-			if (lat < 0) lat += 1 / 240 / 24;
+      locator += String.fromCharCode(65 + Math.floor(lon * 120 * 24));
+      locator += String.fromCharCode(65 + Math.floor(lat * 240 * 24));
+      lon = lon % ( 1 / 120 / 24);
+      if (lon < 0) lon +=  1 / 120 / 24;
+      lat = lat % (1 / 240 / 24);
+      if (lat < 0) lat += 1 / 240 / 24;
       if(/[A-Z0-9]{10}/.test(locator))
       {
-			  document.getElementById("locator").value=locator;
+        document.getElementById("locator").value=locator;
         locator_global = locator;
       }
-	  }
+    }
     var storeDisabled= 0;
     function doStore() {
       if (('$newversion'!='0') && ('$newversion' != '$lastversion')) {
@@ -477,13 +477,10 @@ sub beforeForm {
       document.main.submit();
     }
   </script>
-    <div id="infoPopup" class="vgrad"><!--<iframe  style="height:0; border:0; background-color:#fff; height:100%; " src="">You need Iframes to see this content!</iframe>-->
-    <a style="text-decoration:none; font-size:35px; color:#666; position:absolute; right:5px; top:0px; font-weight:400;" href=javascript:hamnetdb.infopopHide();>x</a>
-    </div>
-  <!--<div id="ant_pop" width="575px" height="376px" style="position:absolute; top:200px; left:160px; visibility:hidden; z-index:999">
-    <a style="text-decoration:none; font-size:35px; color:#666; position:absolute; right:5px; top:0px; font-weight:400;" href=javascript:hamnetdb.antennaHide();>Ã—</a>
-    <iframe  style="height:0; border:0; background-color:#fff; height:100%; " src="">You need Iframes to see this content!</iframe>
-  </div>-->
+  <div id="infoPopup" class="vgrad">
+  <a style="text-decoration:none; font-size:35px; color:#666; position:absolute; right:5px; top:0px; font-weight:400;" 
+     href="javascript:hamnetdb.infopopHide();">x</a>
+  </div>
   <table cellspacing=0 cellpadding=4 border=0 width="100%"><tr>
   <td colspan=$tableCols $capcol><h3 class='nomargin'>$caption</h3></td></tr>
   );
@@ -620,7 +617,7 @@ sub storeEntry {
           $inputStatus= "ERROR: Object not found in database";
           return;
         }
-        elsif ($db->do("insert $table set $setCommand")) {
+        elsif ($db->do("insert $table set $setCommand,deleted=0")) {
     
           if ($table_history) {
             $db->do("insert $table_history select * ".
@@ -633,8 +630,8 @@ sub storeEntry {
     unless ($inputStatus) {
       if ($found) {
         #Add antenna configuration to hamnet_coverage
-        if($table eq "hamnet_site"){
-          unless($inputStatus){
+        if ($table eq "hamnet_site") {
+          unless ($inputStatus) {
             addAccess();
           }
         }

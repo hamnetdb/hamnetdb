@@ -133,6 +133,9 @@ td.optact>a {
   padding-left: 4px;
   border: 1px solid #c0c0c0;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 14vw;
 }
 .inactive td {
   color: #909090;

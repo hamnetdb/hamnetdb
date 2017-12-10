@@ -17,10 +17,14 @@ $table= "hamnet_$suffix";
 $table_history= "${table}_hist";
 $requiredPermission= $suffix;
 
-($name,$as_num,$country,$comment,$maintainer,$dns_add,$rw_maint)= &loadFormData
-("name,as_num,country,comment,maintainer,dns_add,rw_maint");
+($name,$as_num,$as_root,$country,$comment,$maintainer,$dns_add,$rw_maint)= 
+&loadFormData
+("name,as_num,as_root,country,comment,maintainer,dns_add,rw_maint");
 
 &checkMaintainerRW($rw_maint, $maintainer);
+unless ($mustLoadFromDB) {
+  $as_root= $query->param("as");
+}
 
 $caption= "Change AS '$name'";
 $caption= "New AS" unless $id;
@@ -37,17 +41,22 @@ if ($func eq "delete") {
 print qq(
   <tr>
   <td valign="top" align="left" nowrap>AS-Number:<br>
-  <input type="text" name="as_num" value="$as_num" size=20$chtrack>
+  <input type="text" name="as_num" value="$as_num" style='width:80px;' $chtrack>
   <input type="hidden" name="as_num_orig" value="$as_num">
   <br>$br10
   </td>
   <td valign="top" align="left" nowrap>Descriptive Name:<br>
-  <input type="text" name="name" value="$name" size=30$chtrack>
+  <input type="text" name="name" value="$name" style='width:250px;' $chtrack>
   </td>
-  <td valign="top" align="left" nowrap>Country (iso-3166 alpha-2)<br>
-  <input type="text" name="country" value="$country" size=4$chtrack><small>Hint: tld</small>
+  <td valign="top" align="left" nowrap>Root AS:<br>
+  );
+  &asCombo(0,0,1,$as_root,"style='width:200px;overflow:hidden;'");
+print qq(
   </td>
-  <td valign="top" align="left" nowrap>
+  <td valign="top" align="left" nowrap>Country 
+  <a target='_blank' href='https://en.wikipedia.org/wiki/ISO_3166-1'>TLD</a><br>
+  <input type="text" name="country" value="$country" style='width:30px;' $chtrack>
+  <small>e.g. <b>at ch de</b></small>
   </td>
   </tr>
   <tr>
@@ -61,7 +70,7 @@ print qq(
 
 if (&inList($username, $maintainer) || ($mySysPerm && $maintainer)) {
   &checkBox("Restrict write access to list of AS maintainers",
-            "rw_maint", 1, $rw_maint);
+            "rw_maint", 0, $rw_maint);
 }
 
 print qq(
@@ -98,6 +107,19 @@ sub checkValues {
   if ($as_num<64512) {
     $inputStatus= "AS number must be above 64512";
   }
+  $as_root=~s/as *//i;
+  $as_root+= 0;
+  if ($as_root>0) {
+    my $rc= "";
+    ($rc)= $db->selectrow_array("select country from $table ".
+          "where as_num='$as_root'");
+    if ($country ne $rc) {
+      $inputStatus= "Country must be the same for Root AS";
+    }
+    elsif ($as_num == $as_root) {
+      $inputStatus= "Root AS cannot point to myself";
+    }
+  }
   unless ($name) {
     $inputStatus= "Name is missing";
   }
@@ -122,6 +144,7 @@ sub checkValues {
           "name=".$db->quote($name).", ".
           "maintainer=".$db->quote($maintainer).", ".
           "rw_maint=".$db->quote($rw_maint).", ".
+          "as_root=".$db->quote($as_root).", ".
           "country=".$db->quote($country).", ".
           "dns_add=".$db->quote($dns_add).", ".
           "as_num=$as_num";

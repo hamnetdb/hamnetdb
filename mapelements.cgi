@@ -44,7 +44,6 @@ while (@line= $sth->fetchrow_array) {
 }
 
 
-
 # -------------------------------------------------------------------------
 # Determine sites for AS - HACK: prefer Service hosts by sorting
 my $sth= $db->prepare(qq(select hamnet_host.site,hamnet_subnet.as_parent 
@@ -186,6 +185,7 @@ foreach $net (sort keys %all_hosts) {
     }
   }
 }
+
 # -------------------------------------------------------------------------
 # Prepare edges explicitely stored in the database
 my $sth= $db->prepare(qq(select left_site,right_site,hamnet_edge.typ

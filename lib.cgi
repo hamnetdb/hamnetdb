@@ -854,7 +854,8 @@ sub asCombo {
   $showAll=1 if $none;
 
   my $sth= $db->prepare(qq(
-    select hamnet_as.as_num,hamnet_as.name,hamnet_as.comment 
+    select hamnet_as.as_num,hamnet_as.name,hamnet_as.comment,
+    hamnet_as.country
     from hamnet_as 
     left join hamnet_subnet on hamnet_as.as_num=as_parent
     where hamnet_subnet.begin_ip is not null or $showAll
@@ -866,13 +867,13 @@ sub asCombo {
   #  where hamnet_host.name is not null or $showAll
   $sth->execute;
   while (@line= $sth->fetchrow_array) {
-    my $c= &maxlen($line[2], 22);
+    my $c= &maxlen($line[2], 40);
     $c= " | $c" if $c;
-    push(@asval, "$line[0]::$line[0] | $line[1]$c");
+    push(@asval, "$line[0]::$line[0] $line[3] | $line[1]$c");
   }
-  $comboAdd= "style='width:280px;overflow:hidden;'";
+  $comboAdd= "style='width:25%;overflow:hidden;'";
   $comboAdd= $add if $add;
-  my $val= &comboBox("","as".($refresh?"+":""), $def, @asval);
+  my $val= &comboBox("","as".($refresh?"+":""), $def."+", @asval);
   $comboAdd= "";
   return $val;
 }
@@ -919,6 +920,11 @@ sub prepareWhere {
   my $s= $search;
   my $ip;
 
+  if ($db->selectrow_array(
+    qq(select id from hamnet_as where country=).$db->quote($search))) {
+    $asWhere= "country='$search'";
+    return ("as", $search);
+  }
   if ($db->selectrow_array(
     qq(select id from hamnet_site where callsign=).$db->quote($search))) {
     $search= "site:$search";
@@ -987,8 +993,20 @@ sub prepareWhereAS {
   
   if ($search=~/^(as|)(\d\d\d\d\d(\d\d\d\d\d)?)$/i) {
     my $as= $2;
-    $asWhere= "as_num='$as'";
-    $subnetWhere= "as_parent='$as'";
+
+    # merge potentially existent child AS into the view 
+    my $childs= "";
+    ($childs)= $db->selectrow_array("select ".
+      "group_concat(as_num separator ',') ".
+      "from hamnet_as where as_root='$as'");
+    if ($childs) {
+      $asWhere= "as_num in ($as,$childs)";
+      $subnetWhere= "as_parent in ($as,$childs)";
+    }
+    else {
+      $asWhere= "as_num='$as'";
+      $subnetWhere= "as_parent='$as'";
+    }
 
     # Search for subnets that belong to this AS
     my $sth= $db->prepare("select begin_ip,end_ip from hamnet_subnet ".
@@ -1439,4 +1457,260 @@ sub checkMapSource
   }
   return 0;
 }
+
+
+
+$tldName{"af"}= "Afghanistan";
+$tldName{"al"}= "Albania";
+$tldName{"dz"}= "Algeria";
+$tldName{"as"}= "American Samoa";
+$tldName{"ad"}= "Andorra";
+$tldName{"ao"}= "Angola";
+$tldName{"ai"}= "Anguilla";
+$tldName{"aq"}= "Antarctica";
+$tldName{"ag"}= "Antigua and Barbuda";
+$tldName{"ar"}= "Argentina";
+$tldName{"am"}= "Armenia";
+$tldName{"aw"}= "Aruba";
+$tldName{"au"}= "Australia";
+$tldName{"at"}= "Austria";
+$tldName{"az"}= "Azerbaijan";
+$tldName{"bs"}= "The Bahamas";
+$tldName{"bh"}= "Bahrain";
+$tldName{"bd"}= "Bangladesh";
+$tldName{"bb"}= "Barbados";
+$tldName{"by"}= "Belarus";
+$tldName{"be"}= "Belgium";
+$tldName{"bz"}= "Belize";
+$tldName{"bj"}= "Benin";
+$tldName{"bm"}= "Bermuda";
+$tldName{"bt"}= "Bhutan";
+$tldName{"bo"}= "Bolivia";
+$tldName{"ba"}= "Bosnia and Herzegovina";
+$tldName{"bw"}= "Botswana";
+$tldName{"bv"}= "Bouvet Island";
+$tldName{"br"}= "Brazil";
+$tldName{"io"}= "British Indian Ocean Territory";
+$tldName{"vg"}= "British Virgin Islands";
+$tldName{"bn"}= "Brunei";
+$tldName{"bg"}= "Bulgaria";
+$tldName{"bf"}= "Burkina Faso";
+$tldName{"mm"}= "Burma";
+$tldName{"bi"}= "Burundi";
+$tldName{"cv"}= "Cabo Verde";
+$tldName{"kh"}= "Cambodia";
+$tldName{"cm"}= "Cameroon";
+$tldName{"ca"}= "Canada";
+$tldName{"ky"}= "Cayman Islands";
+$tldName{"cf"}= "Central African Republic";
+$tldName{"td"}= "Chad";
+$tldName{"cl"}= "Chile";
+$tldName{"cn"}= "China";
+$tldName{"cx"}= "Christmas Island";
+$tldName{"cc"}= "Cocos (Keeling) Islands";
+$tldName{"co"}= "Colombia";
+$tldName{"km"}= "Comoros";
+$tldName{"cd"}= "Congo, Democratic Republic of the";
+$tldName{"cg"}= "Congo, Republic of the";
+$tldName{"ck"}= "Cook Islands";
+$tldName{"cr"}= "Costa Rica";
+$tldName{"ci"}= "Cote d'Ivoire";
+$tldName{"hr"}= "Croatia";
+$tldName{"cu"}= "Cuba";
+$tldName{"cw"}= "Curacao";
+$tldName{"cy"}= "Cyprus";
+$tldName{"cz"}= "Czechia";
+$tldName{"dk"}= "Denmark";
+$tldName{"dj"}= "Djibouti";
+$tldName{"dm"}= "Dominica";
+$tldName{"do"}= "Dominican Republic";
+$tldName{"ec"}= "Ecuador";
+$tldName{"eg"}= "Egypt";
+$tldName{"sv"}= "El Salvador";
+$tldName{"gq"}= "Equatorial Guinea";
+$tldName{"er"}= "Eritrea";
+$tldName{"ee"}= "Estonia";
+$tldName{"et"}= "Ethiopia";
+$tldName{"fk"}= "Falkland Islands (Islas Malvinas)";
+$tldName{"fo"}= "Faroe Islands";
+$tldName{"fj"}= "Fiji";
+$tldName{"fi"}= "Finland";
+$tldName{"fr"}= "France";
+$tldName{"fx"}= "France, Metropolitan";
+$tldName{"gf"}= "French Guiana";
+$tldName{"pf"}= "French Polynesia";
+$tldName{"tf"}= "French Southern and Antarctic Lands";
+$tldName{"ga"}= "Gabon";
+$tldName{"gm"}= "Gambia, The";
+$tldName{"ps"}= "Gaza Strip";
+$tldName{"ge"}= "Georgia";
+$tldName{"de"}= "Germany";
+$tldName{"gh"}= "Ghana";
+$tldName{"gi"}= "Gibraltar";
+$tldName{"gr"}= "Greece";
+$tldName{"gl"}= "Greenland";
+$tldName{"gd"}= "Grenada";
+$tldName{"gp"}= "Guadeloupe";
+$tldName{"gu"}= "Guam";
+$tldName{"gt"}= "Guatemala";
+$tldName{"gg"}= "Guernsey";
+$tldName{"gn"}= "Guinea";
+$tldName{"gw"}= "Guinea-Bissau";
+$tldName{"gy"}= "Guyana";
+$tldName{"ht"}= "Haiti";
+$tldName{"hm"}= "Heard Island and McDonald Islands";
+$tldName{"va"}= "Holy See (Vatican City)";
+$tldName{"hn"}= "Honduras";
+$tldName{"hk"}= "Hong Kong";
+$tldName{"hu"}= "Hungary";
+$tldName{"is"}= "Iceland";
+$tldName{"in"}= "India";
+$tldName{"id"}= "Indonesia";
+$tldName{"ir"}= "Iran";
+$tldName{"iq"}= "Iraq";
+$tldName{"ie"}= "Ireland";
+$tldName{"im"}= "Isle of Man";
+$tldName{"il"}= "Israel";
+$tldName{"it"}= "Italy";
+$tldName{"jm"}= "Jamaica";
+$tldName{"jp"}= "Japan";
+$tldName{"je"}= "Jersey";
+$tldName{"jo"}= "Jordan";
+$tldName{"kz"}= "Kazakhstan";
+$tldName{"ke"}= "Kenya";
+$tldName{"ki"}= "Kiribati";
+$tldName{"kp"}= "Korea, North";
+$tldName{"kr"}= "Korea, South";
+$tldName{"kw"}= "Kuwait";
+$tldName{"kg"}= "Kyrgyzstan";
+$tldName{"la"}= "Laos";
+$tldName{"lv"}= "Latvia";
+$tldName{"lb"}= "Lebanon";
+$tldName{"ls"}= "Lesotho";
+$tldName{"lr"}= "Liberia";
+$tldName{"ly"}= "Libya";
+$tldName{"li"}= "Liechtenstein";
+$tldName{"lt"}= "Lithuania";
+$tldName{"lu"}= "Luxembourg";
+$tldName{"mo"}= "Macau";
+$tldName{"mk"}= "Macedonia";
+$tldName{"mg"}= "Madagascar";
+$tldName{"mw"}= "Malawi";
+$tldName{"my"}= "Malaysia";
+$tldName{"mv"}= "Maldives";
+$tldName{"ml"}= "Mali";
+$tldName{"mt"}= "Malta";
+$tldName{"mh"}= "Marshall Islands";
+$tldName{"mq"}= "Martinique";
+$tldName{"mr"}= "Mauritania";
+$tldName{"mu"}= "Mauritius";
+$tldName{"yt"}= "Mayotte";
+$tldName{"mx"}= "Mexico";
+$tldName{"fm"}= "Micronesia, Federated States of";
+$tldName{"md"}= "Moldova";
+$tldName{"mc"}= "Monaco";
+$tldName{"mn"}= "Mongolia";
+$tldName{"me"}= "Montenegro";
+$tldName{"ms"}= "Montserrat";
+$tldName{"ma"}= "Morocco";
+$tldName{"mz"}= "Mozambique";
+$tldName{"na"}= "Namibia";
+$tldName{"nr"}= "Nauru";
+$tldName{"np"}= "Nepal";
+$tldName{"nl"}= "Netherlands";
+$tldName{"an"}= "Netherlands Antilles";
+$tldName{"nc"}= "New Caledonia";
+$tldName{"nz"}= "New Zealand";
+$tldName{"ni"}= "Nicaragua";
+$tldName{"ne"}= "Niger";
+$tldName{"ng"}= "Nigeria";
+$tldName{"nu"}= "Niue";
+$tldName{"nf"}= "Norfolk Island";
+$tldName{"mp"}= "Northern Mariana Islands";
+$tldName{"no"}= "Norway";
+$tldName{"om"}= "Oman";
+$tldName{"pk"}= "Pakistan";
+$tldName{"pw"}= "Palau";
+$tldName{"pa"}= "Panama";
+$tldName{"pg"}= "Papua New Guinea";
+$tldName{"py"}= "Paraguay";
+$tldName{"pe"}= "Peru";
+$tldName{"ph"}= "Philippines";
+$tldName{"pn"}= "Pitcairn Islands";
+$tldName{"pl"}= "Poland";
+$tldName{"pt"}= "Portugal";
+$tldName{"pr"}= "Puerto Rico";
+$tldName{"qa"}= "Qatar";
+$tldName{"re"}= "Reunion";
+$tldName{"ro"}= "Romania";
+$tldName{"ru"}= "Russia";
+$tldName{"rw"}= "Rwanda";
+$tldName{"bl"}= "Saint Barthelemy";
+$tldName{"sh"}= "Saint Helena, Ascension, and Tristan da Cunha";
+$tldName{"kn"}= "Saint Kitts and Nevis";
+$tldName{"lc"}= "Saint Lucia";
+$tldName{"mf"}= "Saint Martin";
+$tldName{"pm"}= "Saint Pierre and Miquelon";
+$tldName{"vc"}= "Saint Vincent and the Grenadines";
+$tldName{"ws"}= "Samoa";
+$tldName{"sm"}= "San Marino";
+$tldName{"st"}= "Sao Tome and Principe";
+$tldName{"sa"}= "Saudi Arabia";
+$tldName{"sn"}= "Senegal";
+$tldName{"rs"}= "Serbia";
+$tldName{"sc"}= "Seychelles";
+$tldName{"sl"}= "Sierra Leone";
+$tldName{"sg"}= "Singapore";
+$tldName{"sx"}= "Sint Maarten";
+$tldName{"sk"}= "Slovakia";
+$tldName{"si"}= "Slovenia";
+$tldName{"sb"}= "Solomon Islands";
+$tldName{"so"}= "Somalia";
+$tldName{"za"}= "South Africa";
+$tldName{"gs"}= "South Georgia and the Islands";
+$tldName{"es"}= "Spain";
+$tldName{"lk"}= "Sri Lanka";
+$tldName{"sd"}= "Sudan";
+$tldName{"sr"}= "Suriname";
+$tldName{"sj"}= "Svalbard";
+$tldName{"sz"}= "Swaziland";
+$tldName{"se"}= "Sweden";
+$tldName{"ch"}= "Switzerland";
+$tldName{"sy"}= "Syria";
+$tldName{"tw"}= "Taiwan";
+$tldName{"tj"}= "Tajikistan";
+$tldName{"tz"}= "Tanzania";
+$tldName{"th"}= "Thailand";
+$tldName{"tl"}= "Timor-Leste";
+$tldName{"tg"}= "Togo";
+$tldName{"tk"}= "Tokelau";
+$tldName{"to"}= "Tonga";
+$tldName{"tt"}= "Trinidad and Tobago";
+$tldName{"tn"}= "Tunisia";
+$tldName{"tr"}= "Turkey";
+$tldName{"tm"}= "Turkmenistan";
+$tldName{"tc"}= "Turks and Caicos Islands";
+$tldName{"tv"}= "Tuvalu";
+$tldName{"ug"}= "Uganda";
+$tldName{"ua"}= "Ukraine";
+$tldName{"ae"}= "United Arab Emirates";
+$tldName{"uk"}= "United Kingdom";
+$tldName{"us"}= "United States";
+$tldName{"um"}= "United States Minor Outlying Islands";
+$tldName{"uy"}= "Uruguay";
+$tldName{"uz"}= "Uzbekistan";
+$tldName{"vu"}= "Vanuatu";
+$tldName{"ve"}= "Venezuela";
+$tldName{"vn"}= "Vietnam";
+$tldName{"vi"}= "Virgin Islands";
+$tldName{"vg"}= "Virgin Islands (UK)";
+$tldName{"vi"}= "Virgin Islands (US)";
+$tldName{"wf"}= "Wallis and Futuna";
+$tldName{"ps"}= "West Bank";
+$tldName{"eh"}= "Western Sahara";
+$tldName{"ws"}= "Western Samoa";
+$tldName{"ye"}= "Yemen";
+$tldName{"zm"}= "Zambia";
+$tldName{"zw"}= "Zimbabwe";
+
 1;

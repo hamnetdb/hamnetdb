@@ -137,9 +137,12 @@ hamnetdb.edit= function(typ,id,fill) {
     fill= "";
   }
   var wname= typ+"_"+id;
+  var geo= "width=800,height=600";
+  if (typ=='site') {
+    geo= "width=900,height=700";
+  }
   var win= window.open('form_'+typ+'.cgi?id='+id+fill, 'edit_'+wname,
-                   'width=800,height=600,menubar=no,'+
-                   'scrollbars=yes,status=no,toolbar=no,resizable=yes');
+      geo+',menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes');
   win.focus();
 }
 
@@ -321,8 +324,10 @@ hamnetdb.addUserAccess= function(number)
     document.getElementById('plusUser'+number).innerHTML+=text;
     document.getElementById('plusUser'+number).outerHTML+="<tr id =\"plusUser"+next+"\"></tr>";
 
-    document.getElementById('menu').outerHTML = "<tr id =\"menu\" > <td colspan=2><a href=\"javascript:hamnetdb.addUserAccess(" + (next) +")\">\
-                                              Add additional User Access/ Antenna Configuration </a></td></tr> ";
+    document.getElementById('menu').outerHTML= 
+      "<tr id='menu'><td colspan=8>"+
+      "<a href='javascript:hamnetdb.addUserAccess("+next+")'>"+
+      "Add additional User Access / Antenna Configuration</a></td></tr>";
 
     document.getElementsByName("addAnt")[0].value++;
     document.getElementsByName("antenna_dummy")[1].setAttribute('name', "antennatype"+(number));

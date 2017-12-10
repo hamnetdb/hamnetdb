@@ -94,11 +94,11 @@ print qq(
   <td valign="top" align="left" nowrap colspan=1>
     Latitude (e.g. 48.0):<br>
     <input type="text" name="latitude" value="$latitude" style="width:$width;"
-     $chtrack  onkeyup="calcLocatorjs()" id="latitude">
+     $chtrack onkeyup="calcLocatorjs()" id="latitude">
   </td>
   <td valign="top" align="left" nowrap colspan=1>Longitude (e.g. 11.0):<br>
     <input type="text" name="longitude" value="$longitude" style="width:$width;"
-      $chtrack  onkeyup="calcLocatorjs()" id="longitude">
+      $chtrack onkeyup="calcLocatorjs()" id="longitude">
   </td>
   <td valign="top" align="left" nowrap colspan=1>or 10-digit Locator:<br>
   <input type="text" name="locator" value="$locator" style="width:$width;"  
@@ -107,32 +107,29 @@ print qq(
   <td valign='top' style='padding-top: 8px;' colspan=1>
     <a href="javascript:hamnetdb.positionShow($mapHamnet)"><img src="map.png" height="30px" width="30px" /></a>
     <small style="display:inline-block">Hint: <br><a $mapHamnet 
-      href="javascript:hamnetdb.positionShow($mapHamnet)">pick coordinates from map</a> <!--http://no.nonsense.ee/qthmap/--></small>
+      href="javascript:hamnetdb.positionShow($mapHamnet)">pick coordinates from map</a></small>
   </td>
 </tr>
 <tr>
-<td align="top" align="left" nowrap colspan=1>Meters above ground:<br>
+<td valign="top" align="left" nowrap colspan=1>Meters above ground:<br>
     <input type="text" name="elevation" value="$elevation" 
       $chtrack style="width:$width;">
 </td>
-<td colspan=3>&nbsp;</td>
-</tr>
 
 );
 print qq(
-<tr>
-<td colspan=1>);
+<td colspan=3><br>);
 
 &checkBox("Prepare Coverage?", "Cover", $hasCover, $Cover);
 
 print qq(
-</td>
-
-  </td>  <td valign='top' style='padding-top: 8px;' colspan=4>
-  <small>Usermanual for radio propagation<br> can be found <br>on the main site under 
-    <a target="_blank" href="index.cgi?m=help#antenna">"Help"</a></td><td></tr>
-
+  <small>See main page
+    <a target="_blank" href="index.cgi?m=help#antenna">Help</a>
+    for infos on radio propagation.
+    </small>
+  </td></tr>
 </table>
+<div style='margin:10px;'></div>
 <script src="osm/leaflet.js"></script>
 );
 
@@ -166,8 +163,8 @@ print qq(
 <table width="100%">
 
   <tr><td colspan=8> 
-<h4>Hamnet User Access / Antenna Configuration </h4>
-</td> 
+  <h4>Hamnet User Access / Antenna Configuration </h4>
+  </td> 
 );
 
 my $counter=0;
@@ -175,8 +172,7 @@ my $counter=0;
 
 my $sth= $db->prepare("select name from hamnet_antennafiles order by name");
 $sth->execute;
-while (@line= $sth->fetchrow_array) 
-{
+while (@line= $sth->fetchrow_array) {
   push(@antenna, "$line[0]");
 }
 
@@ -285,7 +281,7 @@ while($lines)
 
 
   print qq(
-       <br \><a id="show$counter"  href="javascript:hamnetdb.antennaShow($counter,'0');"> Show selected Pattern </a>
+       <br><a id="show$counter" href="javascript:hamnetdb.antennaShow($counter,'0');"> Show selected Pattern </a>
        </td>
     </tr>
   );
@@ -311,22 +307,19 @@ while($lines)
 
 
 print qq(
-  <input type="hidden" name="addAnt" value="$counter">
-   
-  <tr id ="plusUser$counter"></tr>
-  <tr id ="menu" > <td colspan=8>
-  <a href="javascript:hamnetdb.addUserAccess($counter)"> Add additional User Access/ Antenna Configuration </a>
+  <tr id="plusUser$counter"></tr>
+  <tr id="menu"><td colspan=8>
+  <a href="javascript:hamnetdb.addUserAccess($counter)">
+     Add additional User Access / Antenna Configuration</a>
   </td>
   </tr>
 
   <tr><td colspan=8>
-  <a href="javascript:hamnetdb.edit('antenna')"> Upload/Remove Antenna Pattern</a>
-  </td></tr>
-
-);
-
-
-print qq(
+  <input type="hidden" name="addAnt" value="$counter">
+  <a href="javascript:hamnetdb.edit('antenna')">Upload/Remove Antenna Pattern</a>
+  </td>
+</tr>
+<tr><td>&nbsp;</td></tr>
 <tr>
   <td  valign="top" align="left" nowrap colspan=8>
   Radio config parameters for user access (only for user information; leave empty without user access):<br>
@@ -339,13 +332,13 @@ print qq(
   <input type="text" name="maintainer" value="$maintainer" style="width:100%"$chtrack>
   </td>
   </tr>
-  <tr><td colspan=8
+  <tr><td colspan=8>
 );
 
 
 if (&inList($username, $maintainer) || ($maintainer && $mySysPerm)) {
   &checkBox("Restrict write access to list of site maintainers",
-            "rw_maint", 1, $rw_maint);
+            "rw_maint", 0, $rw_maint);
 }
 
 print qq(
@@ -357,7 +350,7 @@ print qq(
   <tr><td colspan=8>
   Comment area:<br>
   <textarea name="comment" class="txt" $chtrack
-            style="width:100%; height:30px;">$comment</textarea>
+            style="width:100%; height:55px;">$comment</textarea>
   </td></tr></table><table width="100%">
 );
 &afterForm;
@@ -514,8 +507,7 @@ sub checkAntenna
   }
   for(my $k = 1; $k<$numAnt; $k++)
   {
-      
-#*************************Antenna- label*************************
+    #*************************Antenna- label*************************
     
     my $t=$query->param("tag$k");
     unless($inputStatus)
@@ -545,7 +537,7 @@ sub checkAntenna
       push(@tags, $t);
       
     }      
-#*************FREQUENCY********************************
+    #*************FREQUENCY********************************
 
     my $fr=$query->param("frequency$k");
 

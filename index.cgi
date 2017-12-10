@@ -15,8 +15,9 @@
 do "lib.cgi" or die;
 
 # Maximum width in table
-$nameMax= 25;
-$maintainMax= 15;
+$nameMax= 40;
+$maintainMax= 20;
+$commentMax= 80;
 $sortDefault= "c";
 
 $m= $query->param("m");
@@ -33,12 +34,20 @@ $search=~s/:.*//; # replace Edge by left site
 ($foundType, $search)= &prepareWhere($search);
 if ($foundType) {
   $m= $foundType;
+  if ($foundType eq "as") {
+    if ($asWhere=~/as_num='(\d+)'/) {
+      $as= $1;
+    }
+    else {
+      $as= 0;
+    }
+  }
 }
 
 &htmlHead((ucfirst $m)." $search - ");
 print qq(
   $htmlRel
-  <div id="infoPopup" class="vgrad"></div>
+  <div id="infoPopup" class="vgrad" style='padding:5px;'></div>
   <script language="JavaScript">
   function changed() {} // dummy for comboBox which is intended for input-win
   </script>
@@ -60,7 +69,12 @@ for $ml ("AS:as", "Sites:site", "Hosts:host", "Subnets:subnet",
     if ($mp=~/Login/ && $username) {
       $mp.= ": $username";
     }
-    print qq(<td$c><a href="$baseUri/?m=$mc&as=$as">$mp</a></td>\n);
+    my $ass= "";
+    if ($mc ne "as") {
+      $ass= "?m=$mc";
+      $ass.= "&as=$as" if $as>0;
+    }
+    print qq(<td$c><a href="$baseUri/$ass">$mp</a></td>\n);
   }
 }
 print qq(
@@ -69,7 +83,8 @@ print qq(
   <form name="main">
   <div class="cmdbox vgrad">
   <input type="hidden" name="m" value="$m">
-  <img align="right" style="margin-top:-5px;" src="hamnetdb-32.png">
+  <a href='?m='><img width='32' height='32' align="right" style="margin-top:-5px;" 
+     src="hamnetdb-64.png"></a>
 );
 
 if ($m=~/login/i) {
@@ -92,15 +107,17 @@ elsif ($m=~/util/i) {
 elsif ($m=~/history/i) {
   &subMenu("func:List",
            "last200+:Last 200 changes",
-           "all:Whole database",
+           "last2000+:Last 2000 changes",
            "relnotes:Software release notes"
   );
   $sortDefault= "zr";
 }
 else {
-  &searchBox;
-  print("&nbsp;&nbsp;&nbsp;AS:");
-  &asCombo(1, 1, 0, $as);
+  &searchBox; 
+  unless ($m=~/as/i) {
+    print("&nbsp;&nbsp;&nbsp;AS:");
+    &asCombo(1, 1, 0, $as)
+  }
   &dispBut;
   &newBut($m);
 }
@@ -127,12 +144,26 @@ print qq(
 
 
 if ($m eq "as") {
-  unless (&asShow($as)) {
-    print qq(<div class="infobox vgrad" style="padding-bottom:0px;">);
-    &mapMenu;
-    print qq(<h2>The Hamnet-Database</h2></div>);
+  if (! &asShow($search)) {
+    my $cc= "";
+    if ($asWhere=~/country='([a-z][a-z])'/) {
+      $cc= $1;
+    }
+    if ($cc || !$search) {
+      print qq(<div class="infobox vgrad" 
+         style="float:right;padding-bottom:0px;">
+         <h2>The Hamnet-Database</h2>);
+      &mapMenu;
+      print qq(<br><br></div>);
 
-    &asList($search);
+      &overviewList($cc);
+      if ($cc) {
+        &asList("", "AS of ".$tldName{$cc}." ($cc)");
+      }
+    }
+    else {
+      &asList($search);
+    }
   }
 }
 if ($m eq "site") {
@@ -745,7 +776,7 @@ sub showLinkByIP {
     my $typ= $line[$idx++];
     my $as_parent= $line[$idx++];
     my $radioparam= $line[$idx++];
-    my $comment= &maxlen($line[$idx++],25);
+    my $comment= &maxlen($line[$idx++],$commentMax);
     return if $subnetInLink{$ip};
     $subnetInLink{$ip}= 1;
 
@@ -881,7 +912,7 @@ sub showLinkpartner {
 
         if ($radioparam) {
           $hostInfo.= "<br>" if $hostInfo;
-          $hostInfo.=  &maxlen($radioparam,80);
+          $hostInfo.=  &maxlen($radioparam,$commentMax);
         }
         if ($mac) {
           $hostInfo.= "<br>" if $hostInfo;
@@ -896,7 +927,7 @@ sub showLinkpartner {
         }
         if ($comment) {
           $hostInfo.= "<br>" if $hostInfo;
-          $hostInfo.= &maxlen($comment,60);
+          $hostInfo.= &maxlen($comment,$commentMax);
         }
         $hostInfo= "<br>$hostInfo" if $hostInfo;
       }
@@ -924,7 +955,8 @@ sub asShow {
   $search=~s/as *//i;
 
   my $sth= $db->prepare(qq(
-    select id,name,as_num,comment,maintainer,editor,date(edited)
+    select id,name,as_num,as_root,comment,maintainer,country
+    editor, date(edited)
     from hamnet_$t where as_num=).$db->quote($search)
   );
  
@@ -935,8 +967,10 @@ sub asShow {
     my $id= $line[$idx++];
     my $name= $line[$idx++];
     my $as_num= $line[$idx++];
+    my $as_root= $line[$idx++];
     my $comment= $line[$idx++];
     my $maintainer= $line[$idx++];
+    my $country= $line[$idx++];
     my $editor= $line[$idx++];
     my $edited= $line[$idx++];
   
@@ -948,14 +982,26 @@ sub asShow {
     print qq(<h2>).&editIcon($t, $id, 1);
     print qq(
       AS$as_num - $name</h2>
-      Maintainer: <b>$maintainer</b><br>
-      <br>
+      Maintainer: <b>$maintainer</b>
+      &nbsp;&nbsp;<a href="?q=$country">$country - $tldName{$country}</a>
+      <br><br>
       $comment);
     print qq(<div style='text-align:right;font-size:90%'><i>
              Last edited $edited by <b class='ovinfo'>$editor</b></i></div>);
     print qq(
       </div>
     );
+
+    if ($db->selectrow_array("select id 
+      from hamnet_$t where as_root=$as_num")) {
+      $asWhere= "as_root=$as_num";
+      &asList("", "Related to Sub-AS");
+    }
+    if ($as_root) {
+      $asWhere= "as_num=$as_root";
+      &asList("", "Related to Root-AS");
+    }
+
     &siteList("", "Sites".&addIcon("site"));
     &subnetList("", "Subnets".&addIcon("subnet", "&as=$as_num"));
     &hostList("", "Hosts".&addIcon("host"));
@@ -1006,12 +1052,12 @@ sub siteList {
     if ($callsign=~/nocall/) {
       $sort= "zzz$name" if $scrit eq "c";
       $ret.= qq(<td valign=top><a class='ovinfo' ovinfo='$callsign' 
-        href='?m=site&q=$callsign' style='color:#909090'>No Call</a></td>);
+        href='?q=$callsign' style='color:#909090'>No Call</a></td>);
     }
     else {
       $sort= $callsign if $scrit eq "c";
       $ret.= "<td valign=top>".
-         "<a class='ovinfo' href='?m=site&q=$callsign'>$callsign</a></td>\n"; 
+         "<a class='ovinfo' href='?q=$callsign'>$callsign</a></td>\n"; 
     }
     
     $ret.= qq(<td width='14'>$siteStatus{$callsign}</td>);
@@ -1023,10 +1069,10 @@ sub siteList {
     $ret.= "<td valign=top>".&maxlen($maintainer,$maintainMax)."</td>\n"; 
     $sort= $maintainer if ($scrit eq "m");
 
-    $ret.= "<td valign=top>".&maxlen($radioparam,14)."</td>\n"; 
+    $ret.= "<td valign=top>".&maxlen($radioparam,$maintainMax)."</td>\n"; 
     $sort= $radioparam if ($scrit eq "r");
 
-    $ret.= "<td valign=top>".&maxlen($comment, 35)."</td>\n"; 
+    $ret.= "<td valign=top>".&maxlen($comment, $commentMax)."</td>\n"; 
     $sort= $comment if ($scrit eq "k");
 
     $ret.= "<td>".&timespan(time-$edited).
@@ -1062,19 +1108,28 @@ sub subnetList {
   ## - for all other network types do nothing (leave host_site field empty)
   my $sql_statement= qq(
     SELECT
-        h_s.id, h_s.ip, h_s.begin_ip, h_s.typ, h_s.as_num,
-        h_s.as_parent, h_s.radioparam,
-        h_s.comment, h_s.editor, UNIX_TIMESTAMP(h_s.edited),
+        min(h_s.id), h_s.ip, min(h_s.begin_ip), min(h_s.typ), min(h_s.as_num),
+        min(h_s.as_parent), min(h_s.radioparam),
+        min(h_s.comment), min(h_s.editor), UNIX_TIMESTAMP(min(h_s.edited)),
         GROUP_CONCAT(distinct(h_h.site) SEPARATOR ',')  AS host_site
     FROM hamnet_subnet h_s
     LEFT JOIN hamnet_host h_h 
       ON  (
-        h_s.typ NOT IN ("AS-Backbone","AS-User/Services","AS-Packet-Radio") AND
-        h_h.rawip BETWEEN h_s.begin_ip AND h_s.end_ip-1
+        h_h.rawip BETWEEN h_s.begin_ip AND h_s.end_ip-1 AND
+        h_s.typ NOT IN ("AS-Backbone","AS-User/Services","AS-Packet-Radio")
       )
     WHERE $subnetWhere
     GROUP BY h_s.ip
   );
+  # when the full list shall be fetched, do not join to hosts
+  # for the sake of performance
+  if ($subnetWhere eq "1") {
+    $sql_statement= qq(SELECT
+      id, ip, begin_ip, typ, as_num, as_parent, radioparam,
+      comment,editor,unix_timestamp(edited),""
+      FROM hamnet_subnet h_s
+    );
+  }
   my $sth= $db->prepare($sql_statement);
   $sth->execute;
 
@@ -1121,7 +1176,7 @@ sub subnetList {
       $in= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     }
     $ret.= "<td valign=top>$in".
-           "<a class='ovinfo' href='?m=$t&q=$ip'>$bb$ip$be</a></td>\n"; 
+           "<a class='ovinfo' href='?q=$ip'>$bb$ip$be</a></td>\n"; 
     $sort= sprintf("%09d%02d", $begin_ip, $bits) if ($scrit eq "c");
     
     $ret.= "<td valign=top>$in$bb$typ$be</td>\n"; 
@@ -1133,7 +1188,7 @@ sub subnetList {
 
     if ($as_parent>0) { 
       $as_parent= 
-        "<a class='ovinfo' href='?m=as&as=$as_parent'>AS$as_parent</a>\n"; 
+        "<a class='ovinfo' href='?q=$as_parent'>AS$as_parent</a>\n"; 
     } 
     else { 
       $as_parent= "-" 
@@ -1141,7 +1196,6 @@ sub subnetList {
     $ret.= "<td valign=top>$as_parent</td>\n"; 
     $sort= $as_parent if ($scrit eq "p");
 
-    my $commlen= 42;
     my $hs= "";
     $host_site=~s/,$//;
     if ($host_site) {
@@ -1153,12 +1207,11 @@ sub subnetList {
           $hs.= "," if $hs;
           $hs.= "<a href='?q=$site' class='ovinfo'>$site</a>";
         }
-        $commlen-= (length($host_site)+2);
         $hs= "<i>$hs</i>";
         $hs.= " - " if $radioparam;
       }
     }
-    $ret.= "<td valign=top>$hs".&maxlen($radioparam,$commlen)."</td>\n"; 
+    $ret.= "<td valign=top>$hs".&maxlen($radioparam,$commentMax)."</td>\n"; 
     $sort= $radioparam if ($scrit eq "k");
 
     $ret.= "<td>".&timespan(time-$edited).
@@ -1221,7 +1274,7 @@ sub hostList {
     my $ret= qq(<tr id='tr_${t}_$id' class='listentry'>).&editIcon($t, $id);
     $ipHasHost{$ip}= 1;
     $ret.= "<td valign=top>".
-           "<a class='ovinfo' href='?m=$t&q=$ip'>$ip</a></td>\n"; 
+           "<a class='ovinfo' href='?q=$ip'>$ip</a></td>\n"; 
     $sort= sprintf("%8d", $rawip) if ($scrit eq "c");
     
     $ret.= qq(<td width='14'>$hostsStatus{$ip}</td>);
@@ -1234,14 +1287,14 @@ sub hostList {
     $sort= $typ if ($scrit eq "t");
 
     $ret.= "<td valign=top>".
-           "<a class='ovinfo' href='?m=site&q=$site'>$site</a></td>\n"; 
+           "<a class='ovinfo' href='?q=$site'>$site</a></td>\n"; 
     $sort= $site if ($scrit eq "s");
     if ($site) {
       $allSites{$site}= 1;
       $lastSite= $site;
     }
 
-    $ret.= "<td valign=top>".&maxlen($radioparam, 48)."</td>\n"; 
+    $ret.= "<td valign=top>".&maxlen($radioparam, $commentMax)."</td>\n"; 
     $sort= $comment if ($scrit eq "k");
 
     $ret.= "<td>".&timespan(time-$edited).
@@ -1361,9 +1414,8 @@ sub maintainerList {
   
     my $ret= qq(<tr id='tr_${t}_$id' class='listentry'>).&editIcon($t, $id);
 
-    $ret.= "<td valign=top>".
-      "$callsign</td>\n"; 
-    #  "<a href='?m=$t&q=$callsign'>$callsign</a></td>\n"; 
+    $ret.= "<td valign=top>$callsign</td>\n"; 
+    #  "<a href='?q=$callsign'>$callsign</a></td>\n"; 
     $sort= $callsign if ($scrit eq "c");
     
     $ret.= "<td valign=top>$fullname</td>\n"; 
@@ -1403,7 +1455,7 @@ sub maintainerList {
       $ret.= "<td valign=top>$p</td>\n"; 
     }
 
-    $ret.= "<td valign=top>".&maxlen($comment,25)."</td>\n"; 
+    $ret.= "<td valign=top>".&maxlen($comment,$commentMax)."</td>\n"; 
     $sort= $comment if ($scrit eq "k");
 
     $ret.= "<td>".&timespan(time-$edited).
@@ -1432,6 +1484,61 @@ sub maintainerList {
 }
 
 # ---------------------------------------------------------------------------
+sub overviewList {
+  my $cc= shift;
+  my @list= ();
+  my @line= ();
+ 
+  print qq(
+    <style>
+    .countries td {
+      /*font-size: 16px;*/
+    }
+    .countries {
+      max-width: 400px; !important;
+    }
+    </style>
+    <script>
+    </script>
+    <table class='list countries'><tr class='listheader'>
+    <td><b>Country</b></td>
+    <td align=center><b>TLD</b></td>
+    <td align=right><b>AS Count</b></td>
+    <td align=right><b>Last edit</b></td>
+    </tr>
+  );
+
+  my $sth= $db->prepare(qq(
+    select country,count(id),max(unix_timestamp(edited))
+    from hamnet_as 
+    group by country
+  ));
+  $sth->execute;
+
+  while (@line= $sth->fetchrow_array) {
+    my $idx= 0;
+    my $country= $line[$idx++];
+    my $as_count= $line[$idx++];
+    my $newest= $line[$idx++];
+    my $name= $tldName{$country};
+    my $pf= "rechts";
+    if ($cc eq $country) {
+      $pf= "runter";
+    }
+
+    my $ret= qq(<tr id='tr_${t}_$country' class='listentry'>);
+    $ret.= "<td><a href='?q=$country'>
+          <img src='$pf.png' align='absmiddle'> $name</td>\n"; 
+    $ret.= "<td align=center>$country</td>\n"; 
+    $ret.= "<td align=right>$as_count</td>\n"; 
+    $ret.= "<td align=right>".&timespan(time-$newest)."</td>";
+
+    print($ret."</tr>\n");
+  }
+  print("</table>");
+
+}
+# ---------------------------------------------------------------------------
 sub asList {
   my $search= shift;
   my @list= ();
@@ -1439,7 +1546,8 @@ sub asList {
   my $t= "as";
 
   my $sth= $db->prepare(qq(
-    select id,name,as_num,comment,maintainer,editor,unix_timestamp(edited) 
+    select id,name,as_num,as_root,comment,maintainer,editor,
+    unix_timestamp(edited) 
     from hamnet_as where $asWhere
   ));
   $sth->execute;
@@ -1449,6 +1557,7 @@ sub asList {
     my $id= $line[$idx++];
     my $name= $line[$idx++];
     my $as_num= $line[$idx++];
+    my $as_root= $line[$idx++];
     my $comment= $line[$idx++];
     my $maintainer= $line[$idx++];
     my $editor= $line[$idx++];
@@ -1456,19 +1565,27 @@ sub asList {
   
     my $ret= qq(<tr id='tr_${t}_$id' class='listentry'>).&editIcon($t, $id);
 
+    my $as_txt= "AS$as_num";
+    my $as_sort= sprintf("%010d ",$as_num);
+    if ($as_root) {
+      $as_txt= "&nbsp;&nbsp;AS$as_root &gt; AS$as_num";
+      $as_sort= sprintf("%010d-$as_num",$as_root);
+    }
+
     $ret.= "<td valign=top>".
-      "<a class='ovinfo' href='?m=as&as=$as_num'>AS$as_num</a></td>\n"; 
-    $sort= $as_num if ($scrit eq "c");
+      "<a class='ovinfo' ovinfo='AS$as_num' href='?q=$as_num'>".
+      "$as_txt</a></td>\n"; 
+    $sort= $as_sort if ($scrit eq "c");
     
     $ret.= "<td valign=top>$name</td>\n"; 
     $sort= $name if ($scrit eq "n");
 
     $maintainer=~s/,\s+/,/g;
-#/
+
     $ret.= "<td valign=top>".&maxlen($maintainer,$maintainMax)."</td>\n"; 
     $sort= $maintainer if ($scrit eq "m");
 
-    $ret.= "<td valign=top>".&maxlen($comment,42)."</td>\n"; 
+    $ret.= "<td valign=top>".&maxlen($comment,$commentMax)."</td>\n"; 
     $sort= $comment if ($scrit eq "k");
 
     $ret.= "<td>".&timespan(time-$edited). 
@@ -1635,7 +1752,7 @@ sub showCheckList {
     $ret.= "<td valign=top>$ele</td>\n"; 
     $sort= $ele if ($scrit eq "t");
 
-    $ret.= "<td valign=top>".&maxlen($comment, 80)."</td>\n"; 
+    $ret.= "<td valign=top>".&maxlen($comment, $commentMax)."</td>\n"; 
     $sort= $comment if ($scrit eq "k");
 
     $ret.= "<td>".&timespan(time-$edited).
@@ -1805,7 +1922,7 @@ sub showHistoryList {
     $ret.= "<td valign=top>$ele</td>\n"; 
     $sort= $ele if ($scrit eq "t");
 
-    $ret.= "<td valign=top>".&maxlen($comment, 80)."</td>\n"; 
+    $ret.= "<td valign=top>".&maxlen($comment, $commentMax)."</td>\n"; 
     $sort= $comment if ($scrit eq "k");
 
     push(@list, $sort.":}".$ret."</tr>\n");
@@ -1953,15 +2070,15 @@ sub neighbourList {
     if ($callsign=~/nocall/) {
       $sort= "zzz$name" if $scrit eq "c";
       $ret.= qq(<td valign=top><a class='ovinfo' ovinfo='$callsign' 
-        href='?m=site&q=$callsign' style='color:#909090'>No Call</a></td>);
+        href='?q=$callsign' style='color:#909090'>No Call</a></td>);
     }
     else {
       $sort= $callsign if $scrit eq "c";
       $ret.= "<td valign=top>".
-         "<a class='ovinfo' href='?m=site&q=$callsign'>$callsign</a></td>\n"; 
+         "<a class='ovinfo' href='?q=$callsign'>$callsign</a></td>\n"; 
     }
     
-    $ret.= "<td valign=top>".&maxlen($name,30)."</td>\n"; 
+    $ret.= "<td valign=top>".&maxlen($name,$nameMax)."</td>\n"; 
     $sort= $name if ($scrit eq "n");
 
     $ret.= "<td align=right>".sprintf("%0.1f km", $dist)."&nbsp;</td>";

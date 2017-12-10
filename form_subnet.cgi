@@ -121,7 +121,7 @@ print qq(
 
 if (&inList($username, $maintainer) || ($mySysPerm && $maintainer)) {
   &checkBox("Restrict write access to list of parent AS maintainers",
-            "rw_maint", 1, $rw_maint);
+            "rw_maint", 0, $rw_maint);
 }
 
 print qq(
@@ -137,7 +137,7 @@ print qq(
       calcfromIP();
     }
   </script>
-  <table>
+  <table cellspacing=0 cellpadding=4 border=0 width="100%">
 );
 &afterForm;
 exit;
