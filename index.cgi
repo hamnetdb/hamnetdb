@@ -149,12 +149,15 @@ if ($m eq "as") {
     if ($asWhere=~/country='([a-z][a-z])'/) {
       $cc= $1;
     }
-    if ($cc || !$search) {
+    if ($cc || (!$search && !$query->param("bynum"))) {
       print qq(<div class="infobox vgrad" 
          style="float:right;padding-bottom:0px;">
          <h2>The Hamnet-Database</h2>);
       &mapMenu;
-      print qq(<br><br></div>);
+      print qq(<br><br><br>
+        <a href='?bynum=1'>Classic list of AS by number</a>
+        <br><br>
+        </div>);
 
       &overviewList($cc);
       if ($cc) {
@@ -1544,6 +1547,7 @@ sub asList {
   my @list= ();
   my @line= ();
   my $t= "as";
+  my $bynum= $query->param("bynum")+0;
 
   my $sth= $db->prepare(qq(
     select id,name,as_num,as_root,comment,maintainer,editor,
@@ -1567,7 +1571,7 @@ sub asList {
 
     my $as_txt= "AS$as_num";
     my $as_sort= sprintf("%010d ",$as_num);
-    if ($as_root) {
+    if ($as_root && !$bynum) {
       $as_txt= "&nbsp;&nbsp;AS$as_root &gt; AS$as_num";
       $as_sort= sprintf("%010d-$as_num",$as_root);
     }
