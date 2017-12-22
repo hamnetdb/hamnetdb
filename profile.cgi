@@ -38,21 +38,27 @@ unless ($siteId{$left} && $siteId{$right}) {
   print("<h3>Not all sites where found</h3>");
   exit;
 }
-
+left
 #$width= 800  if $width<400;
 $width= 3200 if $width>3200;
 $height= 250;
 
+
+
+unless($root_installation)
+{
+  $hwtimg="https://hamnetdb.net/";
+}
 #$hwtimg= "http://profile.heywhatsthat.com/bin/profile-0904.cgi".
 # "?pt0=$siteLat{$left},$siteLong{$left},c00000,$siteElev{$left}".
 # "&pt1=$siteLat{$right},$siteLong{$right},c00000,$siteElev{$right}".
 # "&axes=1&metric=1&groundrelative=1&curvature=1&freq=5800".
 # "&width=$width&height=$height&src=hamnetdb.net";
 
-$hwtimg= "calc_profile.cgi".
+$hwtimg.= "calc_profile.cgi".
  "?lat_a=$siteLat{$left}&lon_a=$siteLong{$left}&ant_a=$siteElev{$left}".
  "&lat_b=$siteLat{$right}&lon_b=$siteLong{$right}&ant_b=$siteElev{$right}".
- "&f=5800".
+ "&f=5800&wood=30&name_a=$left&name_b=right".
  "&w=$width&h=$height";
 
 #<div style='float:right;margin-top:5px;font-size:80%'>

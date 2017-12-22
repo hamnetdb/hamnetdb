@@ -1362,6 +1362,43 @@ sub hostsStatus {
 }
 
 # ---------------------------------------------------------------------------
+# Determine the link status for a selection of hosts
+sub linkStatus {
+  my $ip= shift;
+  my $type= shift;
+
+
+  my $result="-";
+  my $sth= $db->prepare(qq(
+    select 
+    status,hamnet_host.ip,hamnet_host.monitor,
+    unix_timestamp(ts),unix_timestamp(since),message,agent,value
+    from hamnet_host
+    left join hamnet_check on hamnet_check.ip=hamnet_host.ip
+    where hamnet_check.ip="$ip" and hamnet_check.service="$type"
+    order by ts
+  ));
+  $sth->execute;
+  while (@line= $sth->fetchrow_array) {
+    my $idx= 0;
+    my $status=  $line[$idx++];
+    my $field=   $line[$idx++];
+    my $monitor= $line[$idx++];
+    my $ts=      $line[$idx++];
+    my $since=   "since ".&timespan(time-$line[$idx++]);
+    my $message= $line[$idx++];
+    my $agent=   $line[$idx++];
+    my $value=   $line[$idx++];
+
+    if ($ts>(time-7200)) {
+      if ($status==1) {
+        $result= "$value";
+      }
+    }
+  }
+  return $result;
+}
+# ---------------------------------------------------------------------------
 # End program if it fails unrecoverable in an early stage 
 sub fatal {
   my $reason= shift;

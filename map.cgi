@@ -110,7 +110,13 @@ print qq(
     <script src="osm/Permalink.Layer.js"></script>
     <script src="osm/Permalink.Overlay.js"></script>
 	  <script src="osm/L.Control.LSP.js"></script>
+    
+    <script src="osm/leaflet.contextmenu.js"></script>
+    <!--<script src="osm/leaflet.contextmenu.min.js"></script>-->
+
     <script src="osm/hamnetdb-lf.js"></script>
+    <script src="osm/leaflet.forceZIndex.js"></script>
+
 	 
 	</head>
 	<body onload="init()">
@@ -128,14 +134,22 @@ print qq(
                 <a class="ovinfo" href="index.cgi?q=ir3dv">ir3dv</a>.</td></tr>
             <tr><td><img src="site-grey.png"/></td><td>Site is documented to have no hamnet on site. </td></tr>
           </table>
-          <br><br>
+          <h4> Monitoring </h4>
+          <table>
+            <tr><td bgcolor="#5dff00">&nbsp;</td><td>>=-65dBm<td></td></tr>
+            <tr><td bgcolor="#a2ff00">&nbsp;</td><td>>=-70dBm<td></td></tr>
+            <tr><td bgcolor="#f1ff00">&nbsp;</td><td>>=-75dBm<td></td></tr>
+            <tr><td bgcolor="#ffde00">&nbsp;</td><td>>=-80dBm<td></td></tr>
+            <tr><td bgcolor="#ffa700">&nbsp;</td><td>>=-85dBm<td></td></tr>
+            <tr><td bgcolor="#ff000d">&nbsp;</td><td><=-86dBm<td></td></tr>        
+          </table>
           <h4> Coverage </h4>
+          The receive signal power is based on a 16dBi, 60km maximum radius
 	        <table>
-	        	<tr> <td>The receive signal power is based on a 16dBi, 60km maximum radius</td></tr>
-            <tr> <td> Green: Received power level better than -70 dBm.</td></tr> 
-	        	<tr> <td> Cyan: Received power level better than -75 dBm.</td></tr> 
-	        	<tr> <td> Dark Blue: Received power level better than -81 dBm.</td></tr>   
-	        	<tr> <td> Purple: Received power level better than -89 dBm.</td></tr>
+            <tr><td bgcolor="#59ed59">&nbsp;</td><td>Received power level better than -65 dBm.</td></tr> 
+	        	<tr><td bgcolor="#59dbd9">&nbsp;</td><td>Received power level better than -70 dBm.</td></tr> 
+	        	<tr><td bgcolor="#81a9ff">&nbsp;</td><td>Received power level better than -75 dBm.</td></tr>   
+	        	<tr><td bgcolor="#a759ff">&nbsp;</td><td>Received power level better than -80 dBm.</td></tr>
 	        </table>
         </div>
         <div id="info_by">HamnetDB by DL8MBT <br />Map by OE2LSP</div>

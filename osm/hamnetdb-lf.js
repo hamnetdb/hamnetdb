@@ -48,21 +48,35 @@ var hoverpop;
 var kmlUrl = "mapelements.cgi?geojson=1&rnd="+Math.random();
 
 var CoverUrl = "coverage/";
-
-
-
 var CoverageLayers = new Array();
-
 var GreenCover = new L.layerGroup();
 
+var profileFrecuency = 5800;
+var profileWood=30;
+var profileLabelA="asdf";
+var profileLabelB="hgjk";
+var profileTowerA=10;
+var profileTowerB=10;
+var profileMa;
+var profileMb;
+var profileLine;
+var popup;
+
 function init()
-{
+{ 
   
   var source = getParameter("source");
   hoverpop = getParameter("hover");
   var country = getParameter("country");
   var as = getParameter("as");
   var site = getParameter("site");
+  var ma_lat = getParameter("ma_lat");
+  var ma_lon = getParameter("ma_lon");
+  var mb_lat = getParameter("mb_lat");
+  var mb_lon = getParameter("mb_lon");
+  var profileLabelA = getParameter("mb_lab");
+  var profileLabelB = getParameter("mb_lab");
+
   var CoverUrl= "coverage/";
 
   if (country && country.length==2) {
@@ -98,7 +112,21 @@ function init()
 
   
   var attribution = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'; 
-  map = new L.Map('map', {center: new L.LatLng(49.26, 12.47), zoom: 7, zoomControl:false});
+  map = new L.Map('map', 
+    {center: new L.LatLng(49.26, 12.47), 
+    zoom: 7, 
+    zoomControl:false,
+    contextmenu: true,
+      contextmenuWidth: 140,
+        contextmenuItems: [
+        {
+          text: 'place Profile "From"',
+          callback: placeProfileFrom
+        }, '-', {
+          text: 'place Profile "To"',
+          callback: placeProfileTo
+        }
+    ]});
   //plugin MousePosition
   L.control.mousePosition({position: 'bottomright'}).addTo(map);
   //plugin Minimap
@@ -175,33 +203,96 @@ function init()
       {
         case "Tunnel":
           color = "#808080";
-          weight = 3.5;    
+          weight = 3.5;
+          opacity= 0.5; 
+          zIndexOffset=-2000;   
           break;
         case "Routing-Radio":
           color = "#1d97ff";
           weight = 6;
+          opacity= 0.5;
+          zIndexOffset=-2000;   
           break;        
         case "Routing-Tunnel":
           color = "#808080";
           weight = 3.5;
+          opacity= 0.5;
+          zIndexOffset=-2000;   
           break;
         case "Radio":
           color = "#1d97ff";
           weight = 6;
+          opacity= 0.5;
+          zIndex = 400;
+          zIndexOffset=-2000;   
           break;
         case "Routing-ISM":
           color = "#ad00e1";
           weight = 6;
+          opacity= 0.5;
+          zIndex = 400;
+          zIndexOffset=-2000;   
+          break;
+        case "Routing-Ethernet":
+          color = "#808080";
+          weight = 3.5;
+          opacity= 0.5;
+          zIndexOffset=-2000;   
           break;
         case "ISM":
           color = "#ad00e1";//d800ff
           weight = 6;
+          opacity= 0.85
+          zIndex = 400;
+          zIndexOffset=-2000;   
+          break;
+        case "hf1":
+          color = "#5dff00";//green
+          weight = 6;
+          opacity= 0.8;
+          zIndexOffset=2000;   
+          break;
+        case "hf2":
+          color = "#a2ff00";//green-yellow
+          weight = 6;
+          opacity= 0.8;
+          zIndexOffset=2000;   
+          break;
+        case "hf3":
+          color = "#f1ff00";//yellow
+          weight = 6;
+          opacity= 0.8;
+          zIndexOffset=2000;   
+          break;
+        case "hf4":
+          color = "#ffde00";//bright-orange
+          weight = 6;
+          opacity= 0.8;
+          zIndexOffset=2000;   
+          break;
+        case "hf5":
+          color = "#ffa700";//dark-orange
+          weight = 6;
+          opacity= 0.8;
+          zIndexOffset=2000;   
+          break;
+        case "hf6":
+          color = "#ff000d";//red
+          weight = 6;
+          opacity= 0.8;
+          zIndexOffset=2000;   
+          break;
+        case "hf7":
+          color = "#ff000d";//red
+          weight = 6;
+          opacity= 0.8;
+          zIndexOffset=2000;   
           break;
         default:
           color = "#f00000";
           weight = 6;
       }
-      opacity= 0.5; 
+       
       return {color: color, weight:weight, opacity:opacity};//feature.properties.GPSUserColor};
     },
 
@@ -212,7 +303,7 @@ function init()
           iconAnchor: [10, 16],
           popupAnchor: [0, 0]
         }),
-        zIndexOffset:feature.properties.zIndex 
+        zIndexOffset:1000
       });
 
     },
@@ -261,21 +352,43 @@ function init()
         });
 	//layer.on('click', function (e) {});
       }
-    }
+      layer.options.zIndex = index
+
+    }  
+
   };
+  index=300;
+  offset=-4000
   var hamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1",settingshamnet);
+  index=500;
+  offset=3000;
+  var hamnetmonitorLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&radio=1",settingshamnet);
   var nohamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
   var tunnelLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
-  
+  hamnetLayer.on('add', function (e) {
+    hamnetLayer.bringToBack()
+  });
+  nohamnetLayer.on('add', function (e) {
+    nohamnetLayer.bringToBack()
+  });
+  tunnelLayer.on('add', function (e) {
+    tunnelLayer.bringToBack()
+  });
   map.addLayer(hamnetLayer);
   //map.addLayer(nohamnetLayer);
   //map.addLayer(tunnelLayer);
-
   map.addLayer(mapnikLayer);
- 
+
+
+
+  //map.removeLayer(nohamnetLayer);
+  //map.removeLayer(tunnelLayer);
+  //map.removeLayer(hamnetmonitorLayer);
+  //map.removeLayer(mapnikLayer);
+
+
+
   GreenCover.addTo(map);
-
-
  
   if(source <=1)
   {
@@ -333,6 +446,7 @@ function init()
   
   var overlayLayers = {
     'Hamnet': hamnetLayer,
+    'Hamnet RSSI': hamnetmonitorLayer,
     'tunnel connections': tunnelLayer,
     'sites without Hamnet': nohamnetLayer
   };
@@ -358,9 +472,215 @@ function init()
     getAs(as); 
   if(site != 0)
     getSite(site); 
- // map.setView([51.2, 7], 9);
+ // map.setView([51.2, 7], 9);  
+
+
+  //Profile init
+  if ((ma_lat!=0) && (ma_lon!=0) & (mb_lat!=0) & (mb_lon!=0))
+  {
+    ma = new L.LatLng(ma_lat, ma_lon),
+    mb = new L.LatLng(mb_lat, mb_lon);
+    drawFrom(ma);
+    drawTo(mb);
+    proceedProfile();
+    drawProfile();
+    map.setView([((ma_lon+ma_lon)/2), ((ma_lat+mb_lat)/2)], 9);
+    //map.setZoom(9);
+  }
+
+  //profileLabelA 
+  //profileLabelB 
     
 }
+function placeProfileFrom (e) {
+  //alert(e.latlng);
+  deleteProfileMa();
+  drawFrom(e.latlng);
+  proceedProfile();
+} 
+function placeProfileTo (e) {
+  deleteProfileMb();
+  drawTo(e.latlng);
+  proceedProfile();
+} 
+function drawFrom(latlng)
+{
+  profileMa = L.marker(latlng, {
+      icon: L.icon({
+          iconUrl: 'osm/images/marker-red.png',
+          iconSize: [17, 25],
+          iconAnchor: [8, 25],
+          popupAnchor: [0, 0],
+          zIndex: 9997,
+          //zIndexOffset: 3000,
+        }),
+      draggable: true,
+      contextmenu: true,
+      contextmenuItems: [
+        {
+          text: 'calculate p2p-Profile',
+          callback: function (e) { 
+            drawProfile() ;}
+        },
+        {
+          text: 'delete From',
+          callback: function (e) { 
+            deleteProfileLine(); 
+            map.removeLayer(profileMa);
+          }
+        },
+        {
+          text: 'delete all',
+          callback: function (e) { 
+            deleteProfileLine(); 
+            deleteProfileMb();
+            map.removeLayer(profileMa);
+          }
+        }
+      ]
+  }).addTo(map);
+  profileMa.setForceZIndex(9966);
+  profileMa.on("dragend", function(e){proceedProfile();});
+  profileMa.on("click", function(e){drawProfile();});
+
+  //profileMa.bringToFront()
+  proceedProfile()
+}
+function drawTo(latlng)
+{
+  profileMb = L.marker(latlng, {
+      icon: L.icon({
+          iconUrl: 'osm/images/marker-red.png',
+          iconSize: [17, 25],
+          iconAnchor: [8, 25],
+          popupAnchor: [0, 0],
+          zIndex: 9996,
+          //zIndexOffset: 3000,
+        }),
+      draggable: true,
+      contextmenu: true,
+      contextmenuItems: [
+        {
+          text: 'calculate p2p-Profile',
+          callback: function (e) { 
+            drawProfile() ;}
+        },
+        {
+          text: 'delete To',
+          callback: function (e) { 
+              deleteProfileLine();
+              map.removeLayer(profileMb); 
+            }
+        },
+        {
+          text: 'delete all',
+          callback: function (e) { 
+            deleteProfileLine(); 
+            deleteProfileMa();
+            map.removeLayer(profileMb);
+          }
+        }  
+      ]
+  }).addTo(map);
+  profileMb.setForceZIndex(9965);
+  profileMb.on("dragend", function(e){proceedProfile();});
+  profileMb.on("click", function(e) {drawProfile();});
+  //profileMb.setZIndex(9999);
+  proceedProfile()
+}
+function proceedProfile()
+{
+  if ((typeof profileMa !== 'undefined') &&(typeof profileMb !== 'undefined')) {
+    //map.removeLayer(profileMb);
+  
+    if((profileMa._icon != null) && (profileMb._icon != null))
+    {
+      deleteProfileLine();
+      var pointList = [profileMa._latlng, profileMb._latlng];
+      profileLine = new L.Polyline(pointList, {
+        color: 'red',
+        weight: 3,
+        opacity: 0.9,
+        smoothFactor: 1,
+        zIndex:9994,
+      });
+      profileLine.addTo(map);
+      //profileLine.bringToFront()
+    }
+  }
+}
+
+function deleteProfileLine() {
+  if (typeof profileLine !== 'undefined')
+  {
+   if(profileLine._map != null)
+   {
+     map.removeLayer(profileLine);
+   }
+  };
+}
+function deleteProfileMa() {
+  if (typeof profileMa !== 'undefined') {
+    map.removeLayer(profileMa);
+  }
+}
+function deleteProfileMb() {
+  if (typeof profileMb !== 'undefined') {
+    map.removeLayer(profileMb);
+  }
+}
+
+function drawProfile () {
+  if ((typeof profileMa !== 'undefined') && (typeof profileMb !== 'undefined')) {
+    if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+      var lat1 = profileMa._latlng['lat'];
+      var lon1 = profileMa._latlng['lng'];
+      var lat2 = profileMb._latlng['lat'];
+      var lon2 = profileMb._latlng['lng'];
+      var customOptions ={
+        className: 'popuppprofile',
+        minWidth:550,
+        maxWidth:550,
+        maxHeight:250,
+      }
+      var popupcontent="<img src='http://neu.hamnetdb.net/calc_profile.cgi?f=5800&lon_a="+
+        lon1+"&lat_a="+lat1+"&lon_b="+lon2+"&lat_b="+lat2+"&h=350&w=650' alt='loading...'/>\
+        <p><form id='profile'>&nbsp;&nbsp;\
+        label from<input name='labela' value='"+profileLabelA+"' size='30' style='width:40px'/>&nbsp;&nbsp;\
+        tower size from<input name='towera' value='"+profileTowerA+"' size='3' style='width:18px'/>m&nbsp;&nbsp;\
+        label to<input name='labelb' value='"+profileLabelB+"' size='3  0' style='width:40px'/>&nbsp;&nbsp;\
+        tower size to<input name='towerb' value='"+profileTowerB+"' size='3' style='width:18px'/>m<br>\
+        &nbsp;&nbsp;&nbsp;frequency:<input name='frequency' type='text' value='"+profileFrecuency+"' size='6' style='width:30px' />\
+        (MHz) &nbsp;treesize:<input name='wood' type='text' value='"+profileWood+"' size='3' style='width:18px' />\
+        0...100m &nbsp;&nbsp;font size<select name='fontsize'><option value='1'>10</option><option value='2'>14</option><option value='3'>20</option></select> \
+        <input type='button' value='recalculate' style='height:24px' >&nbsp;&nbsp;<input type='button' value='open big Profile' style='height:24px'></form>\
+         &nbsp &nbsp\</p>";
+
+
+      popup = L.popup({
+        closeButton: true,
+        closeOnClick:false,
+        autoClose: false,
+        className: 'popupProfile', 
+        minWidth: 650,
+        //maxWidth: 650,
+        Width: 650,
+        Height: 420,
+      })
+      .setLatLng([(lat1 + lat2)/2, (lon1+lon2)/2])
+      .setContent(popupcontent)
+      .openOn(map);
+    
+      map.addLayer(popup);
+
+      var pos = map.latLngToLayerPoint(popup._latlng);
+      L.DomUtil.setPosition(popup._wrapper.parentNode, pos);
+      var draggable = new L.Draggable(popup._container, popup._wrapper);
+      draggable.enable();
+
+    }
+  }
+} 
 function popupSetting()
 {
   var pop = document.getElementById("hoverpopup").checked;

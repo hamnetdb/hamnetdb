@@ -58,8 +58,8 @@ h4 {
 }
 #info_by
 {
-	position: absolute;
-	bottom: 10px;
+  margin-top: 15px;
+  border-top: 1px solid gray;
 }
 #only_as select {
   width:190px;
@@ -269,3 +269,69 @@ font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 .leaflet-right {
   transition: right 0.5s; }
 /**********end Sidebar-plugin*/
+
+/********context Menu*/
+.leaflet-contextmenu {
+    display: none;
+    box-shadow: 0 1px 7px rgba(0,0,0,0.4);
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    padding: 4px 0;
+    background-color: #fff;
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.leaflet-contextmenu a.leaflet-contextmenu-item {
+    display: block;
+    color: #222;
+    font-size: 12px;
+    line-height: 20px;
+    text-decoration: none;
+    padding: 0 12px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    cursor: default;
+    outline: none;
+}
+
+.leaflet-contextmenu a.leaflet-contextmenu-item-disabled {
+    opacity: 0.5;
+}
+
+.leaflet-contextmenu a.leaflet-contextmenu-item.over {
+    background-color: #f4f4f4;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+
+/**********profile popup********/
+.popupProfile .leaflet-popup-tip,
+.popupProfile .leaflet-popup-content-wrapper {
+    background: #ffffff;
+    color: #000000;
+}
+.popupProfile .leaflet-popup-tip-container {
+    visibility: hidden;
+}
+.popupProfile .leaflet-popup-content {
+    margin: 20px 0px 0px 0px;
+    width: 100%;
+}
+.popupProfile .leaflet-popup-content input {
+    height: 15px;
+    padding: 0;
+    font-size: 12px;
+}
+.popupProfile .leaflet-popup-content select {
+    font-size: 11px;
+    padding: 0;
+    margin: 0
+}
+.popupProfile .leaflet-popup-content p {
+    margin: 0;
+    padding: 0;
+}

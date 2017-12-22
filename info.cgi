@@ -284,7 +284,7 @@ unless ($found) {
 
     my $sth= $db->prepare(qq(select 
       hamnet_subnet.radioparam,h0.ip,h1.ip,h0.radioparam,h1.radioparam,
-      h0.typ,h1.typ
+      h0.typ,h1.typ, hamnet_subnet.begin_ip, hamnet_subnet.end_ip
       from hamnet_subnet
       left join hamnet_host as h0 on h0.rawip between begin_ip and end_ip
       left join hamnet_host as h1 on h1.rawip between begin_ip and end_ip
@@ -300,6 +300,8 @@ unless ($found) {
       my $radioparam1= $line[$idx++];
       my $typ0= $line[$idx++];
       my $typ1= $line[$idx++];
+      my $begin_ip= $line[$idx++];
+      my $end_ip= $line[$idx++];
       $radioparam0=~s/,/<br>/;
       $radioparam1=~s/,/<br>/;
       $radioparam.= " - " if $radioparam && $dist;
@@ -308,6 +310,48 @@ unless ($found) {
       if ($typ0 eq $typ1 && !($typ0=~/Radio/i)) {
         $radioparam.= " - $typ0";
       }
+
+      #get rssi
+      my $monitor_left;
+      $sql=qq(select 
+        ip
+        from hamnet_host
+        where 
+        monitor=1 and rawip > $begin_ip and 
+        rawip < $end_ip and site='$callsign[0]'
+      );
+      my $sth= $db->prepare($sql);
+      $sth->execute;
+      while (@line= $sth->fetchrow_array) {
+        my $idx= 0;
+        $monitor_left= $line[$idx++];
+      }
+
+      my $monitor_right;
+      $sql=qq(select 
+        ip
+        from hamnet_host
+        where 
+        monitor=1 and rawip > $begin_ip and 
+        rawip < $end_ip and site='$callsign[1]'
+      );
+      my $sth= $db->prepare($sql);
+      $sth->execute;
+      while (@line= $sth->fetchrow_array) {
+        my $idx= 0;
+        $monitor_right= $line[$idx++];
+      }
+      my $rssi; 
+      my $rssi1; 
+      my $rssi2; 
+      $rssi1=linkStatus($monitor_left,'rssi');
+      $rssi2=linkStatus($monitor_right,'rssi');
+      $rssi1= $rssi1." dBm" if length($rssi1) >2;
+      $rssi2= $rssi2." dBm" if length($rssi2) >2;
+      if (length($rssi1)>1 || length($rssi2)>1) {
+        $rssi= $rssi1." / ".$rssi2;
+      }
+
 
       my %st= &hostsStatus("hamnet_host.ip in ('$ip0','$ip1')");
 
@@ -327,12 +371,16 @@ unless ($found) {
           </td>
         </tr>
         <tr>
-          <td colspan=3 align="center"><p><b>$radioparam</b></td>
+          <td colspan=3 align="center"><p><b>$radioparam</b>
+          <br>
+          $rssi</td>
         </tr>
         </table>
+
       );
       $found= 1;
     }
+    # edge links
     unless ($found) {
       my $sth= $db->prepare(qq(select 
         left_host,right_host,typ,radioparam,comment

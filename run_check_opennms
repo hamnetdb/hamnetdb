@@ -1,0 +1,131 @@
+#!/usr/bin/perl
+# -------------------------------------------------------------------------
+# Hamnet IP database - Run checks of live network
+#
+# Remark: This program calls agents by ssh and relies on an installed
+# fping with setuid root and a key-based ssh connecton to the agent.
+# The agent hosts have to be defined in config.cgi
+#
+# Flori Radlherr, DL8MBT, http://www.radlherr.de
+# Lucas Speckbacher, OE2LSP, http://www.radlherr.de
+#
+# Licensed with Creative Commons Attribution-NonCommercial-ShareAlike 3.0
+# http://creativecommons.org/licenses/by-nc-sa/3.0/
+# - you may change, distribute and use in non-commecial projects
+# - you must leave author and license conditions
+# -------------------------------------------------------------------------
+#
+# Determine current directory to run properly as cronjob
+
+use JSON;
+use LWP::UserAgent;
+use feature qw/ say /;
+use Data::Dumper;
+do "lib.cgi" or die;
+
+
+# see config.cgi to define monitorAgents names
+
+
+# take all IPs of monitored hosts from database 
+my @all_ips= ();
+my $sth= $db->prepare(qq(select ip 
+         from hamnet_host where monitor=1));
+$sth->execute;
+while (@line= $sth->fetchrow_array) {
+  push(@all_ips, $line[0]);
+#  print $line[0], "\n";
+}
+
+$i=0;
+foreach $agent (@monitorAgents) { 
+  
+  performCheck($monitorAgents[$i][0],$monitorAgents[$i][1]);
+  $i++;
+}
+exit;
+
+
+sub performCheck{
+  my $agent= shift;
+  my $url= shift;
+  
+  # fetch data and make it usable
+  $json_data= get_api_data($url);
+  my @decoded_json = @{decode_json($json_data)};
+  #print Dumper(@decoded_json[0]), length(@decoded_json), "\n";
+  #my @array = @{eval LISTLABELSARRAY($json_data)};
+
+  # {
+  #    'metric' => 'RSSI',
+  #    'stamp' => '2017-12-21T15:38:20+00:00',
+  #    'unixtimestamp' => 1513870700,
+  #    'foreignid' => '44.134.190.29',
+  #    'value' => '-66',
+  #    'metricid' => 1
+  #  };
+  my %rssi= ();
+  my %rssi_timestamp= ();
+  foreach my $entry (@decoded_json) { 
+      if ($entry->{'metric'} eq 'RSSI')
+      {
+        $rssi{$entry->{'foreignid'}}=$entry->{'value'};
+        $rssi_timestamp{$entry->{'foreignid'}}=$entry->{'unixtimestamp'};
+      }
+  } 
+
+  #update database
+  $service="rssi";
+
+  foreach $ip (@all_ips) {
+  #  print $ip, " ", $rssi{$ip}," ",$rssi_timestamp{$ip},"\n";
+    if (defined($rssi{$ip})) {
+      my $where= "ip='$ip' and agent='$agent' and service='$service' and status=1";
+      my $set=   "set ts=FROM_UNIXTIME($rssi_timestamp{$ip}),value='$rssi{$ip}',message='opennms'";
+
+      my $sql= "";
+      my $sth= $db->prepare(qq(select ip from hamnet_check
+               where $where));
+      $sth->execute;
+      if ($sth->fetchrow_array) {
+        $sql= "update hamnet_check $set where $where";
+      }
+      else {
+        $sql= "replace hamnet_check $set,since=FROM_UNIXTIME($rssi_timestamp{$ip}),status='1',".
+              "ip='$ip',agent='$agent',service='$service'";
+      }
+      $okCount++;
+      #&log($agent, $sql);
+  #    print $sql, "\n";
+      $db->do($sql);
+    }
+    else
+    {
+      $notokCount++;
+    }
+    $Count++;
+
+  }
+  print $Count,"\nok:", $okCount,  "\nnotok:", $notokCount,"\n";
+
+
+}
+
+sub get_api_data{
+  $url=shift;
+ 
+  my $ua      = LWP::UserAgent->new(); 
+  my $request = HTTP::Request->new(GET => $url);
+
+  my $response = $ua->request($request);
+  if ($response->is_success) {
+    my $message = $response->decoded_content;
+    #print "Received reply: $message\n";
+    return $message;
+  }
+  else {
+    print "HTTP POST error code: ", $response->code, "\n";
+    print "HTTP POST error message: ", $response->message, "\n";
+  }
+
+}

@@ -21,8 +21,9 @@ my $no_hamnet=   $query->param("no_hamnet")+0;
 my $no_tunnel=   $query->param("no_tunnel")+0;
 my $no_radio=    $query->param("no_radio")+0;
 my $no_ism=      $query->param("no_ism")+0;
+my $radio=        $query->param("radio")+0;
 my $geojson=     $query->param("geojson")+0;
-
+#print qq(Content-Type: text/plain\nExpires: 0 \n\n);
 # The result arrays which are rendered as JSON or GeoJSON
 my @allSites= ();
 my @allEdges= ();
@@ -180,8 +181,79 @@ foreach $net (sort keys %all_hosts) {
                  $site_country{$sites[1]} ne $only_country)
       } 
       
-      next if (($no_tunnel && $typ=~/tunnel/i) || ($no_radio && $typ=~/radio/i) || ($no_ism&& $typ=~/ISM/i));
-      push(@allEdges, "$typ;$net;$sites[0];$sites[1]");
+      next if (($no_tunnel && $typ=~/tunnel/i) || ($no_tunnel && $typ=~/ethernet/i) || ($no_radio && $typ=~/radio/i) || ($no_ism&& $typ=~/ISM/i));
+
+      #get rssi
+      my $style=$typ;
+      if ($radio) {
+        #get worst rssi
+        #get net boundary
+        #print $sql;
+        my $begin_ip;
+        my $end_ip;
+        my $sth= $db->prepare(qq(select 
+          begin_ip, end_ip
+          from hamnet_subnet
+          where 
+          ip='$net'
+        ));
+        $sth->execute;
+        while (@line= $sth->fetchrow_array) {
+          my $idx= 0;
+          $begin_ip= $line[$idx++];
+          $end_ip= $line[$idx++];
+        }
+        #left monitored host -> rssi
+        my $monitor_left;
+        my $sth= $db->prepare(qq(select 
+          ip
+          from hamnet_host
+          where 
+          monitor=1 and rawip > $begin_ip and 
+          rawip < $end_ip and site='$sites[0]'
+        ));
+        $sth->execute;
+        while (@line= $sth->fetchrow_array) {
+          my $idx= 0;
+          $monitor_left= $line[$idx++];
+        }
+        #right monitored host -> rssi
+        my $monitor_right;
+        $sql=qq(select 
+          ip
+          from hamnet_host
+          where 
+          monitor=1 and rawip > $begin_ip and 
+          rawip < $end_ip and site='$sites[1]'
+        );
+        my $sth= $db->prepare($sql);
+        $sth->execute;
+        while (@line= $sth->fetchrow_array) {
+          my $idx= 0;
+          $monitor_right= $line[$idx++];
+        }
+        my $rssi; 
+        my $rssi2; 
+        $rssi=linkStatus($monitor_left,'rssi');
+        $rssi2=linkStatus($monitor_right,'rssi');
+        next if ((length($rssi) <2 ) && (length($rssi2) <2 ));
+        #print $net."  ".$begin_ip." ".$end_ip."\n";
+        if((length($rssi) >1 ) || (length($rssi2) >1 )) {
+
+          $rssi = $rssi+0;
+          $rssi2 = $rssi2+0;
+          $rssi= $rssi2 if $rssi > $rssi2; 
+          
+          if   ($rssi>-66) {$style= 'hf1';} 
+          elsif($rssi>-71) {$style= 'hf2';} 
+          elsif($rssi>-76) {$style= 'hf3';} 
+          elsif($rssi>-81) {$style= 'hf4';} 
+          elsif($rssi>-86) {$style= 'hf5';} 
+          elsif($rssi>-99) {$style= 'hf6';} 
+          else             {$style= 'hf7';} 
+        }
+      } 
+      push(@allEdges, "$style;$net;$sites[0];$sites[1]");
     }
   }
 }
@@ -202,7 +274,7 @@ while (@line= $sth->fetchrow_array) {
     next if ($site_country{$left_site} ne $only_country &&
              $site_country{$right_site} ne $only_country)
   }
-  next if (($no_tunnel && $typ=~/tunnel/i) || ($no_radio && $typ=~/radio/i) || ($no_ism && $typ=~/ISM/i));
+  next if (($no_tunnel && $typ=~/tunnel/i) || ($no_radio && $typ=~/radio/i) || ($no_ism && $typ=~/ISM/i) || ($radio));
   push(@allEdges, "$typ;$left_site:$right_site;$left_site;$right_site");
 }
 

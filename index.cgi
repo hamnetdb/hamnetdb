@@ -809,8 +809,40 @@ sub showLinkByIP {
     foreach $ip (sort keys %host_site) {
       next if $ip eq $left_ip;
       $right.= &showLinkpartner($host_site{$ip},$ip,$host_site{$left_ip});
+      $right_ip= $ip;
+    }
+    
+    #get hosts and rssi values
+    my $monitor_left;
+    $sql=qq(select 
+      ip
+      from hamnet_host
+      where 
+      monitor=1 and rawip > $begin_ip and 
+      rawip < $end_ip and site='$host_site{$left_ip}'
+    );
+    my $sth= $db->prepare($sql);
+    $sth->execute;
+    while (@line= $sth->fetchrow_array) {
+      my $idx= 0;
+      $monitor_left= $line[$idx++];
     }
 
+    my $monitor_right;
+    $sql=qq(select 
+      ip
+      from hamnet_host
+      where 
+      monitor=1 and rawip > $begin_ip and 
+      rawip < $end_ip and site='$host_site{$right_ip}'
+    );
+    my $sth= $db->prepare($sql);
+    $sth->execute;
+    while (@line= $sth->fetchrow_array) {
+      my $idx= 0;
+      $monitor_right= $line[$idx++];
+    }
+   
     my $c= "";
     if ($radioparam) {
       $c.= "<br>$radioparam";
@@ -818,7 +850,16 @@ sub showLinkByIP {
     if ($comment) {
       $c.= "<br>$comment";
     }
-
+    my $rssi; 
+    my $rssi1; 
+    my $rssi2; 
+    $rssi1=linkStatus($monitor_left,'rssi');
+    $rssi2=linkStatus($monitor_right,'rssi');
+    $rssi1= $rssi1." dBm" if length($rssi1) >2;
+    $rssi2= $rssi2." dBm" if length($rssi2) >2;
+    if (length($rssi1)>1 || length($rssi2)>1) {
+      $rssi= $rssi1." / ".$rssi2;
+    }
     my $ed= "";
     $ed= &editIcon("subnet", $id, 1);
     print qq(
@@ -831,6 +872,7 @@ sub showLinkByIP {
         $ed <a class='ovinfo' href="?q=$ip">$ip</a><br>
         <img src="arrow.png">
         $c<br>
+        <span alt="RSSI see help">$rssi</span>
       </td>
       <td width="37%">$right</td>
       </tr>
