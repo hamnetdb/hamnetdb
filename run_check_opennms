@@ -16,11 +16,12 @@
 # -------------------------------------------------------------------------
 #
 # Determine current directory to run properly as cronjob
+my $home= $0;
+$home=~s/[^\/]*$//;
+chdir($home);
 
 use JSON;
 use LWP::UserAgent;
-use feature qw/ say /;
-use Data::Dumper;
 do "lib.cgi" or die;
 
 
