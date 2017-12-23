@@ -924,11 +924,13 @@ sub showLinkpartner {
           $dist.= " - ".&bearing($peer_lat,$peer_long,$lat,$long);
           $linkInfo.=
               qq(<br>$dist - <a target='_blank' href=').
-              qq(http://ham.remote-area.net/linktool/index?F=58).
-              qq(&RZ0=$peer_site&RZ1=$own_site&P0B=$peer_lat&P0L=$peer_long).
-              qq(&P1B=$lat&P1L=$long&H0=$peer_ele&H1=$ele).
-              qq(&RZ0a=$peer_site&RZ1a=$own_site&Senden=HAMNETDB' ).
-              qq(title='External system to calculate the line of sight'>).
+              qq(map.cgi?mb_lat=$lat&mb_lon=$long&mb_tow=$ele&mb_lab=$own_site&).
+              qq(ma_lat=$peer_lat&ma_lon=$peer_long&ma_tow=$peer_ele&ma_lab=$peer_site' ).
+              #qq(http://ham.remote-area.net/linktool/index?F=58).
+              #qq(&RZ0=$peer_site&RZ1=$own_site&P0B=$peer_lat&P0L=$peer_long).
+              #qq(&P1B=$lat&P1L=$long&H0=$peer_ele&H1=$ele).
+              #qq(&RZ0a=$peer_site&RZ1a=$own_site&Senden=HAMNETDB' ).
+              qq(title='Show link in Map'>).
               qq(Show in Linktool</a>);
         }
         else {
@@ -2146,14 +2148,19 @@ sub neighbourList {
 
     my $prof= "openProfile('tr_site_$id','$site','$callsign')";
     $ret.= qq(<td><a title="Show terrain profile to check line of sight" ).
-      qq(href="javascript:$prof">Profile</a> | ).
-      qq(<a href='http://ham.remote-area.net/linktool/index?F=58).
-      qq(&RZ0=$site&RZ1=$callsign).
-      qq(&P0B=$siteLat{$site}&P0L=$siteLong{$site}).
-      qq(&P1B=$siteLat{$callsign}&P1L=$siteLong{$callsign}).
-      qq(&H0=$siteElev{$site}&H1=$siteElev{$callsign}).
-      qq(&RZ0a=$site&RZ1a=$callsign).
-      qq(&Senden=HAMNETDB' target='_blank'>Show in linktool</a></td>);
+      qq(href="javascript:$prof">Profile</a> | <a href=').
+      qq(map.cgi?ma_lat=$siteLat{$site}&ma_lon=$siteLong{$site}).
+      qq(&ma_tow=$siteElev{$site}&ma_lab=$site&).
+      qq(mb_lat=$siteLat{$callsign}&mb_lon=$siteLong{$callsign}).
+      qq(&mb_tow=$siteElev{$callsign}&mb_lab=$callsign').
+      qq(target='_blank'>Show in linktool</a></td>);
+      #qq(<a href='http://ham.remote-area.net/linktool/index?F=58).
+      #qq(&RZ0=$site&RZ1=$callsign).
+      #qq(&P0B=$siteLat{$site}&P0L=$siteLong{$site}).
+      #qq(&P1B=$siteLat{$callsign}&P1L=$siteLong{$callsign}).
+      #qq(&H0=$siteElev{$site}&H1=$siteElev{$callsign}).
+      #qq(&RZ0a=$site&RZ1a=$callsign).
+      #qq(&Senden=HAMNETDB' target='_blank'>Show in linktool</a></td>);
 
     push(@list, $sort.":}".$ret."</tr>\n");
   }

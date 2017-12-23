@@ -41,4 +41,9 @@ sub htmlFoot {
 #  , "ir3dv"
 #);
 
+#@monitorAgents= (
+#  ["db0fhn", "http://urlto/jsondata"]
+#);
+
+
 1;

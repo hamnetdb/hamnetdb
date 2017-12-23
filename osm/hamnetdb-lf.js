@@ -52,15 +52,18 @@ var CoverageLayers = new Array();
 var GreenCover = new L.layerGroup();
 
 var profileFrecuency = 5800;
-var profileWood=30;
-var profileLabelA="asdf";
-var profileLabelB="hgjk";
-var profileTowerA=10;
-var profileTowerB=10;
+var profileWood = 30;
+var profileFont = 1;
+var profileLabelA = "";
+var profileLabelB = "";
+var profileTowerA = 10;
+var profileTowerB = 10;
 var profileMa;
 var profileMb;
 var profileLine;
-var popup;
+var profilePopup;
+
+var test;
 
 function init()
 { 
@@ -74,8 +77,10 @@ function init()
   var ma_lon = getParameter("ma_lon");
   var mb_lat = getParameter("mb_lat");
   var mb_lon = getParameter("mb_lon");
-  var profileLabelA = getParameter("mb_lab");
-  var profileLabelB = getParameter("mb_lab");
+  profileTowerA = getParameter("ma_tow");
+  profileTowerB = getParameter("mb_tow");
+  profileLabelA = getParameter("ma_lab");
+  profileLabelB = getParameter("mb_lab");
 
   var CoverUrl= "coverage/";
 
@@ -84,8 +89,6 @@ function init()
   }
   if(source == 3)//hamnet
   {
-	//CoverUrl="http://db0sda.ampr.org/hamnetdb/";
-	  
     var mapnikUrl = 'http://osm.oe2xzr.ampr.at/osm/tiles/{z}/{x}/{y}.png';
     var mapnikUrl1 = 'http://karten.db0sda.ampr.org/osm/{z}/{x}/{y}.png';
     var landscapeUrl = 'http://osm.oe2xzr.ampr.at/osm/tiles_topo/{z}/{x}/{y}.png';
@@ -297,12 +300,34 @@ function init()
     },
 
     pointToLayer: function(feature, latlng) {
-      return L.marker(latlng, {icon: L.icon({
+      return L.marker(latlng, {
+        icon: L.icon({
           iconUrl: feature.properties.style+'.png',
           iconSize: [19, 25],
           iconAnchor: [10, 16],
           popupAnchor: [0, 0]
         }),
+        contextmenu: true,
+        contextmenuItems: [
+        {
+          text: 'snap "From" to site',
+          callback: function () {
+            if (typeof feature !== 'undefined')
+            {
+              loc= new L.LatLng(feature.geometry.coordinates[1],feature.geometry.coordinates[0])
+              profileLabelA = feature.properties.callsign;
+              placeProfileFrom(loc);
+           }
+          }
+        },
+        {
+          text: 'snap "To" to site',
+          callback: function () { 
+            loc= new L.LatLng(feature.geometry.coordinates[1],feature.geometry.coordinates[0])
+            profileLabelB = feature.properties.callsign;
+            placeProfileTo(loc);
+          }
+        }],
         zIndexOffset:1000
       });
 
@@ -350,7 +375,6 @@ function init()
         layer.on('mouseover', function (e){
           layer.openPopup();
         });
-	//layer.on('click', function (e) {});
       }
       layer.options.zIndex = index
 
@@ -378,15 +402,6 @@ function init()
   //map.addLayer(nohamnetLayer);
   //map.addLayer(tunnelLayer);
   map.addLayer(mapnikLayer);
-
-
-
-  //map.removeLayer(nohamnetLayer);
-  //map.removeLayer(tunnelLayer);
-  //map.removeLayer(hamnetmonitorLayer);
-  //map.removeLayer(mapnikLayer);
-
-
 
   GreenCover.addTo(map);
  
@@ -482,8 +497,8 @@ function init()
     mb = new L.LatLng(mb_lat, mb_lon);
     drawFrom(ma);
     drawTo(mb);
-    proceedProfile();
-    drawProfile();
+    profileProceed();
+    profileDraw();
     map.setView([((ma_lon+ma_lon)/2), ((ma_lat+mb_lat)/2)], 9);
     //map.setZoom(9);
   }
@@ -493,15 +508,22 @@ function init()
     
 }
 function placeProfileFrom (e) {
-  //alert(e.latlng);
+  if (typeof e.latlng !== 'undefined') 
+  {
+    e=e.latlng
+  }
   deleteProfileMa();
-  drawFrom(e.latlng);
-  proceedProfile();
+  drawFrom(e);
+  profileProceed();
 } 
 function placeProfileTo (e) {
+  if (typeof e.latlng !== 'undefined') 
+  {
+    e=e.latlng
+  }
   deleteProfileMb();
-  drawTo(e.latlng);
-  proceedProfile();
+  drawTo(e);
+  profileProceed();
 } 
 function drawFrom(latlng)
 {
@@ -520,7 +542,7 @@ function drawFrom(latlng)
         {
           text: 'calculate p2p-Profile',
           callback: function (e) { 
-            drawProfile() ;}
+            profileDraw() ;}
         },
         {
           text: 'delete From',
@@ -540,11 +562,11 @@ function drawFrom(latlng)
       ]
   }).addTo(map);
   profileMa.setForceZIndex(9966);
-  profileMa.on("dragend", function(e){proceedProfile();});
-  profileMa.on("click", function(e){drawProfile();});
+  profileMa.on("dragend", function(e){profileProceed();});
+  profileMa.on("click", function(e){profileDraw();});
 
   //profileMa.bringToFront()
-  proceedProfile()
+  profileProceed()
 }
 function drawTo(latlng)
 {
@@ -563,7 +585,7 @@ function drawTo(latlng)
         {
           text: 'calculate p2p-Profile',
           callback: function (e) { 
-            drawProfile() ;}
+            profileDraw() ;}
         },
         {
           text: 'delete To',
@@ -583,12 +605,12 @@ function drawTo(latlng)
       ]
   }).addTo(map);
   profileMb.setForceZIndex(9965);
-  profileMb.on("dragend", function(e){proceedProfile();});
-  profileMb.on("click", function(e) {drawProfile();});
+  profileMb.on("dragend", function(e){profileProceed();});
+  profileMb.on("click", function(e) {profileDraw();});
   //profileMb.setZIndex(9999);
-  proceedProfile()
+  profileProceed()
 }
-function proceedProfile()
+function profileProceed()
 {
   if ((typeof profileMa !== 'undefined') &&(typeof profileMb !== 'undefined')) {
     //map.removeLayer(profileMb);
@@ -605,6 +627,8 @@ function proceedProfile()
         zIndex:9994,
       });
       profileLine.addTo(map);
+      profileLine.on("click", function(e) {profileDraw();});
+
       //profileLine.bringToFront()
     }
   }
@@ -630,9 +654,19 @@ function deleteProfileMb() {
   }
 }
 
-function drawProfile () {
+//profile Popup content
+function profileDraw () {
+  width = 650;
+  height = 350;
   if ((typeof profileMa !== 'undefined') && (typeof profileMb !== 'undefined')) {
     if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+      if (typeof profilePopup !== 'undefined') { //catch open popup
+        if (profilePopup._map !=null) {
+          profileRedraw(width,height);
+          return;
+        }
+      }
+
       var lat1 = profileMa._latlng['lat'];
       var lon1 = profileMa._latlng['lng'];
       var lat2 = profileMb._latlng['lat'];
@@ -643,43 +677,90 @@ function drawProfile () {
         maxWidth:550,
         maxHeight:250,
       }
-      var popupcontent="<img src='http://neu.hamnetdb.net/calc_profile.cgi?f=5800&lon_a="+
-        lon1+"&lat_a="+lat1+"&lon_b="+lon2+"&lat_b="+lat2+"&h=350&w=650' alt='loading...'/>\
+      profilelink=profileGenLink(width,height);
+      var popupcontent="<img id='proifleimg' src='"+profilelink+"' alt='loading...'/>\
         <p><form id='profile'>&nbsp;&nbsp;\
-        label from<input name='labela' value='"+profileLabelA+"' size='30' style='width:40px'/>&nbsp;&nbsp;\
-        tower size from<input name='towera' value='"+profileTowerA+"' size='3' style='width:18px'/>m&nbsp;&nbsp;\
-        label to<input name='labelb' value='"+profileLabelB+"' size='3  0' style='width:40px'/>&nbsp;&nbsp;\
-        tower size to<input name='towerb' value='"+profileTowerB+"' size='3' style='width:18px'/>m<br>\
-        &nbsp;&nbsp;&nbsp;frequency:<input name='frequency' type='text' value='"+profileFrecuency+"' size='6' style='width:30px' />\
-        (MHz) &nbsp;treesize:<input name='wood' type='text' value='"+profileWood+"' size='3' style='width:18px' />\
-        0...100m &nbsp;&nbsp;font size<select name='fontsize'><option value='1'>10</option><option value='2'>14</option><option value='3'>20</option></select> \
-        <input type='button' value='recalculate' style='height:24px' >&nbsp;&nbsp;<input type='button' value='open big Profile' style='height:24px'></form>\
+        <b>tower size \"From\"<input id='towera' value='"+profileTowerA+"' size='3' style='width:22px' \
+        onchange='profileValUpd();'/>m</b>&nbsp;&nbsp;\
+        label \"From\"<input id='labela' value='"+profileLabelA+"' size='30' style='width:40px \
+        'onchange='profileValUpd();'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+        label \"To\"<input id='labelb' value='"+profileLabelB+"' size='3  0' style='width:40px' \
+        onchange='profileValUpd();'/>&nbsp;&nbsp;\
+        <b>tower size \"To\"<input id='towerb' value='"+profileTowerB+"' size='3' style='width:22px'\
+        onchange='profileValUpd();'>m</b><br>\
+        &nbsp;&nbsp;&nbsp;frequency:<input id='frequency' type='text' value='"+profileFrecuency+"' size='6' style='width:40px' \
+        onchange='profileValUpd();'/>\
+        (MHz) &nbsp;treesize:<input id='wood' type='text' value='"+profileWood+"' size='3' style='width:18px' \
+        onchange='profileValUpd();'/>\
+        0...100m &nbsp;&nbsp;font size<select id='fontsize' onchange='profileValUpd();'>\
+        <option value='1'>10</option><option value='2'>14</option><option value='3'>20</option></select> \
+        <input type='button' value='recalculate' style='height:24px' onclick='javascript:profileRedraw("+width+","+height+");' >\
+        &nbsp;&nbsp;<input type='button' value='open big Profile' \
+        style='height:24px' onclick='javascript:profileOpenBig();'></form>\
          &nbsp &nbsp\</p>";
 
 
-      popup = L.popup({
+      profilePopup = L.popup({
         closeButton: true,
         closeOnClick:false,
         autoClose: false,
         className: 'popupProfile', 
-        minWidth: 650,
+        minWidth: width,
         //maxWidth: 650,
-        Width: 650,
-        Height: 420,
+        Width: width,
+        Height: (height+70),
       })
       .setLatLng([(lat1 + lat2)/2, (lon1+lon2)/2])
       .setContent(popupcontent)
       .openOn(map);
     
-      map.addLayer(popup);
+      map.addLayer(profilePopup);
 
-      var pos = map.latLngToLayerPoint(popup._latlng);
-      L.DomUtil.setPosition(popup._wrapper.parentNode, pos);
-      var draggable = new L.Draggable(popup._container, popup._wrapper);
+      var pos = map.latLngToLayerPoint(profilePopup._latlng);
+      L.DomUtil.setPosition(profilePopup._wrapper.parentNode, pos);
+      var draggable = new L.Draggable(profilePopup._container, profilePopup._wrapper);
       draggable.enable();
-
     }
   }
+}
+function profileValUpd()
+{
+  profileLabelA =  document.getElementById("labela").value; 
+  profileLabelB = document.getElementById("labelb").value; 
+  profileTowerA = document.getElementById("towera").value; 
+  profileTowerB = document.getElementById("towerb").value; 
+  profileFrecuency = document.getElementById("frequency").value; 
+  profileWood = document.getElementById("wood").value; 
+  profileFont = document.getElementById("fontsize").value; 
+}
+function profileRedraw(width,height)
+{
+  //set proifleimg src
+  var src = profileGenLink(width,height);
+  document.getElementById("proifleimg").src = src;
+}
+function profileOpenBig()
+{
+  //get window size
+  var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  var src = profileGenLink(width,height);
+  //open new window
+  window.open(src, '_blank');
+
+}
+function profileGenLink(width,height)
+{
+  var lat1 = profileMa._latlng['lat'];
+  var lon1 = profileMa._latlng['lng'];
+  var lat2 = profileMb._latlng['lat'];
+  var lon2 = profileMb._latlng['lng'];
+  //my src;
+  src="http://hamnetdb.net/calc_profile.cgi?f="+profileFrecuency+"&lon_a="+
+        lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+"&name_a=\""+profileLabelA+
+        "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+"&name_b=\""+profileLabelB+
+        "\"&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width; 
+  return src;
 } 
 function popupSetting()
 {
