@@ -115,7 +115,6 @@ print qq(
     <!--<script src="osm/leaflet.contextmenu.min.js"></script>-->
 
     <script src="osm/hamnetdb-lf.js"></script>
-    <script src="osm/leaflet.forceZIndex.js"></script>
 
 	 
 	</head>

@@ -29,18 +29,6 @@
 
 //FINISHED?
 
-//var myIcon = L.icon({
-//    iconUrl: 'leaflet/images/marker-icon.png',
-//    iconSize: [10,10],
-//    iconAnchor: [22, 94],
-//    popupAnchor: [-3, -76],
-//    shadowUrl: 'leaflet/images/marker-shadow.png',
-//    shadowSize: [68, 95],
-//    shadowAnchor: [22, 94]
-//});
-//
-
-
 var map;
 var SidebarInfo;
 var SidebarSetting;
@@ -62,8 +50,6 @@ var profileMa;
 var profileMb;
 var profileLine;
 var profilePopup;
-
-var test;
 
 function init()
 { 
@@ -112,7 +98,6 @@ function init()
     var cycleZoom = 18;
     var opentopoZoom = 17;
   }
-
   
   var attribution = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'; 
   map = new L.Map('map', 
@@ -178,7 +163,6 @@ function init()
     }
   );
 
-	
 	if(source == 3)
 	{
     var mapnikLayer1 = L.tileLayer(
@@ -208,92 +192,79 @@ function init()
           color = "#808080";
           weight = 3.5;
           opacity= 0.5; 
-          zIndexOffset=-2000;   
           break;
         case "Routing-Radio":
           color = "#1d97ff";
           weight = 6;
           opacity= 0.5;
-          zIndexOffset=-2000;   
           break;        
         case "Routing-Tunnel":
           color = "#808080";
           weight = 3.5;
           opacity= 0.5;
-          zIndexOffset=-2000;   
           break;
         case "Radio":
           color = "#1d97ff";
           weight = 6;
           opacity= 0.5;
           zIndex = 400;
-          zIndexOffset=-2000;   
           break;
         case "Routing-ISM":
           color = "#ad00e1";
           weight = 6;
           opacity= 0.5;
           zIndex = 400;
-          zIndexOffset=-2000;   
           break;
         case "Routing-Ethernet":
           color = "#808080";
           weight = 3.5;
           opacity= 0.5;
-          zIndexOffset=-2000;   
           break;
         case "ISM":
           color = "#ad00e1";//d800ff
           weight = 6;
           opacity= 0.85
           zIndex = 400;
-          zIndexOffset=-2000;   
           break;
         case "hf1":
           color = "#5dff00";//green
           weight = 6;
           opacity= 0.8;
-          zIndexOffset=2000;   
           break;
         case "hf2":
           color = "#a2ff00";//green-yellow
           weight = 6;
           opacity= 0.8;
-          zIndexOffset=2000;   
           break;
         case "hf3":
           color = "#f1ff00";//yellow
           weight = 6;
           opacity= 0.8;
-          zIndexOffset=2000;   
           break;
         case "hf4":
           color = "#ffde00";//bright-orange
           weight = 6;
           opacity= 0.8;
-          zIndexOffset=2000;   
           break;
         case "hf5":
           color = "#ffa700";//dark-orange
           weight = 6;
           opacity= 0.8;
-          zIndexOffset=2000;   
           break;
         case "hf6":
           color = "#ff000d";//red
           weight = 6;
           opacity= 0.8;
-          zIndexOffset=2000;   
           break;
         case "hf7":
           color = "#ff000d";//red
           weight = 6;
           opacity= 0.8;
-          zIndexOffset=2000;   
           break;
         default:
-          color = "#f00000";
+          color = "#808080";
           weight = 6;
+          opacity= 0.5;
       }
        
       return {color: color, weight:weight, opacity:opacity};//feature.properties.GPSUserColor};
@@ -328,7 +299,6 @@ function init()
             placeProfileTo(loc);
           }
         }],
-        zIndexOffset:1000
       });
 
     },
@@ -339,7 +309,6 @@ function init()
       <br>press info-button for legend\
       <form action=\"\" id=\"displayCoverage\" >\
       <input name=\"Coverage\" type=\"checkbox\" name=\""+ feature.properties.callsign +"\"  onchange=\"coverage(event)\" \"> </form> </div>",
-        
         {
           minWidth:250,
           maxWidth:260,
@@ -489,7 +458,6 @@ function init()
     getSite(site); 
  // map.setView([51.2, 7], 9);  
 
-
   //Profile init
   if ((ma_lat!=0) && (ma_lon!=0) & (mb_lat!=0) & (mb_lon!=0))
   {
@@ -502,10 +470,6 @@ function init()
     map.setView([((ma_lon+ma_lon)/2), ((ma_lat+mb_lat)/2)], 9);
     //map.setZoom(9);
   }
-
-  //profileLabelA 
-  //profileLabelB 
-    
 }
 function placeProfileFrom (e) {
   if (typeof e.latlng !== 'undefined') 
@@ -561,12 +525,9 @@ function drawFrom(latlng)
         }
       ]
   }).addTo(map);
-  //profileMa.setForceZIndex(9966);
   profileMa.setZIndexOffset(7000);
   profileMa.on("dragend", function(e){profileProceed();});
   profileMa.on("click", function(e){profileDraw();});
-
-  //profileMa.bringToFront()
   profileProceed()
 }
 function drawTo(latlng)
@@ -606,7 +567,6 @@ function drawTo(latlng)
       ]
   }).addTo(map);
   profileMb.setZIndexOffset(7000);
-  //profileMb.setForceZIndex(9965);
   profileMb.on("dragend", function(e){profileProceed();});
   profileMb.on("click", function(e) {profileDraw();});
   profileProceed()
@@ -614,7 +574,6 @@ function drawTo(latlng)
 function profileProceed()
 {
   if ((typeof profileMa !== 'undefined') &&(typeof profileMb !== 'undefined')) {
-    //map.removeLayer(profileMb);
   
     if((profileMa._icon != null) && (profileMb._icon != null))
     {
@@ -630,7 +589,6 @@ function profileProceed()
       profileLine.addTo(map);
       profileLine.on("click", function(e) {profileDraw();});
 
-      //profileLine.bringToFront()
     }
   }
 }
