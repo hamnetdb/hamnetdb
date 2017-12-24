@@ -561,7 +561,8 @@ function drawFrom(latlng)
         }
       ]
   }).addTo(map);
-  profileMa.setForceZIndex(9966);
+  //profileMa.setForceZIndex(9966);
+  profileMa.setZIndexOffset(7000);
   profileMa.on("dragend", function(e){profileProceed();});
   profileMa.on("click", function(e){profileDraw();});
 
@@ -604,10 +605,10 @@ function drawTo(latlng)
         }  
       ]
   }).addTo(map);
-  profileMb.setForceZIndex(9965);
+  profileMb.setZIndexOffset(7000);
+  //profileMb.setForceZIndex(9965);
   profileMb.on("dragend", function(e){profileProceed();});
   profileMb.on("click", function(e) {profileDraw();});
-  //profileMb.setZIndex(9999);
   profileProceed()
 }
 function profileProceed()
