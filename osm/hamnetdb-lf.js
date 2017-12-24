@@ -683,9 +683,9 @@ function profileDraw () {
         <p><form id='profile'>&nbsp;&nbsp;\
         <b>tower size \"From\"<input id='towera' value='"+profileTowerA+"' size='3' style='width:22px' \
         onchange='profileValUpd();'/>m</b>&nbsp;&nbsp;\
-        label \"From\"<input id='labela' value='"+profileLabelA+"' size='30' style='width:40px \
+        label \"From\"<input id='labela' value='"+profileLabelA+"' size='30' style='width:57px \
         'onchange='profileValUpd();'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
-        label \"To\"<input id='labelb' value='"+profileLabelB+"' size='3  0' style='width:40px' \
+        label \"To\"<input id='labelb' value='"+profileLabelB+"' size='3  0' style='width:57px' \
         onchange='profileValUpd();'/>&nbsp;&nbsp;\
         <b>tower size \"To\"<input id='towerb' value='"+profileTowerB+"' size='3' style='width:22px'\
         onchange='profileValUpd();'>m</b><br>\
