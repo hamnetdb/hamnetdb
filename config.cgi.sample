@@ -45,5 +45,10 @@ sub htmlFoot {
 #  ["db0fhn", "http://urlto/jsondata"]
 #);
 
+# uncomment and fill in information to activate profile-calculation
+#$profile_path_program= "/path/to/program/profile";
+#$profile_path_srtm= "/path/to/srtm";
+#$profile_path_errorlog= "/path/to/logfile";
+#$profile_errorimg= "error.png"
 
 1;

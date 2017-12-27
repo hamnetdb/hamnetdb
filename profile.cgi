@@ -45,7 +45,7 @@ $height= 250;
 
 
 
-unless($root_installation)
+unless($profile_path_program)
 {
   $hwtimg="https://hamnetdb.net/";
 }
