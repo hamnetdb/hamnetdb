@@ -26,7 +26,7 @@ do "lib.cgi" or die;
 
 
 # see config.cgi to define monitorAgents names
-
+print localtime."\n";
 
 # take all IPs of monitored hosts from database 
 my @all_ips= ();

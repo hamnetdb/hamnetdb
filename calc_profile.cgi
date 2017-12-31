@@ -11,11 +11,9 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
-use CGI;
-$query=  new CGI;
+do "lib.cgi" or die;
+
 my $refer = $ENV{HTTP_REFERER};
-do config.cgi or die;
-#do "lib.cgi" or die;
 my $size_y= $query->param("h")+0;
 my $size_x= $query->param("w")+0;
 my $frequency= $query->param("f")+0;
