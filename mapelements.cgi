@@ -238,7 +238,7 @@ foreach $net (sort keys %all_hosts) {
         $rssi2=linkStatus($monitor_right,'rssi');
         next if ((length($rssi) <2 ) && (length($rssi2) <2 ));
         #print $net."  ".$begin_ip." ".$end_ip."\n";
-        if((length($rssi) >1 ) || (length($rssi2) >1 )) {
+        if((length($rssi) >1 ) && (length($rssi2) >1 )) {
 
           $rssi = $rssi+0;
           $rssi2 = $rssi2+0;
