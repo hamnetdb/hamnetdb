@@ -334,7 +334,7 @@ while (@line= $sth->fetchrow_array) {
         &json_var($f[1], "callsign");
         &json_var($f[2], "as");
         &json_var("site".$f[5], "style");
-#        &json_var($f[0]+0, "zIndex");
+        &json_var($f[0]+0, "zIndex");
       &json_obj_end();
     &json_obj_end();
   }
