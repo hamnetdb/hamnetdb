@@ -10,6 +10,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+use Fcntl qw(:flock);
 do "lib.cgi" or die;
 
 # Supply these parameters if we want to limit the result
@@ -27,6 +28,9 @@ my $geojson=     $query->param("geojson")+0;
 # The result arrays which are rendered as JSON or GeoJSON
 my @allSites= ();
 my @allEdges= ();
+
+# allow only one instance "semaphor"
+check_process(1);
 
 # Read realtime monitoring results for appropriate site-symbols
 my %siteStatus= &hostsStatus(1, 1); # all hosts, group to sites
@@ -391,3 +395,14 @@ while (@line= $sth->fetchrow_array) {
 #   &json_obj_end(1);
 #   &json_obj_end();
 # }
+
+sub check_process { 
+  my $first= shift;
+
+  unless ($first) {
+    sleep(1);
+  }
+  open our $file, '<', $0 or die $!;
+  flock $file, LOCK_EX or check_process(0);
+  flock $file, LOCK_EX|LOCK_NB or die "Unable to lock file $!";
+}
