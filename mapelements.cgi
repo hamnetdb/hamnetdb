@@ -404,5 +404,5 @@ sub check_process {
   }
   open our $file, '<', $0 or die $!;
   flock $file, LOCK_EX or check_process(0);
-  flock $file, LOCK_EX|LOCK_NB or die "Unable to lock file $!";
+  #flock $file, LOCK_EX|LOCK_NB or die "Unable to lock file $!";
 }
