@@ -251,7 +251,13 @@ foreach $net (sort keys %all_hosts) {
         $rssi=linkStatus($monitor_left,'rssi');
         $rssi2=linkStatus($monitor_right,'rssi');
         next if ((length($rssi) <2 ) && (length($rssi2) <2 ));
+<<<<<<< HEAD
         if((length($rssi) >1 ) && (length($rssi2) >1 )) {
+=======
+        #print $net."  ".$begin_ip." ".$end_ip."\n";
+        if((length($rssi) >1 ) || (length($rssi2) >1 )) {
+
+>>>>>>> parent of 2333c6a... 4.2
           $rssi = $rssi+0;
           $rssi2 = $rssi2+0;
           $rssi= $rssi2 if $rssi > $rssi2; #get worst side and apply style
