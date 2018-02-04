@@ -627,11 +627,13 @@ function deleteProfileLine() {
 function deleteProfileMa() {
   if (typeof profileMa !== 'undefined') {
     map.removeLayer(profileMa);
+    profileLabelA = "";
   }
 }
 function deleteProfileMb() {
   if (typeof profileMb !== 'undefined') {
     map.removeLayer(profileMb);
+    profileLabelB = "";
   }
 }
 
