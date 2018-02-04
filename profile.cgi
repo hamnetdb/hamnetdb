@@ -58,7 +58,7 @@ unless($profile_path_program)
 $hwtimg.= "calc_profile.cgi".
  "?lat_a=$siteLat{$left}&lon_a=$siteLong{$left}&ant_a=$siteElev{$left}".
  "&lat_b=$siteLat{$right}&lon_b=$siteLong{$right}&ant_b=$siteElev{$right}".
- "&f=5800&wood=30&name_a=$left&name_b=right".
+ "&f=5800&wood=30&name_a=$left&name_b=$right".
  "&w=$width&h=$height";
 
 #<div style='float:right;margin-top:5px;font-size:80%'>

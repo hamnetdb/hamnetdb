@@ -39,13 +39,15 @@ var CoverUrl = "coverage/";
 var CoverageLayers = new Array();
 var GreenCover = new L.layerGroup();
 
+
 var profileFrecuency = 5800;
 var profileWood = 30;
 var profileFont = 1;
+var profileTowerDefault = 10;
 var profileLabelA = "";
 var profileLabelB = "";
-var profileTowerA = 10;
-var profileTowerB = 10;
+var profileTowerA = profileTowerDefault;
+var profileTowerB = profileTowerDefault;
 var profileMa;
 var profileMb;
 var profileLine;
@@ -67,6 +69,12 @@ function init()
   profileTowerB = getParameter("mb_tow");
   profileLabelA = getParameter("ma_lab");
   profileLabelB = getParameter("mb_lab");
+  if (profileTowerA == 0) {
+    profileTowerA = profileTowerDefault;
+  }
+  if (profileTowerB == 0) {
+    profileTowerB = profileTowerDefault;
+  }
 
   var CoverUrl= "coverage/";
 
@@ -105,7 +113,7 @@ function init()
     zoom: 7, 
     zoomControl:false,
     contextmenu: true,
-      contextmenuWidth: 140,
+      contextmenuWidth: 160,
         contextmenuItems: [
         {
           text: 'place Profile "From"',
@@ -281,21 +289,23 @@ function init()
         contextmenu: true,
         contextmenuItems: [
         {
-          text: 'snap "From" to site',
+          text: 'snap "From" to '+feature.properties.callsign,
           callback: function () {
             if (typeof feature !== 'undefined')
             {
               loc= new L.LatLng(feature.geometry.coordinates[1],feature.geometry.coordinates[0])
               profileLabelA = feature.properties.callsign;
+              profileTowerA = feature.properties.anthight;
               placeProfileFrom(loc);
            }
           }
         },
         {
-          text: 'snap "To" to site',
+          text: 'snap "To" to '+feature.properties.callsign,
           callback: function () { 
             loc= new L.LatLng(feature.geometry.coordinates[1],feature.geometry.coordinates[0])
             profileLabelB = feature.properties.callsign;
+            profileTowerB = feature.properties.anthight;
             placeProfileTo(loc);
           }
         }],
@@ -511,6 +521,8 @@ function drawFrom(latlng)
         {
           text: 'delete From',
           callback: function (e) { 
+            profileLabelA = "";
+            profileTowerA = profileTowerDefault;
             deleteProfileLine(); 
             map.removeLayer(profileMa);
           }
@@ -518,6 +530,10 @@ function drawFrom(latlng)
         {
           text: 'delete all',
           callback: function (e) { 
+            profileLabelA = "";
+            profileLabelB = "";
+            profileTowerA = profileTowerDefault;
+            profileTowerB = profileTowerDefault;
             deleteProfileLine(); 
             deleteProfileMb();
             map.removeLayer(profileMa);
@@ -552,6 +568,8 @@ function drawTo(latlng)
         {
           text: 'delete To',
           callback: function (e) { 
+              profileLabelB = "";
+              profileTowerB = profileTowerDefault;
               deleteProfileLine();
               map.removeLayer(profileMb); 
             }
@@ -559,6 +577,10 @@ function drawTo(latlng)
         {
           text: 'delete all',
           callback: function (e) { 
+            profileLabelA = "";
+            profileLabelB = "";
+            profileTowerA = profileTowerDefault;
+            profileTowerB = profileTowerDefault;
             deleteProfileLine(); 
             deleteProfileMa();
             map.removeLayer(profileMb);
@@ -637,22 +659,38 @@ function profileDraw () {
         maxHeight:250,
       }
       profilelink=profileGenLink(width,height);
+      if (profileFont <= 1) {
+        fontSelected1 = "selected";
+        fontSelected2 = "";
+        fontSelected3 = "";
+      } else if (profileFont == 2) {
+        fontSelected1 = "";
+        fontSelected2 = "selected";
+        fontSelected3 = "";
+      } else if (profileFont == 3) {
+        fontSelected1 = "";
+        fontSelected2 = "";
+        fontSelected3 = "selected";
+      }
+
       var popupcontent="<img id='proifleimg' src='"+profilelink+"' alt='loading...'/>\
         <p><form id='profile'>&nbsp;&nbsp;\
         <b>tower size \"From\"<input id='towera' value='"+profileTowerA+"' size='3' style='width:22px' \
         onchange='profileValUpd();'/>m</b>&nbsp;&nbsp;\
         label \"From\"<input id='labela' value='"+profileLabelA+"' size='30' style='width:57px \
         'onchange='profileValUpd();'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
-        label \"To\"<input id='labelb' value='"+profileLabelB+"' size='3  0' style='width:57px' \
+        label \"To\"<input id='labelb' value='"+profileLabelB+"' size='30' style='width:57px' \
         onchange='profileValUpd();'/>&nbsp;&nbsp;\
         <b>tower size \"To\"<input id='towerb' value='"+profileTowerB+"' size='3' style='width:22px'\
         onchange='profileValUpd();'>m</b><br>\
-        &nbsp;&nbsp;&nbsp;frequency:<input id='frequency' type='text' value='"+profileFrecuency+"' size='6' style='width:40px' \
+        &nbsp;&nbsp;&nbsp;frequency:\
+        <input id='frequency' type='text' value='"+profileFrecuency+"' size='6' style='width:40px' \
         onchange='profileValUpd();'/>\
         (MHz) &nbsp;treesize:<input id='wood' type='text' value='"+profileWood+"' size='3' style='width:18px' \
         onchange='profileValUpd();'/>\
         0...100m &nbsp;&nbsp;font size<select id='fontsize' onchange='profileValUpd();'>\
-        <option value='1'>10</option><option value='2'>14</option><option value='3'>20</option></select> \
+        <option value='1' "+fontSelected1+">10</option><option value='2' "+fontSelected2+">14</option>\
+        <option value='3' "+fontSelected3+">20</option></select> \
         <input type='button' value='recalculate' style='height:24px' onclick='javascript:profileRedraw("+width+","+height+");' >\
         &nbsp;&nbsp;<input type='button' value='open big Profile' \
         style='height:24px' onclick='javascript:profileOpenBig();'></form>\

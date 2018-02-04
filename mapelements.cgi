@@ -72,7 +72,7 @@ if ($only_country || $only_as) {
 # -------------------------------------------------------------------------
 # Fetch all sites
 my $sth= $db->prepare(qq(
-  select callsign,longitude,latitude,no_check,radioparam
+  select callsign,longitude,latitude,no_check,radioparam,elevation
   from hamnet_site
 ));
 #  order by callsign
@@ -85,6 +85,7 @@ while (@line= $sth->fetchrow_array) {
   my $latitude= $line[$idx++];
   my $no_check= $line[$idx++];
   my $radioparam= $line[$idx++];
+  my $elevation= $line[$idx++];
 
   if ($latitude<-180 | $latitude>180) {
     next;
@@ -139,7 +140,7 @@ while (@line= $sth->fetchrow_array) {
 
   push(@allSites, 
     "$zi;$callsign;$as;$latitude;$longitude;$siteAdd;$useBounds;".
-    "$hasHamnet" #;$country
+    "$hasHamnet;$elevation" #;$country
   );
 }
 
@@ -251,13 +252,7 @@ foreach $net (sort keys %all_hosts) {
         $rssi=linkStatus($monitor_left,'rssi');
         $rssi2=linkStatus($monitor_right,'rssi');
         next if ((length($rssi) <2 ) && (length($rssi2) <2 ));
-<<<<<<< HEAD
         if((length($rssi) >1 ) && (length($rssi2) >1 )) {
-=======
-        #print $net."  ".$begin_ip." ".$end_ip."\n";
-        if((length($rssi) >1 ) || (length($rssi2) >1 )) {
-
->>>>>>> parent of 2333c6a... 4.2
           $rssi = $rssi+0;
           $rssi2 = $rssi2+0;
           $rssi= $rssi2 if $rssi > $rssi2; #get worst side and apply style
@@ -343,6 +338,7 @@ while (@line= $sth->fetchrow_array) {
       &json_obj("properties",0);
         &json_var($f[1], "callsign");
         &json_var($f[2], "as");
+        &json_var($f[8], "anthight");
         &json_var("site".$f[5], "style");
         &json_var($f[0]+0, "zIndex");
       &json_obj_end();
