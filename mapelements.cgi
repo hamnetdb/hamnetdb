@@ -96,6 +96,7 @@ while (@line= $sth->fetchrow_array) {
 
   $site_lat{$callsign}= $latitude;
   $site_long{$callsign}= $longitude;
+  $site_no_check{$callsign}= $no_check;
 
   if ($only_as) {
     next if ($site_as{$callsign} != $only_as)
@@ -137,6 +138,8 @@ while (@line= $sth->fetchrow_array) {
 
   #my $country= $as_country{$site_as{$callsign}};
   next if (($only_hamnet && !$hasHamnet) || ($no_hamnet && $hasHamnet));
+
+  next if ($no_check == 5);
 
   push(@allSites, 
     "$zi;$callsign;$as;$latitude;$longitude;$siteAdd;$useBounds;".
@@ -197,27 +200,19 @@ foreach $net (sort keys %all_hosts) {
                  $site_country{$sites[1]} ne $only_country)
       } 
       
-      next if (($no_tunnel && $typ=~/tunnel/i) || ($no_tunnel && $typ=~/ethernet/i) || ($no_radio && $typ=~/radio/i) || ($no_ism&& $typ=~/ISM/i));
+      next if (($no_tunnel && $typ=~/tunnel/i) || 
+                ($no_tunnel && $typ=~/ethernet/i) || 
+                ($no_radio && $typ=~/radio/i) || 
+                ($no_ism&& $typ=~/ISM/i));
+
+      #skip virtual hosts
+      next if ($site_no_check{$sites[0]} == 5 ||
+                $site_no_check{$sites[1]} == 5);
 
       #get rssi
       my $style=$typ;
       if ($radio) {
         #get worst rssi
-        #get net boundary
-#        my $begin_ip;
-#        my $end_ip;
-#        my $sth= $db->prepare(qq(select 
-#          begin_ip, end_ip
-#          from hamnet_subnet
-#          where 
-#          ip='$net'
-#        ));
-#        $sth->execute;
-#        while (@line= $sth->fetchrow_array) {
-#          my $idx= 0;
-#          $begin_ip= $line[$idx++];
-#          $end_ip= $line[$idx++];
-#        }
         #left monitored host -> rssi
         my $monitor_left;
         my $sth= $db->prepare(qq(select 

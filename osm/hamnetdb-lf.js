@@ -14,20 +14,14 @@
 
 
 //todo
-//OK- mapelements->xml anpassen (offset)
 //OK- KML.js anpassen beim Popupladen inhalt nachladen
 //OK- hover
 //OK- custom element in map darstellen (info, settings)
 //OK- info übernehmen
-//OK- settings...
-//OK- permalink
 //OK- mobile
 //OK- perl mapsource
 //OK- perl position
 //OK- perl hover
-//permalink buggfix parameter t
-
-//FINISHED?
 
 var map;
 var SidebarInfo;
@@ -38,7 +32,6 @@ var kmlUrl = "mapelements.cgi?geojson=1&rnd="+Math.random();
 var CoverUrl = "coverage/";
 var CoverageLayers = new Array();
 var GreenCover = new L.layerGroup();
-
 
 var profileFrecuency = 5800;
 var profileWood = 30;
@@ -383,7 +376,11 @@ function init()
   map.addLayer(mapnikLayer);
 
   GreenCover.addTo(map);
- 
+  //check if google-lib is loaded 
+  if (typeof google === 'undefined' && source <=1) {
+    source = 2;
+  }
+
   if(source <=1)
   {
     var roadMutant = L.gridLayer.googleMutant({
@@ -610,7 +607,6 @@ function profileProceed()
       });
       profileLine.addTo(map);
       profileLine.on("click", function(e) {profileDraw();});
-
     }
   }
 }
