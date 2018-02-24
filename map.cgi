@@ -127,6 +127,7 @@ print qq(
             <tr><td><img src="site.png"/></td><td>This is a site. No realtime checks were performed last 2 hours.</td></tr>
             <tr><td><img src="site-user.png"/></td><td>This site has user-access radio parameters configured.</td></tr>
             <tr><td><img src="site-green.png"/></td><td>At least one host of this site has answered to ping last 2 hours.</td></tr>
+            <tr><td><img src="site-blue.png"/></td><td>Same as green, site also connected to the hamcloud.</td></tr>
             <tr><td><img src="site-red.png"/></td><td>No ping answer last 2 hours at 
                 <a class="ovinfo" href="index.cgi?q=db0fhn">db0fhn</a>,
                 <a class="ovinfo" href="index.cgi?q=db0zm">db0zm</a>,
@@ -183,10 +184,12 @@ print qq(
       <div class="hidden">
         <img src="site-user-red.png" />
         <img src="site-user-grey.png" />
+        <img src="site-user-blue.png" />
         <img src="site-user-green.png" />
         <img src="site-user.png" />
         <img src="site-red.png" />
         <img src="site-grey.png" />
+        <img src="site-blue.png" />
         <img src="site-green.png" />
         <img src="site.png" />
       </div>

@@ -28,7 +28,6 @@ my $geojson=     $query->param("geojson")+0;
 # The result arrays which are rendered as JSON or GeoJSON
 my @allSites= ();
 my @allEdges= ();
-
 # allow only one instance "semaphor"
 check_process(1);
 
@@ -97,56 +96,7 @@ while (@line= $sth->fetchrow_array) {
   $site_lat{$callsign}= $latitude;
   $site_long{$callsign}= $longitude;
   $site_no_check{$callsign}= $no_check;
-
-
-#split here?
-  if ($only_as) {
-    next if ($site_as{$callsign} != $only_as)
-  }
-  if ($only_country) {
-    $site_country{$callsign}= $as_country{$site_as{$callsign}};
-    next unless $site_country{$callsign} eq $only_country;
-  }
-
-  my $zIndex= 10;
-  my $siteAdd= "";
-  $siteAdd= "-user" if $radioparam;
-
-  # The siteStatus contains complete image definition, just extract
-  # the color since other symbols are used in the map context.
-  if ($no_check>1 && $no_check<4) {
-    $siteAdd= "-grey";
-    $zIndex= 1;
-  }
-  elsif ($siteStatus{$callsign}=~/(green|red).png/) {
-    if ($siteStatus{$callsign}=~/green/) {
-      $siteAdd.= "-green";
-      $zIndex= 20;
-    }
-    else {
-      $siteAdd.= "-red";
-      $zIndex= 5;
-    }
-  }
-  $zIndex++ if $radioparam;
-
-  my $zi= sprintf("%03d", $zIndex);
-  my $useBounds= ($no_check==1)?0:1;
-  my $hasHamnet= ($no_check<2 || $no_check==4)?1:0;
-  my $as= 0;
-  if($only_as || $only_country) {
-    $as= $site_as{$callsign};
-  }
-
-  #my $country= $as_country{$site_as{$callsign}};
-  next if (($only_hamnet && !$hasHamnet) || ($no_hamnet && $hasHamnet));
-
-  next if ($no_check == 5);
-
-  push(@allSites, 
-    "$zi;$callsign;$as;$latitude;$longitude;$siteAdd;$useBounds;".
-    "$hasHamnet;$elevation" #;$country
-  );
+  push(@allCallsigns,"$callsign");
 }
 
 # -------------------------------------------------------------------------
@@ -202,14 +152,22 @@ foreach $net (sort keys %all_hosts) {
                  $site_country{$sites[1]} ne $only_country)
       } 
       
+      #skip virtual hosts
+      if ($site_no_check{$sites[0]} == 5 ) {
+        $virtual_peer{$sites[1]}= 1;
+        next;
+      }
+      if ($site_no_check{$sites[1]} == 5) {
+        $virtual_peer{$sites[0]}= 1;
+        next;
+      }
+
       next if (($no_tunnel && $typ=~/tunnel/i) || 
                 ($no_tunnel && $typ=~/ethernet/i) || 
                 ($no_radio && $typ=~/radio/i) || 
                 ($no_ism&& $typ=~/ISM/i));
 
-      #skip virtual hosts
-      next if ($site_no_check{$sites[0]} == 5 ||
-                $site_no_check{$sites[1]} == 5);
+      
 
       #get rssi
       my $style=$typ;
@@ -266,7 +224,62 @@ foreach $net (sort keys %all_hosts) {
     }
   }
 }
+foreach my $callsign (@allCallsigns) { 
+#split here?
+  if ($only_as) {
+    next if ($site_as{$callsign} != $only_as)
+  }
+  if ($only_country) {
+    $site_country{$callsign}= $as_country{$site_as{$callsign}};
+    next unless $site_country{$callsign} eq $only_country;
+  }
 
+  my $zIndex= 10;
+  my $siteAdd= "";
+  $siteAdd= "-user" if $radioparam;
+
+  # The siteStatus contains complete image definition, just extract
+  # the color since other symbols are used in the map context.
+  if ($site_no_check{$callsign}>1 && $site_no_check{$callsign}<4) {
+    $siteAdd= "-grey";
+    $zIndex= 1;
+  }
+  elsif ($siteStatus{$callsign}=~/(green|red).png/) {
+    if ($siteStatus{$callsign}=~/green/) {
+      if ($virtual_peer{$callsign}) {
+        $siteAdd.= "-blue";
+        $zIndex= 20;
+      }
+      else {
+        $siteAdd.= "-green";
+        $zIndex= 20;
+      }
+    }
+    else {
+      $siteAdd.= "-red";
+      $zIndex= 5;
+    }
+  }
+  $zIndex++ if $radioparam;
+
+  my $zi= sprintf("%03d", $zIndex);
+  my $useBounds= ($site_no_check{$callsign}==1)?0:1;
+  my $hasHamnet= ($site_no_check{$callsign}<2 || $site_no_check{$callsign}==4)?1:0;
+  my $as= 0;
+  if($only_as || $only_country) {
+    $as= $site_as{$callsign};
+  }
+
+  #my $country= $as_country{$site_as{$callsign}};
+  next if (($only_hamnet && !$hasHamnet) || ($no_hamnet && $hasHamnet));
+
+  next if ($site_no_check{$callsign} == 5);
+
+  push(@allSites, 
+    "$zi;$callsign;$as;$site_lat{$callsign};$site_long{$callsign};$siteAdd;$useBounds;".
+    "$hasHamnet;$elevation" #;$country
+  );
+}
 # -------------------------------------------------------------------------
 # Prepare edges explicitely stored in the database
 my $sth= $db->prepare(qq(select left_site,right_site,hamnet_edge.typ
@@ -287,113 +300,59 @@ while (@line= $sth->fetchrow_array) {
   push(@allEdges, "$typ;$left_site:$right_site;$left_site;$right_site");
 }
 
-#only GeoJSON, old map no longer exists
-# ------------------------ GeoJSON part ---------------------------------------
-#if ($geojson) {
-  print qq(Content-Type: text/plain\nExpires: 0 \n\n);
-  
-  &json_obj();
-  &json_var("FeatureCollection","type")
-    &json_obj("features", 1);
-  foreach $edge (reverse sort @allEdges) {
-    my @f= split(/;/, $edge);
-    &json_obj();
-      &json_var("Feature","type");
-      &json_obj("geometry",0)
-        &json_var("LineString","type");
-        &json_obj("coordinates",1);
-          &json_obj(0,1);
-            my $site= $f[2];
-            &json_var($site_long{$site},0);
-            &json_var($site_lat{$site},0);
-          &json_obj_end(1);
-          &json_obj(0,1);
-            my $site= $f[3];
-            &json_var($site_long{$site},0);
-            &json_var($site_lat{$site},0);
-          &json_obj_end(1);
-        &json_obj_end(1);
-      &json_obj_end();
-      &json_obj("properties",0);
-        &json_var($f[2].":".$f[3], "callsign");
-        &json_var($f[0], "style");
-      &json_obj_end();
-    &json_obj_end;
-  }
-  
-  foreach $site (sort @allSites) {
-    my @f= split(/;/, $site);
-    &json_obj();
-      &json_var("Feature","type");
-      &json_obj("geometry",0)
-        &json_var("Point","type");
-        &json_obj("coordinates",1);
-          &json_var($f[4],0);
-          &json_var($f[3],0);
-        &json_obj_end(1);
-      &json_obj_end();
-      &json_obj("properties",0);
-        &json_var($f[1], "callsign");
-        &json_var($f[2], "as");
-        &json_var($f[8], "anthight");
-        &json_var("site".$f[5], "style");
-        &json_var($f[0]+0, "zIndex");
-      &json_obj_end();
-    &json_obj_end();
-  }
-  &json_obj_end(1);
-  &json_obj_end();
-#}
-# ------------------------ JSON part ---------------------------------------
-# else { 
-#   print("Content-Type: application/json\nExpires: 0\n\n");
-#   &json_obj();
-#   &json_obj("edge", 1);
-#   foreach $edge (reverse sort @allEdges) {
-#     my @f= split(/;/, $edge);
-#     &json_obj;
-#     &json_var($f[0], "typ");
-#     &json_var($f[1], "link");
-#     &json_obj("left");
-#     { 
-#       my $site= $f[2];
-#       &json_var($site, "site");
-#       &json_var($site_lat{$site}, "latitude");
-#       &json_var($site_long{$site}, "longitude");
-#       &json_var($site_as{$site}, "as");
-#     }
-#     &json_obj_end;
-#     &json_obj("right");
-#     { 
-#       my $site= $f[3];
-#       &json_var($site, "site");
-#       &json_var($site_lat{$site}, "latitude");
-#       &json_var($site_long{$site}, "longitude");
-#       &json_var($site_as{$site}, "as");
-#     }
-#     &json_obj_end;
-#     &json_obj_end;
-#   }
-#   &json_obj_end(1);
+print qq(Content-Type: text/plain\nExpires: 0 \n\n);
 
-#   &json_obj("site", 1);
-#   foreach $site (sort @allSites) {
-#     my @f= split(/;/, $site);
-#     &json_obj();
-#     &json_var($f[1], "callsign");
-#     &json_var($f[2], "as");
-#     &json_var($f[3], "latitude");
-#     &json_var($f[4], "longitude");
-#     &json_var("site".$f[5].".png", "icon");
-#     &json_var($f[0]+0, "zIndex");
-#     &json_var($f[6], "useBounds");
-#     &json_var($f[7], "hasHamnet");
-#     &json_var($f[8], "country");
-#     &json_obj_end();
-#   }
-#   &json_obj_end(1);
-#   &json_obj_end();
-# }
+&json_obj();
+&json_var("FeatureCollection","type")
+  &json_obj("features", 1);
+foreach $edge (reverse sort @allEdges) {
+  my @f= split(/;/, $edge);
+  &json_obj();
+    &json_var("Feature","type");
+    &json_obj("geometry",0)
+      &json_var("LineString","type");
+      &json_obj("coordinates",1);
+        &json_obj(0,1);
+          my $site= $f[2];
+          &json_var($site_long{$site},0);
+          &json_var($site_lat{$site},0);
+        &json_obj_end(1);
+        &json_obj(0,1);
+          my $site= $f[3];
+          &json_var($site_long{$site},0);
+          &json_var($site_lat{$site},0);
+        &json_obj_end(1);
+      &json_obj_end(1);
+    &json_obj_end();
+    &json_obj("properties",0);
+      &json_var($f[2].":".$f[3], "callsign");
+      &json_var($f[0], "style");
+    &json_obj_end();
+  &json_obj_end;
+}
+
+foreach $site (sort @allSites) {
+  my @f= split(/;/, $site);
+  &json_obj();
+    &json_var("Feature","type");
+    &json_obj("geometry",0)
+      &json_var("Point","type");
+      &json_obj("coordinates",1);
+        &json_var($f[4],0);
+        &json_var($f[3],0);
+      &json_obj_end(1);
+    &json_obj_end();
+    &json_obj("properties",0);
+      &json_var($f[1], "callsign");
+      &json_var($f[2], "as");
+      &json_var($f[8], "anthight");
+      &json_var("site".$f[5], "style");
+      &json_var($f[0]+0, "zIndex");
+    &json_obj_end();
+  &json_obj_end();
+}
+&json_obj_end(1);
+&json_obj_end();
 
 sub check_process { 
   my $first= shift;
