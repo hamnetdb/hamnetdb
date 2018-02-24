@@ -96,6 +96,7 @@ while (@line= $sth->fetchrow_array) {
   $site_lat{$callsign}= $latitude;
   $site_long{$callsign}= $longitude;
   $site_no_check{$callsign}= $no_check;
+  $site_radioparam{$callsign}= $radioparam;
   push(@allCallsigns,"$callsign");
 }
 
@@ -236,7 +237,7 @@ foreach my $callsign (@allCallsigns) {
 
   my $zIndex= 10;
   my $siteAdd= "";
-  $siteAdd= "-user" if $radioparam;
+  $siteAdd= "-user" if $site_radioparam{$callsign};
 
   # The siteStatus contains complete image definition, just extract
   # the color since other symbols are used in the map context.
