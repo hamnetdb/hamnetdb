@@ -98,6 +98,8 @@ while (@line= $sth->fetchrow_array) {
   $site_long{$callsign}= $longitude;
   $site_no_check{$callsign}= $no_check;
 
+
+#split here?
   if ($only_as) {
     next if ($site_as{$callsign} != $only_as)
   }

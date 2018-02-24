@@ -410,7 +410,7 @@ function init()
       'OpenTopo':openttopoLayer,
       'GoogleMaps': roadMutant,
       'Google Terrain': terrainMutant,
-      'Google Sattelite': satMutant,
+      'Google Satellite': satMutant,
       'Google Hybrid': hybridMutant
     };
   }
