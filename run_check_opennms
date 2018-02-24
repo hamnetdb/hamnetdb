@@ -97,7 +97,7 @@ sub performCheck{
       }
       $okCount++;
       #&log($agent, $sql);
-  #    print $sql, "\n";
+      #print $sql, "\n";
       $db->do($sql);
     }
     else

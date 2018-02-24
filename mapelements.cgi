@@ -158,7 +158,7 @@ my $sth= $db->prepare(qq(select hamnet_host.ip,hamnet_subnet.ip,
   hamnet_subnet.begin_ip, hamnet_subnet.end_ip
   from hamnet_subnet
   left join hamnet_host on hamnet_host.rawip between begin_ip and end_ip
-  where hamnet_subnet.typ like 'Backbone-%'
+  where hamnet_host.ip is not null and hamnet_subnet.typ like 'Backbone-%'
 ));
 #as_parent,
 $sth->execute;
@@ -405,3 +405,4 @@ sub check_process {
   flock $file, LOCK_EX or check_process(0);
   #flock $file, LOCK_EX|LOCK_NB or die "Unable to lock file $!";
 }
+
