@@ -26,6 +26,9 @@ $width="140px";
       $radioparam,$comment,$maintainer,$rw_maint,$newCover,$hasCover)= &loadFormData
 ("name,callsign,longitude,latitude,elevation,no_check,radioparam,comment,maintainer,rw_maint,newCover,hasCover");
 
+$newCover+= 0;
+$hasCover+= 0;
+$elevation+= 0;
 
 #Coverage-Table: new or hist?
 if ($newversion && $id) {
@@ -81,12 +84,23 @@ print qq(
   Type of this site:
   <br>
 );
-&comboBox("", "no_check", $no_check, 
-        "0::Hamnet-site",
-        "1::Special hamnet-site (ignore position in map)",
-        "4::ISM-site",
-        "2::No hamnet on site (e.g. FM-repeater)",
-        "3::Site without callsign (for planning)");
+if($mySysPerm || ($no_check == 5 && &checkMaintainerRW(1, $maintainer))) {
+  &comboBox("", "no_check", $no_check, 
+          "0::Hamnet-site",
+          "1::Special hamnet-site (ignore position in map)",
+          "4::ISM-site",
+          "2::No hamnet on site (e.g. FM-repeater)",
+          "3::Site without callsign (for planning)",
+          "5::Virtual hamnet-site (e.g. Hamcloud)");
+}
+else {
+  &comboBox("", "no_check", $no_check, 
+          "0::Hamnet-site",
+          "1::Special hamnet-site (ignore position in map)",
+          "4::ISM-site",
+          "2::No hamnet on site (e.g. FM-repeater)",
+          "3::Site without callsign (for planning)");
+}
 print qq(
   </td>
   </tr>
@@ -402,6 +416,10 @@ sub checkValues
       }
     }
   }
+  elsif ($no_check==5) {
+     #all ok 
+     my $test = 0;
+  }    
   else {
     unless ($callsign=~/^[a-z0-9]{3,6}-*\d*$/ && $callsign=~/[0-9][a-z]-*\d*/) {
       $inputStatus= "Callsign seems to have incorrect format";
@@ -420,6 +438,11 @@ sub checkValues
     }
   }
 
+  #virtual hamnet site only for sysadmin or maintainers
+  if ($no_check == 5) {
+    &checkMaintainerRW(1, $maintainer);    
+  }
+
   if($Cover == 1){
     $hasCover = 1;
     if($ischanged ==1){
@@ -429,11 +452,9 @@ sub checkValues
 
   }
 
-
   $maintainer= lc $maintainer;
   &checkMaintainerRW($rw_maint, $maintainer);
   $radioparam= &alignRadioparam($radioparam);
-
 
   &checkAntenna();
 

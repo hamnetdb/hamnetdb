@@ -188,13 +188,19 @@ sub checkValues {
   $radioparam.= $radio_remarks;
   $radioparam= &alignRadioparam($radioparam);
   &checkMaintainerRW($rw_maint, $maintainer);
-
-  unless ($name=~/[a-z][0-9]+[a-z]+-*\d*$/) {
-    $inputStatus= 
-      "Host name must end with a callsign to be globally unique";
-  }
   if (! $site) {
     $inputStatus= "Host must be assigned to a site";
+  }
+  
+  unless ($inputStatus) {
+    #no callsign check for virtual site
+    unless ($db->selectrow_array("select callsign, no_check from hamnet_site  ".
+              "where callsign='$site' and no_check=5")){
+      unless ($name=~/[a-z][0-9]+[a-z]+-*\d*$/) {
+        $inputStatus= 
+          "Host name must end with a callsign to be globally unique";
+      } 
+    }
   }
 
   if ($mac) {
@@ -250,8 +256,14 @@ sub checkValues {
   unless($inputStatus) {
     if ($typ eq "Routing-Radio"){
       if ($db->selectrow_array("select callsign, no_check from hamnet_site  ".
-              "where callsign='$site' and no_check=4")) {
-            $inputStatus= "ISM-Sites can't have host of type \"Routing-Radio\"";
+              "where callsign='$site' and no_check=4 or no_check=5")) {
+            $inputStatus= "This type of site can't have host of type \"Routing-Radio\"";
+      }
+    }
+    elsif ($typ eq "Routing-ISM"){
+      if ($db->selectrow_array("select callsign, no_check from hamnet_site  ".
+              "where callsign='$site' and no_check=5")) {
+            $inputStatus= "This type of site can't have host of type \"Routing-ISM\"";
       }
     }
   }
