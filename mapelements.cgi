@@ -97,6 +97,7 @@ while (@line= $sth->fetchrow_array) {
   $site_long{$callsign}= $longitude;
   $site_no_check{$callsign}= $no_check;
   $site_radioparam{$callsign}= $radioparam;
+  $site_elevation{$callsign}= $elevation;
   push(@allCallsigns,"$callsign");
 }
 
@@ -278,7 +279,7 @@ foreach my $callsign (@allCallsigns) {
 
   push(@allSites, 
     "$zi;$callsign;$as;$site_lat{$callsign};$site_long{$callsign};$siteAdd;$useBounds;".
-    "$hasHamnet;$elevation" #;$country
+    "$hasHamnet;$site_elevation{$callsign}" #;$country
   );
 }
 # -------------------------------------------------------------------------
