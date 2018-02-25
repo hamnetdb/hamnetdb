@@ -173,6 +173,13 @@ function init()
         maxZoom: mapnikZoom
       }
     );
+    var satLayer = L.tileLayer(
+      satUrl,
+      {
+        attribution: attribution,
+        maxZoom: satZoom
+      }
+    );
 	}
 	
   if(hoverpop == "true")
