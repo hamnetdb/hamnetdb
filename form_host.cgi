@@ -256,7 +256,7 @@ sub checkValues {
   unless($inputStatus) {
     if ($typ eq "Routing-Radio"){
       if ($db->selectrow_array("select callsign, no_check from hamnet_site  ".
-              "where callsign='$site' and no_check=4 or no_check=5")) {
+              "where callsign='$site' and (no_check=4 or no_check=5)")) {
             $inputStatus= "This type of site can't have host of type \"Routing-Radio\"";
       }
     }
