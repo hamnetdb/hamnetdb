@@ -43,6 +43,7 @@ L.Control.Permalink = L.Control.extend({
 
 		return this._container;
 	},
+	
 
 	_update_center: function () {
 		if (!this._map) return;
@@ -54,8 +55,9 @@ L.Control.Permalink = L.Control.extend({
 	_update_href: function () {
 		var params = L.Util.getParamString(this._params);
 		var sep = '?';
+		var rfurl = rfCreateUrl();
 		if (this.options.useAnchor) sep = '#';
-		var url = this._url_base + sep + params.slice(1);
+		var url = this._url_base + sep + params.slice(1) + rfurl;
 		if (this._href) this._href.setAttribute('href', url);
 		if (this.options.useLocation)
 			location.replace('#' + params.slice(1));
@@ -97,9 +99,14 @@ L.Control.Permalink = L.Control.extend({
 
 	_set_urlvars: function ()
 	{
-		var p;
-		if (this.options.useAnchor) {
-			p = L.UrlUtil.queryParse(L.UrlUtil.hash());
+		var p = {};
+		if (this.options.useAnchor) {//lsp 03 2018
+			tmp = L.UrlUtil.queryParse(L.UrlUtil.hash());
+			if (typeof tmp.zoom !== 'undefined') p.zoom = tmp.zoom;
+			if (typeof tmp.lat !== 'undefined') p.lat = tmp.lat;
+			if (typeof tmp.lon !== 'undefined') p.lon = tmp.lon;
+			if (typeof tmp.layer !== 'undefined') p.layer = tmp.layer;
+			if (typeof tmp.overlays !== 'undefined') p.overlays = tmp.overlays;
 			this._url_base = window.location.href.split('#')[0];
 		} else {
 			p = L.UrlUtil.queryParse(L.UrlUtil.query());

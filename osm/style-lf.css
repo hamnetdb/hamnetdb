@@ -47,10 +47,14 @@ h4 {
 #pop_alloc {
   height: 200px;
 }
+.leaflet-sidebar ul {
+  margin: 0px;
+  padding-left: 10px; 
+}
 #sidebar-info, #sidebar-info table{
   font-size:13px;
 }
-#sidebar-info, #sindebar-setting {
+#sidebar-info, #sidebar-setting, #sidebar-rftools {
   padding-left:10px;
   padding-right:10px;
   font-size:13px;
@@ -82,32 +86,123 @@ h4 {
   display: block;
   color:#0078a8;
 }
-.info-toolbar, .setting-toolbar
-{
-    background: none repeat scroll 0 0 #fff;
-    border-radius: 4px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
-    margin-bottom: 10px;
+.rftools-toolbar-a {
+  width:36px;
+  height:36px;
+  background-image:url("images/rf.png");
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  display: block;
+  color:#0078a8;
 }
-
-.info-toolbar:hover, .setting-toolbar:hover
+.info-toolbar, .setting-toolbar, .rftools-toolbar
+{
+  background: none repeat scroll 0 0 #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  margin-bottom: 10px;
+}
+.info-toolbar:hover, .setting-toolbar:hover, .rftools-toolbar:hover
 {
     background-color: #F4F4F4;
 }
-
-
 .leaflet-control-permalink
 {
-   /* display:none;*/
-   font-size:12px;
+  /* display:none;*/
+  font-size:12px;
 }
-
 .leaflet-control-zoom, .leaflet-control-zoom a
 {
   width: 36px;
   background-color: #fff;
 }
-
+#sidebar-rftools select, #sidebar-rftools input
+{
+  font-size: 12px;
+  padding: 0;
+  max-width: 200px;
+}
+@media (max-width: 467px) {
+  #rf-loading, #rf-result{
+    margin-top: -200px; 
+    height: 220px;
+  }
+}
+@media (min-width: 468px) {
+  #rf-loading, #rf-result{
+    margin-top: -220px;
+    height: 230px; 
+  }
+}
+#rf-loading, #rf-result
+{
+  visibility: hidden;
+  /*width: 100%;
+  padding-left: 10px;
+  background-color:#fff;
+  position: absolute;
+  left: 0;*/
+}
+#rf-loading {
+  font-size: 20px;
+}
+#rf-result a:hover {
+  text-decoration: underline;
+}
+.side-button
+{
+  padding:1px 8px 1px 8px; 
+  border-radius:3px; 
+  border:1px solid #666; 
+  cursor:pointer;
+}
+.side-button:hover
+{
+  background-color: #ddd;
+}
+.side-draw-point
+{
+  background-image: url('images/spritesheet.svg');
+  background-position: -127px -6px;
+  background-size: 300px 30px;
+}
+.side-draw-rect
+{
+  background-image: url('images/spritesheet.svg');
+  background-position: -67px -6px;
+  background-size: 300px 30px;
+}
+.side-draw-del-rect 
+{
+  display: none;
+}
+#side-draw-del-point1, #side-draw-del-point2, #side-draw-del-rect
+{
+  display: none;
+}
+.side-draw-del
+{
+  background-image: url('images/spritesheet.svg');
+  background-position: -187px -6px;
+  background-size: 300px 30px;
+  margin-left: 2px;
+}
+.leaflet-draw-tooltip {
+  background: rgb(54, 54, 54);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid transparent;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  color: #fff;
+  font: 12px/18px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  margin-left: 20px;
+  margin-top: -21px;
+  padding: 4px 8px;
+  position: absolute;
+  visibility: hidden;
+  white-space: nowrap;
+  z-index: 6;
+}
 /***********begin Mouseposition-plugin (Koordinates left bottom)*/
 .leaflet-container .leaflet-control-mouseposition {
 background-color: rgba(255, 255, 255, 0.7);
@@ -204,7 +299,7 @@ font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
       box-shadow: none;
       border: 2px solid rgba(0, 0, 0, 0.2);
       background-clip: padding-box; }
-  @media (max-width: 767px) {
+  @media (max-width: 467px) {
     .leaflet-sidebar {
       width: 100%;
       padding: 0; }
@@ -226,7 +321,7 @@ font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
         border-radius: 0; }
         .leaflet-touch .leaflet-sidebar > .leaflet-control {
           border: 0; } }
-  @media (min-width: 768px) and (max-width: 991px) {
+  @media (min-width: 468px) and (max-width: 991px) {
     .leaflet-sidebar {
       width: 250px; }
       .leaflet-sidebar.left.visible ~ .leaflet-left {
@@ -334,4 +429,13 @@ font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 .popupProfile .leaflet-popup-content p {
     margin: 0;
     padding: 0;
+}
+#popup-updated {
+  padding: 5px 0px 5px 0px;
+}
+.popup-darg {
+  color: #888;
+  position: absolute;
+  margin-top: -17px;
+  margin-left: 10px;
 }

@@ -104,7 +104,8 @@ print qq(
       
     <script src="osm/L.Control.MousePosition.js"></script>
     <script src="osm/L.Control.MiniMap.js"></script>
-	  <script src="osm/L.Control.Sidebar.js"></script>
+    <script src="osm/L.Control.Sidebar.js"></script>
+	  <script src="osm/L.Draw.js"></script>
     <script src="osm/Permalink.js"></script>
     <script src="osm/Permalink.Marker.js"></script>
     <script src="osm/Permalink.Layer.js"></script>
@@ -119,9 +120,24 @@ print qq(
 	 
 	</head>
 	<body onload="init()">
+      <div class="hidden">
+        Hamnet map, showing Hamnet infrastructure 
+        also including  RF planing tools
+        <br><br>
+        <img src="site-user-red.png" />
+        <img src="site-user-grey.png" />
+        <img src="site-user-blue.png" />
+        <img src="site-user-green.png" />
+        <img src="site-user.png" />
+        <img src="site-red.png" />
+        <img src="site-grey.png" />
+        <img src="site-blue.png" />
+        <img src="site-green.png" />
+        <img src="site.png" />
+      </div>
       <div id="info" style="display:none;">
-      <div id="sidebar-info" >
-	    <div id="legende">
+      <div id="sidebar-info">
+	      <div id="legende">
           <h4>Legend</h4>
           <table>        
             <tr><td><img src="site.png"/></td><td>This is a site. No realtime checks were performed last 2 hours.</td></tr>
@@ -165,7 +181,7 @@ print qq(
               <option $sourceselect[3] class="mapform" value="3">OSM Hamnet</option>
             </select>
           </form>
-          </div>
+        </div>
         <div id="popupsetting">
           <form><input type="checkbox" id="hoverpopup" onchange="popupSetting();" $hoverchecked value="hoverpopup"/>Popup on Mouse over</form>
         </div>
@@ -177,21 +193,65 @@ print qq(
         </form></div>
         <div id="extern-permalink"></div>
       </div>
-      </div>
-      <div id="map">
+      <div id="sidebar-rftools">
+        <h4>RF-Tools</h4>
+        An easy way to estimate <br> possilbe rf-links
+        <h4>Link-profile:</h4>
+        <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
+          <span class="side-button side-draw-point"></span></a>
+        <a onclick="deleteProfileAll();" style="text-decoration:none; border-radius:2px;">
+          <span class="side-button side-draw-del" id="side-draw-del-point1"></span></a>
+        &nbsp;place marker "From" and "To"<br>
+        
+        <input type='button' value='show profile' style='height:24px;' onclick='javascript:rfOpenprofile()'> 
+        <h4>(RF)-visibility:</h4>
+        use exsisting visibility (faster)<br>
+        );
+
+        &asCombo(0, 1, 0, $only_as, "onchange='panelChange();'");
+print qq(
+        <hr>
+        <div id="rfCalcNew">
+          or calculate new visibility<br>
+          <form>Label: <input type="text" id="rfLabel" style='width:120px'><br>
+          <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
+            <span class="side-button side-draw-point" </span></a>
+          <a onclick="deleteProfileAll();" style="text-decoration:none; border-radius:2px;">
+            <span class="side-button side-draw-del" id="side-draw-del-point2"></span></a>  
+          &nbsp;place at least one marker <br>
+
+          <a onclick="rfRectangle();" style="text-decoration:none; border-radius:2px;">
+            <span class="side-button side-draw-rect"></span></a>
+          <a onclick="rfDelRectangle();" style="text-decoration:none; border-radius:2px;">
+          <span class="side-button side-draw-del" id="side-draw-del-rect"></span></a>
+          &nbsp;place rectangular constrain to speedup calculation<br>
+          Tower size "From" (m) <input type="text" id='rfTowerFrom' value='10' onchange='rfValUpd()' style='width:20px'><br>
+          Tower size "To" (m) <input type="text" id='rfTowerTo' value='10' onchange='rfValUpd()' style='width:20px'><br>
+          Tower size visibility (m) <input type="text" id='rfTowerRx' value='0' onchange='rfValUpd()' style='width:20px'><br>
+          
+             use
+             <select id="rfRefraction" onchange='rfValUpd()'>
+              <option value="0" >optical visibility</option>
+              <option value="0.25" selected="selected">RF-visibility</option>
+            </select> (refraction)
+          </form>
+          <input type='button' value='calculate visibility' style='height:24px; width:' onclick='javascript:rfCalc()'>
+        </div>
+        <div id="rf-loading"><img src="hdb.gif" width="150px" style="opacity: 0.6;"><br>
+        loading...</div>
+        <div id="rf-result"></div>
+        
+        <div id="extern-permalink-rf"></div>
+        <h4>hints:</h4>
+        <ul><li>right click to site "snap to &lt;SITE&gt;" to use coordinates and tower size</li>
+        <li>detailed documentation can be found <a href="index.cgi?m=help#rftools">here</a></li>
+        </ul>
 
       </div>
-      <div class="hidden">
-        <img src="site-user-red.png" />
-        <img src="site-user-grey.png" />
-        <img src="site-user-blue.png" />
-        <img src="site-user-green.png" />
-        <img src="site-user.png" />
-        <img src="site-red.png" />
-        <img src="site-grey.png" />
-        <img src="site-blue.png" />
-        <img src="site-green.png" />
-        <img src="site.png" />
+      </div>
+      
+      <div id="map">
+
       </div>
 	  <noscript><h1>Für diese Webseite benötigst du Javascript!</h1></noscript>
 	</body>

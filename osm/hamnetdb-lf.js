@@ -24,8 +24,10 @@
 //OK- perl hover
 
 var map;
+var layers;
 var SidebarInfo;
 var SidebarSetting;
+var SidebarRftools;
 var hoverpop;
 var kmlUrl = "mapelements.cgi?geojson=1&rnd="+Math.random();
 
@@ -46,9 +48,24 @@ var profileMb;
 var profileLine;
 var profilePopup;
 
+var rfRect;
+var rfMark = null;
+var rfTowerRx = 0;
+var rfMarkerA;
+var rfMarkerB;
+var rfTiles;
+var rfLayer;
+var rfLocked = 0;
+var rfUp = 0;
+var rfLeft = 0;
+var rfDown = 0;
+var rfRight = 0;
+
+var testg;
+
 function init()
-{ 
-  
+{  
+  //get page parameters
   var source = getParameter("source");
   hoverpop = getParameter("hover");
   var country = getParameter("country");
@@ -62,15 +79,36 @@ function init()
   profileTowerB = getParameter("mb_tow");
   profileLabelA = getParameter("ma_lab");
   profileLabelB = getParameter("mb_lab");
+  var profileFontTmp = getParameter("font");
+  rfTowerRx = getParameter("rf_rx");
+  rfLabel = getParameter('rf_lab');
+  rect_up = getParameter("rf_u");
+  rect_left = getParameter("rf_l");
+  rect_down = getParameter("rf_d");
+  rect_right = getParameter("rf_r");
+  rf_vis = getParameter("rf_vis");
+  rfRefractiontmp = getParameter("rf_ref");
+
+  if(rfRefractiontmp != 0) { //0 is "0.0"
+    rfRefraction = rfRefraction;
+  }
   if (profileTowerA == 0) {
     profileTowerA = profileTowerDefault;
   }
   if (profileTowerB == 0) {
     profileTowerB = profileTowerDefault;
   }
+  if (profileLabelA == 0) {
+    profileLabelA = "";
+  }
+  if (profileLabelB == 0) {
+    profileLabelB = "";
+  }
+  if (profileFontTmp != 0) {
+    profileFont = profileFontTmp;
+  }
 
   var CoverUrl= "coverage/";
-
   if (country && country.length==2) {
     kmlUrl+= "&only_country="+country;
   }
@@ -274,10 +312,8 @@ function init()
           weight = 6;
           opacity= 0.5;
       }
-       
       return {color: color, weight:weight, opacity:opacity};//feature.properties.GPSUserColor};
     },
-
     pointToLayer: function(feature, latlng) {
       return L.marker(latlng, {
         icon: L.icon({
@@ -297,6 +333,7 @@ function init()
               profileLabelA = feature.properties.callsign;
               profileTowerA = feature.properties.anthight;
               placeProfileFrom(loc);
+              profilePopupUpd();
            }
           }
         },
@@ -307,6 +344,7 @@ function init()
             profileLabelB = feature.properties.callsign;
             profileTowerB = feature.properties.anthight;
             placeProfileTo(loc);
+            profilePopupUpd();
           }
         }],
       });
@@ -377,6 +415,9 @@ function init()
   tunnelLayer.on('add', function (e) {
     tunnelLayer.bringToBack()
   });
+
+
+
   map.addLayer(hamnetLayer);
   //map.addLayer(nohamnetLayer);
   //map.addLayer(tunnelLayer);
@@ -446,14 +487,15 @@ function init()
     'Hamnet': hamnetLayer,
     'Hamnet RSSI': hamnetmonitorLayer,
     'tunnel connections': tunnelLayer,
-    'sites without Hamnet': nohamnetLayer
+    'sites without Hamnet': nohamnetLayer,
   };
-  var layers = new L.control.layers(baseLayers, overlayLayers).addTo(map);
+  layers = new L.control.layers(baseLayers, overlayLayers).addTo(map);
   var permalink = new L.Control.Permalink({text: 'Permalink', layers: layers});
   permalink._map = map;
   var extPermalink = permalink.onAdd(map);
     //  window.history.pushState("", "HamnetDB Map", url);//add by OE2LSP (end of _update_href)
   document.getElementById('extern-permalink').appendChild(extPermalink);
+  document.getElementById('extern-permalink-rf').appendChild(extPermalink);
   SidebarInfo = L.control.sidebar('sidebar-info', {
     position: 'right'
   });  
@@ -463,26 +505,56 @@ function init()
   	position: 'right'
   });
   SidebarSetting.addTo(map);
+  SidebarRftools = L.control.sidebar('sidebar-rftools',{
+    position: 'right'
+  });
+  SidebarRftools.addTo(map);
   map.addControl(new L.Control.LSP());
-  
+
   //if as is set over GET
   if(as != 0)
     getAs(as); 
   if(site != 0)
     getSite(site); 
- // map.setView([51.2, 7], 9);  
+ // map.setView([51.2, 7], 9);
 
   //Profile init
-  if ((ma_lat!=0) && (ma_lon!=0) & (mb_lat!=0) & (mb_lon!=0))
+  if ((ma_lat!=0) && (ma_lon!=0) && (mb_lat!=0) && (mb_lon!=0) && rf_vis == 0)
   {
-    ma = new L.LatLng(ma_lat, ma_lon),
+    ma = new L.LatLng(ma_lat, ma_lon);
     mb = new L.LatLng(mb_lat, mb_lon);
     drawFrom(ma);
     drawTo(mb);
-    profileProceed();
-    profileDraw();
-    map.setView([((ma_lon+ma_lon)/2), ((ma_lat+mb_lat)/2)], 9);
+    if (rf_vis == 0) 
+    {
+      profileProceed();
+      profileDraw();
+    }
+    map.setView([((Number(ma_lon)+Number(ma_lon))/2), ((Number(ma_lat)+Number(mb_lat))/2)], 9);
     //map.setZoom(9);
+  }
+  // if visibility is set
+  if (rf_vis) {
+    if(rect_up != 0 && rect_right != 0 && rect_down != 0 && rect_right != 0) 
+    {
+      rfUp = rect_up;
+      rfLeft = rect_left;
+      rfDown = rect_down;
+      rfRight = rect_right;
+    }
+    if((ma_lat!=0) && (ma_lon!=0))
+    {
+      ma = new L.LatLng(ma_lat, ma_lon);
+      drawFrom(ma);
+    }
+    if((mb_lat!=0) && (mb_lon!=0))
+    {
+      mb = new L.LatLng(mb_lat, mb_lon);
+      drawTo(mb);
+    }
+
+    rfCalc(1);
+    SidebarRftools.toggle();
   }
 }
 function placeProfileFrom (e) {
@@ -506,44 +578,41 @@ function placeProfileTo (e) {
 function drawFrom(latlng)
 {
   profileMa = L.marker(latlng, {
-      icon: L.icon({
-          iconUrl: 'osm/images/marker-red.png',
-          iconSize: [17, 25],
-          iconAnchor: [8, 25],
-          popupAnchor: [0, 0],
-          zIndex: 9997,
-          //zIndexOffset: 3000,
-        }),
-      draggable: true,
-      contextmenu: true,
-      contextmenuItems: [
-        {
-          text: 'calculate p2p-Profile',
-          callback: function (e) { 
-            profileDraw() ;}
-        },
-        {
-          text: 'delete From',
-          callback: function (e) { 
-            profileLabelA = "";
-            profileTowerA = profileTowerDefault;
-            deleteProfileLine(); 
-            map.removeLayer(profileMa);
-          }
-        },
-        {
-          text: 'delete all',
-          callback: function (e) { 
-            profileLabelA = "";
-            profileLabelB = "";
-            profileTowerA = profileTowerDefault;
-            profileTowerB = profileTowerDefault;
-            deleteProfileLine(); 
-            deleteProfileMb();
-            map.removeLayer(profileMa);
-          }
+    icon: L.icon({
+        iconUrl: 'osm/images/marker-red.png',
+        iconSize: [17, 25],
+        iconAnchor: [8, 25],
+        popupAnchor: [0, 0],
+        zIndex: 9997,
+        //zIndexOffset: 3000,
+      }),
+    draggable: true,
+    contextmenu: true,
+    contextmenuItems: [
+      {
+        text: 'calculate p2p-Profile',
+        callback: function (e) { 
+          profileDraw() ;}
+      },
+      {
+        text: 'delete From',
+        callback: function (e) { 
+          profileLabelA = "";
+          profileTowerA = profileTowerDefault;
+          deleteProfileLine(); 
+          map.removeLayer(profileMa);
         }
-      ]
+      },
+      {
+        text: 'delete all',
+        callback: function (e) { 
+          profileTowerA = profileTowerDefault;
+          profileTowerB = profileTowerDefault;
+          deleteProfileAll();
+          map.removeLayer(profileMa);
+        }
+      }
+    ]
   }).addTo(map);
   profileMa.setZIndexOffset(7000);
   profileMa.on("dragend", function(e){profileProceed();});
@@ -553,44 +622,41 @@ function drawFrom(latlng)
 function drawTo(latlng)
 {
   profileMb = L.marker(latlng, {
-      icon: L.icon({
-          iconUrl: 'osm/images/marker-red.png',
-          iconSize: [17, 25],
-          iconAnchor: [8, 25],
-          popupAnchor: [0, 0],
-          zIndex: 9996,
-          //zIndexOffset: 3000,
-        }),
-      draggable: true,
-      contextmenu: true,
-      contextmenuItems: [
-        {
-          text: 'calculate p2p-Profile',
-          callback: function (e) { 
-            profileDraw() ;}
-        },
-        {
-          text: 'delete To',
-          callback: function (e) { 
-              profileLabelB = "";
-              profileTowerB = profileTowerDefault;
-              deleteProfileLine();
-              map.removeLayer(profileMb); 
-            }
-        },
-        {
-          text: 'delete all',
-          callback: function (e) { 
-            profileLabelA = "";
+    icon: L.icon({
+        iconUrl: 'osm/images/marker-red.png',
+        iconSize: [17, 25],
+        iconAnchor: [8, 25],
+        popupAnchor: [0, 0],
+        zIndex: 9996,
+        //zIndexOffset: 3000,
+      }),
+    draggable: true,
+    contextmenu: true,
+    contextmenuItems: [
+      {
+        text: 'calculate p2p-Profile',
+        callback: function (e) { 
+          profileDraw() ;}
+      },
+      {
+        text: 'delete To',
+        callback: function (e) { 
             profileLabelB = "";
-            profileTowerA = profileTowerDefault;
             profileTowerB = profileTowerDefault;
-            deleteProfileLine(); 
-            deleteProfileMa();
-            map.removeLayer(profileMb);
+            deleteProfileLine();
+            map.removeLayer(profileMb); 
           }
-        }  
-      ]
+      },
+      {
+        text: 'delete all',
+        callback: function (e) { 
+          profileTowerA = profileTowerDefault;
+          profileTowerB = profileTowerDefault;
+          deleteProfileAll();
+          map.removeLayer(profileMb); 
+        }
+      }  
+    ]
   }).addTo(map);
   profileMb.setZIndexOffset(7000);
   profileMb.on("dragend", function(e){profileProceed();});
@@ -599,6 +665,8 @@ function drawTo(latlng)
 }
 function profileProceed()
 {
+  document.getElementById('side-draw-del-point1').style.display="inline"
+  document.getElementById('side-draw-del-point2').style.display="inline"
   if ((typeof profileMa !== 'undefined') &&(typeof profileMb !== 'undefined')) {
   
     if((profileMa._icon != null) && (profileMb._icon != null))
@@ -614,10 +682,12 @@ function profileProceed()
       });
       profileLine.addTo(map);
       profileLine.on("click", function(e) {profileDraw();});
+      if (map.hasLayer(profilePopup)){
+        document.getElementById("popup-updated").style.border= "3px solid red"
+      }
     }
   }
 }
-
 function deleteProfileLine() {
   if (typeof profileLine !== 'undefined')
   {
@@ -630,16 +700,22 @@ function deleteProfileLine() {
 function deleteProfileMa() {
   if (typeof profileMa !== 'undefined') {
     map.removeLayer(profileMa);
-    profileLabelA = "";
   }
 }
 function deleteProfileMb() {
   if (typeof profileMb !== 'undefined') {
     map.removeLayer(profileMb);
-    profileLabelB = "";
   }
 }
-
+function deleteProfileAll() {
+  profileLabelA = "";
+  profileLabelB = "";
+  deleteProfileLine(); 
+  deleteProfileMa();
+  map.removeLayer(profileMb);
+  document.getElementById('side-draw-del-point1').style.display="none"
+  document.getElementById('side-draw-del-point2').style.display="none"
+}
 //profile Popup content
 function profileDraw () {
   width = 650;
@@ -678,7 +754,8 @@ function profileDraw () {
         fontSelected3 = "selected";
       }
 
-      var popupcontent="<img id='proifleimg' src='"+profilelink+"' alt='loading...'/>\
+      var popupcontent="<span class='popup-darg'>drag and drop popup and markers</span> \
+        <img id='proifleimg' src='"+profilelink+"' style='font-size:40px;' alt='loading...'/>\
         <p><form id='profile'>&nbsp;&nbsp;\
         <b>tower size \"From\"<input id='towera' value='"+profileTowerA+"' size='3' style='width:22px' \
         onchange='profileValUpd();'/>m</b>&nbsp;&nbsp;\
@@ -696,7 +773,7 @@ function profileDraw () {
         0...100m &nbsp;&nbsp;font size<select id='fontsize' onchange='profileValUpd();'>\
         <option value='1' "+fontSelected1+">10</option><option value='2' "+fontSelected2+">14</option>\
         <option value='3' "+fontSelected3+">20</option></select> \
-        <input type='button' value='recalculate' style='height:24px' onclick='javascript:profileRedraw("+width+","+height+");' >\
+        <span id='popup-updated'><input type='button' value='recalculate' style='height:24px' onclick='javascript:profileRedraw("+width+","+height+");' ></span>\
         &nbsp;&nbsp;<input type='button' value='open big Profile' \
         style='height:24px' onclick='javascript:profileOpenBig();'></form>\
          &nbsp &nbsp\</p>";
@@ -719,27 +796,37 @@ function profileDraw () {
       map.addLayer(profilePopup);
 
       var pos = map.latLngToLayerPoint(profilePopup._latlng);
-      L.DomUtil.setPosition(profilePopup._wrapper.parentNode, pos);
+      L.DomUtil.setPosition(profilePopup._wrapper.parentNode,pos);
       var draggable = new L.Draggable(profilePopup._container, profilePopup._wrapper);
       draggable.enable();
+      map.panTo(pos)
     }
   }
 }
+function profilePopupUpd()
+{
+  document.getElementById("labela").value = profileLabelA; 
+  document.getElementById("labelb").value = profileLabelB; 
+  document.getElementById("towera").value = profileTowerA; 
+  document.getElementById("towerb").value = profileTowerB; 
+}
 function profileValUpd()
 {
-  profileLabelA =  document.getElementById("labela").value; 
+  profileLabelA = document.getElementById("labela").value; 
   profileLabelB = document.getElementById("labelb").value; 
   profileTowerA = document.getElementById("towera").value; 
   profileTowerB = document.getElementById("towerb").value; 
   profileFrecuency = document.getElementById("frequency").value; 
   profileWood = document.getElementById("wood").value; 
   profileFont = document.getElementById("fontsize").value; 
+  rfUpdForm();
 }
 function profileRedraw(width,height)
 {
   //set proifleimg src
   var src = profileGenLink(width,height);
   document.getElementById("proifleimg").src = src;
+  document.getElementById("popup-updated").style.border= "0px";
 }
 function profileOpenBig()
 {
@@ -749,7 +836,6 @@ function profileOpenBig()
   var src = profileGenLink(width,height);
   //open new window
   window.open(src, '_blank');
-
 }
 function profileGenLink(width,height)
 {
@@ -757,7 +843,7 @@ function profileGenLink(width,height)
   var lon1 = profileMa._latlng['lng'];
   var lat2 = profileMb._latlng['lat'];
   var lon2 = profileMb._latlng['lng'];
-  //my src;
+
   src="https://hamnetdb.net/calc_profile.cgi?f="+profileFrecuency+"&lon_a="+
         lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+"&name_a=\""+profileLabelA+
         "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+"&name_b=\""+profileLabelB+
@@ -768,6 +854,307 @@ function popupSetting()
 {
   var pop = document.getElementById("hoverpopup").checked;
   setGetParameter('hover',pop,true);
+}
+function rfPlacemarker()
+{
+  if(rfMark !== null) {
+    rfMark.disable();
+    rfMark = null;
+  }
+  else
+  {
+    rfMark= new L.Draw.Marker(map);
+    rfMark.enable();
+    map.on('draw:created',rfPlaceA);
+  }
+}
+function rfPlaceA(e)
+{
+  map.off('draw:created',rfPlaceA);
+  var coord;
+  coord = {latlng: e.layer._latlng};
+  placeProfileFrom(coord);
+  rfMark= new L.Draw.Marker(map);
+  rfMark.enable();
+  map.on('draw:created',rfPlaceB);
+}
+function rfPlaceB(e)
+{
+  map.off('draw:created',rfPlaceB);
+  var coord;
+  coord = {latlng: e.layer._latlng};
+  placeProfileTo(coord);
+  rfMark = null;
+}
+function rfOpenprofile()
+{
+  if (map.hasLayer(profileMa) && map.hasLayer(profileMb)) {
+    if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+      profileDraw();
+    }
+    else
+      alert("At least one marker missing!");
+  }
+  else
+    alert("At least one marker missing!");
+}
+function rfRectangle()
+{
+  var rect= new L.Draw.Rectangle(map,{shapeOptions:{color:'#F00',fill:false}});
+  rect.enable();
+  map.on('draw:created',rfRectangleFinish)
+}
+function rfDelRectangle()
+{
+  if (map.hasLayer(rfRect)) 
+  {
+    rfRect.removeFrom(map);
+    map.removeLayer(rfRect); 
+  }
+  document.getElementById('side-draw-del-rect').style.display="none";
+}
+function rfRectangleFinish(e) {
+  if (map.hasLayer(rfRect)) {
+    rfRect.removeFrom(map);
+    map.removeLayer(rfRect); 
+  }
+  document.getElementById('side-draw-del-rect').style.display="inline";
+  var type = e.layerType;
+  rfRect = e.layer;
+  rfRect.addTo(map);
+
+
+  map.off('draw:created',rfRectangleFinish);
+}
+function rfValUpd()
+{
+  rfLabel = document.getElementById("rfLabel").value; 
+  rfTowerRx = document.getElementById("rfTowerRx").value; 
+  rfRefraction = document.getElementById("rfRefraction").value; 
+  profileTowerA = document.getElementById("rfTowerFrom").value; 
+  profileTowerB = document.getElementById("rfTowerTo").value; 
+  profilePopupUpd();
+}
+function rfUpdForm()
+{
+  document.getElementById("rfTowerRx").value = rfTowerRx; 
+  document.getElementById("rfTowerFrom").value = profileTowerA; 
+  document.getElementById("rfTowerTo").value = profileTowerB; 
+  document.getElementById("rfLabel").value = rfLabel; 
+  document.getElementById("rfTowerRx").value = rfTowerRx; 
+}
+function rfBack()
+{
+  document.getElementById("rf-result").style.visibility = "hidden";   
+  document.getElementById("rf-loading").style.visibility = "hidden";   
+  document.getElementById("rfCalcNew").style.visibility = "visible";  
+}
+function rfCalc(force)
+{
+  //http query
+
+  //check rectangle
+  if (map.hasLayer(rfRect) == false && (typeof force === 'undefined')) {
+    document.getElementById("rf-result").style.visibility = "visible";   
+    document.getElementById("rfCalcNew").style.visibility = "hidden";   
+
+    var content = "<br><b>No rectangle placed, time of calculation may be long!</b><br><a onclick='rfBack();'>cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onclick='rfBack(); rfCalc(1);'>continue</a>"
+    document.getElementById("rf-result").innerHTML=content;
+    return; 
+  }
+  else if (map.hasLayer(rfRect)) {
+    var rect_up = rfRect._bounds._southWest.lat
+    var rect_left = rfRect._bounds._southWest.lng
+    var rect_down = rfRect._bounds._northEast.lat
+    var rect_right =  rfRect._bounds._northEast.lng
+  }
+  else if (rfUp !=0 && rfLeft !=0 && rfDown !=0 && rfRight !=0) {
+    var rect_up = rfUp;
+    var rect_left = rfLeft;
+    var rect_down = rfDown;
+    var rect_right =  rfRight;
+  }
+
+  //check marker
+  if (map.hasLayer(profileMa) && map.hasLayer(profileMb)) {
+    var lat1 = profileMa._latlng['lat'];
+    var lon1 = profileMa._latlng['lng'];
+    var lat2 = profileMb._latlng['lat'];
+    var lon2 = profileMb._latlng['lng'];
+  }
+  else if (map.hasLayer(profileMa)) {
+    var lat1 = profileMa._latlng['lat'];
+    var lon1 = profileMa._latlng['lng'];
+    var lat2 = 0;
+    var lon2 = 0;
+  }
+  else if (map.hasLayer(profileMb)) {
+    var lat1 = profileMb._latlng['lat'];
+    var lon1 = profileMb._latlng['lng'];
+    var lat2 = 0;
+    var lon2 = 0;
+  }else {
+    document.getElementById("rf-result").style.visibility = "visible";   
+    document.getElementById("rfCalcNew").style.visibility = "hidden";   
+
+    var content = "<br><b>At least one Marker has to be set!</b><br><a onclick='rfBack();'>back</a>"
+    document.getElementById("rf-result").innerHTML=content;
+    return;
+  }
+
+  document.getElementById("rfCalcNew").style.visibility = "hidden";   
+  document.getElementById("rf-loading").style.visibility = "visible";   
+
+  var src="calc_visibility.cgi?lon_a="+
+        lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+
+        "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+
+        "&label=\""+rfLabel+"\"&ant_c="+rfTowerRx+"&ref="+rfRefraction+
+        "&up="+rect_up+"&down="+rect_down+"&left="+rect_left+"&right="+rect_right; 
+
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function() { 
+      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+          rfLoaded(xmlHttp.responseText);
+  }
+  xmlHttp.open("GET", src, true); // true for asynchronous 
+  xmlHttp.send(null);
+
+}
+function rfLoaded(result)
+{
+  // path ; label; lat1; lon1; tower1; lat2; lon2; tower2; towerRX; ref; top; left; bottom; right;  
+  result = result.split('\n'); 
+  if (result.length > 1) { 
+    var parameter = result[1].split(';');
+  }
+  else {
+    return;
+  }
+  if(!rfLocked && result[0].length > 1){
+    rfLocked=1;
+
+    //if there is old visibility => delete
+    if (map.hasLayer(rfLayer)) {
+      map.removeLayer(rfLayer);
+    }
+    for (i=0; i<layers._layers.length;i++) {
+      if (layers._layers[i].name == "(RF)-visibility"){
+        layers.removeLayer(rfLayer)
+        rfTiles = null;
+        rfMarkerA = null;
+        rfMarkerB = null;
+      }
+    }
+    profileTowerA = parameter[4];
+    profileTowerB = parameter[7];
+    rfTowerRx = parameter[8];
+    rfRefraction = parameter[9];
+    rfLabel = parameter[1];
+    rect_up = parameter[10];
+    rect_left = parameter[11];
+    rect_down = parameter[12];
+    rect_right = parameter[13];
+    rfUpdForm();
+
+    if (parameter[0].length < 2) {
+      rfLocked=0;
+      return;
+    }
+    rfTiles = L.tileLayer(parameter[0]+'/{z}/{x}/{y}.png');
+    rfLayer = L.layerGroup([rfTiles]);
+    if(parameter[2] != 0 && parameter[3] != 0 ) {
+      rfMarkerA = L.marker([parameter[2], parameter[3]], {
+        icon: L.icon({
+            iconUrl: 'osm/images/cross-red.png',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            zIndex: 9996,
+          }),
+        draggable: false,
+      });
+      rfMarkerA.addTo(rfLayer)
+    }
+    if(parameter[5] != 0 && parameter[6] != 0 ) {
+      rfMarkerB = L.marker([parameter[5], parameter[6]], {
+        icon: L.icon({
+            iconUrl: 'osm/images/cross-blue.png',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            zIndex: 9996,
+          }),
+        draggable: false,
+      });
+      rfMarkerB.addTo(rfLayer)
+    }
+    if (map.hasLayer(rfRect)) {
+      rfRect.removeFrom(map);
+      map.removeLayer(rfRect); 
+    }
+    if(rect_up != 0 &&rect_right != 0 && rect_down != 0 && rect_right != 0) {
+      var bounds = [[rect_down,rect_left], [rect_up, rect_right]];
+      rfRect = L.rectangle(bounds, {color:'#F00',fill:false}).addTo(rfLayer);
+      center_lat = (Number(rect_up)+Number(rect_down))/2;
+      center_lon = (Number(rect_left)+Number(rect_right))/2;
+      map.setView(new L.LatLng(center_lat,center_lon),9);
+    }
+    else {
+      map.setView(new L.LatLng(Number(parameter[2]),Number(parameter[3])),9);
+    }
+
+    layers.addOverlay(rfLayer,"(RF)-visibility");
+    rfLayer.addTo(map);
+
+    document.getElementById("rf-loading").style.visibility = "hidden";   
+    document.getElementById("rf-result").style.visibility = "visible";   
+    var content = "<b>calculation \""+parameter[1]+"\" finished</b><br><a onclick='rfBack();'>back</a>"
+    document.getElementById("rf-result").innerHTML=content;
+    rfLocked=0;
+  }
+}
+function rfCreateUrl()
+{
+  var url = '';
+  //ma_lat=47.80396&ma_lon=13.109844&ma_tow=12&ma_lab=oe2xzr&mb_lat=48.575137&mb_lon=12.901848&mb_tow=10&mb_lab=nocall_1458237163
+
+  //if profile
+  if(map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(profilePopup)){
+    url = url + '&ma_lat=' + profileMa._latlng['lat'] + '&ma_lon=' + profileMa._latlng['lng'];
+    url = url + '&mb_lat=' + profileMb._latlng['lat'] + '&mb_lon=' + profileMb._latlng['lng'];
+    if (profileFrecuency != 5800) {
+      url = url + '&=' + profileFrecuency;
+    }
+    if (profileWood != 30) {
+      url = url + '&=' + profileWood;
+    }
+    if (profileFont != 1) {
+      url = url + '&font=' + profileFont;
+    }  
+    url = url + '&ma_tow=' +  profileTowerA + '&mb_tow=' +  profileTowerB;
+    url = url +  '&ma_lab=' + profileLabelA + '&mb_lab=' + profileLabelB;
+  }
+  else if (map.hasLayer(rfLayer)) //if visibility
+  {
+    url = url + '&rf_vis=1';
+    url = url + '&ma_lat=' + rfMarkerA._latlng['lat'] + '&ma_lon=' + rfMarkerA._latlng['lng'];
+    url = url + '&mb_lat=' + rfMarkerB._latlng['lat'] + '&mb_lon=' + rfMarkerB._latlng['lng'];
+    url = url + '&ma_tow=' + profileTowerA + '&mb_tow=' +  profileTowerB;
+    url = url + '&rf_ref=' + rfRefraction;
+    if (rfTowerRx != 0) {
+      url = url + '&rf_rx=' + rfTowerRx;
+    }
+    if (rfLabel != '') {
+      url = url + '&rf_lab=' + rfLabel;
+    }
+    if(map.hasLayer(rfRect)) //if rectangle exists
+    {
+      url = url + '&rf_u=' + rfRect._bounds._southWest.lat;
+      url = url + '&rf_l=' + rfRect._bounds._southWest.lng;
+      url = url + '&rf_d=' + rfRect._bounds._northEast.lat;
+      url = url + '&rf_r=' + rfRect._bounds._northEast.lng;
+    }
+  }
+
+  return url;
 }
 function mapSource()
 {
@@ -965,7 +1352,6 @@ function getAs(as)
           line = jsondoc.features[i].geometry.coordinates;
           lon = line[0];  
           lat = line[1];
-          
 
           if (lon < lon_min) lon_min = lon;
           if (lon > lon_max) lon_max = lon;
