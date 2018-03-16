@@ -51,4 +51,8 @@ sub htmlFoot {
 #$profile_path_errorlog= "/path/to/logfile";
 #$profile_errorimg= "error.png"
 
+#$visibility_path_program= "/path/to/program/visibility";
+#$visibility_path_srtm= "/path/to/srtm";
+#$visibility_path_errorlog= "/path/to/logfile";
+#$visibility_path_out= "/path/to/tile_output";
 1;

@@ -963,9 +963,9 @@ function rfCalc(force)
     return; 
   }
   else if (map.hasLayer(rfRect)) {
-    var rect_up = rfRect._bounds._southWest.lat
+    var rect_down = rfRect._bounds._southWest.lat
     var rect_left = rfRect._bounds._southWest.lng
-    var rect_down = rfRect._bounds._northEast.lat
+    var rect_up = rfRect._bounds._northEast.lat
     var rect_right =  rfRect._bounds._northEast.lng
   }
   else if (rfUp !=0 && rfLeft !=0 && rfDown !=0 && rfRight !=0) {
@@ -1147,9 +1147,9 @@ function rfCreateUrl()
     }
     if(map.hasLayer(rfRect)) //if rectangle exists
     {
-      url = url + '&rf_u=' + rfRect._bounds._southWest.lat;
+      url = url + '&rf_d=' + rfRect._bounds._southWest.lat;
       url = url + '&rf_l=' + rfRect._bounds._southWest.lng;
-      url = url + '&rf_d=' + rfRect._bounds._northEast.lat;
+      url = url + '&rf_u=' + rfRect._bounds._northEast.lat;
       url = url + '&rf_r=' + rfRect._bounds._northEast.lng;
     }
   }
