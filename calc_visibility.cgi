@@ -130,9 +130,10 @@ unless ($list) {
   else {
     $error = 1;
   }
+#print qq($cmd);
 
   unless ($error) {
-    $cmd.= "2>&1";
+#    $cmd.= "2>&1";
     $result= qx/$cmd/;
   }
 
@@ -149,6 +150,7 @@ unless ($list) {
     #$label= listAdd($label);
     print("rfvisibility/$path_out_rnd;$label;$lat_a;$lon_a;$antenna_a;$lat_b;$lon_b;$antenna_b;$antenna_c;$refraction;$border_up;$border_left;$border_down;$border_right\n");
   }
+  print qq($cmd);
 }
  # -A <m>                            Antenna A over ground [m] (10)
  # -a <lat> <long> | [locator]       Position A lat long (degrees) or qth locator
@@ -191,12 +193,6 @@ unless ($list) {
 
 #$cmd= "$path_prog -b $lat_b $lon_b $name_b -a $lat_a $lon_a $name_a -p $path_srtm -i /dev/stdout $globe_val 0.25 -f $frequency -A $antenna_a -B $antenna_b -x $size_x -y $size_y $wood -F $font_size 2>>$path_errlog";
 
-
-
-
-
-
-print qq($cmd);
 
 sub generateRndDir {
   #my $try= map{(a..z,0..9)[rand 36]} 0..10;
