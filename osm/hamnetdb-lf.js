@@ -50,7 +50,7 @@ var profilePopup;
 
 var rfRect;
 var rfMark = null;
-var rfTowerRx = 0;
+var rfTowerRx = 1;
 var rfMarkerA;
 var rfMarkerB;
 var rfTiles;
@@ -60,6 +60,8 @@ var rfUp = 0;
 var rfLeft = 0;
 var rfDown = 0;
 var rfRight = 0;
+var rfRefraction = 0.25;
+var rfLabel;
 
 var testg;
 
@@ -80,7 +82,7 @@ function init()
   profileLabelA = getParameter("ma_lab");
   profileLabelB = getParameter("mb_lab");
   var profileFontTmp = getParameter("font");
-  rfTowerRx = getParameter("rf_rx");
+  rfTowerRxtmp = getParameter("rf_rx");
   rfLabel = getParameter('rf_lab');
   rect_up = getParameter("rf_u");
   rect_left = getParameter("rf_l");
@@ -88,7 +90,9 @@ function init()
   rect_right = getParameter("rf_r");
   rf_vis = getParameter("rf_vis");
   rfRefractiontmp = getParameter("rf_ref");
-
+  if(rfTowerRxtmp != 0) {
+    rfTowerRx = rfTowerRxtmp;
+  }
   if(rfRefractiontmp != 0) { //0 is "0.0"
     rfRefraction = rfRefraction;
   }
@@ -333,6 +337,7 @@ function init()
               profileLabelA = feature.properties.callsign;
               profileTowerA = feature.properties.anthight;
               placeProfileFrom(loc);
+              rfUpdForm();
               profilePopupUpd();
            }
           }
@@ -344,6 +349,7 @@ function init()
             profileLabelB = feature.properties.callsign;
             profileTowerB = feature.properties.anthight;
             placeProfileTo(loc);
+            rfUpdForm();
             profilePopupUpd();
           }
         }],
@@ -805,10 +811,12 @@ function profileDraw () {
 }
 function profilePopupUpd()
 {
-  document.getElementById("labela").value = profileLabelA; 
-  document.getElementById("labelb").value = profileLabelB; 
-  document.getElementById("towera").value = profileTowerA; 
-  document.getElementById("towerb").value = profileTowerB; 
+  if (map.hasLayer(profilePopup)) {
+    document.getElementById("labela").value = profileLabelA; 
+    document.getElementById("labelb").value = profileLabelB; 
+    document.getElementById("towera").value = profileTowerA; 
+    document.getElementById("towerb").value = profileTowerB; 
+  }
 }
 function profileValUpd()
 {
@@ -910,6 +918,10 @@ function rfDelRectangle()
   {
     rfRect.removeFrom(map);
     map.removeLayer(rfRect); 
+    rfUp= 0;
+    rfLeft= 0;
+    rfDown= 0;
+    rfRight= 0;
   }
   document.getElementById('side-draw-del-rect').style.display="none";
 }
@@ -923,14 +935,13 @@ function rfRectangleFinish(e) {
   rfRect = e.layer;
   rfRect.addTo(map);
 
-
   map.off('draw:created',rfRectangleFinish);
 }
 function rfValUpd()
 {
   rfLabel = document.getElementById("rfLabel").value; 
   rfTowerRx = document.getElementById("rfTowerRx").value; 
-  rfRefraction = document.getElementById("rfRefraction").value; 
+  rfRefraction = document.getElementById("rfRefraction").value
   profileTowerA = document.getElementById("rfTowerFrom").value; 
   profileTowerB = document.getElementById("rfTowerTo").value; 
   profilePopupUpd();
@@ -968,7 +979,7 @@ function rfCalc(force)
     var rect_up = rfRect._bounds._northEast.lat
     var rect_right =  rfRect._bounds._northEast.lng
   }
-  else if (rfUp !=0 && rfLeft !=0 && rfDown !=0 && rfRight !=0) {
+  else { //(rfUp !=0 && rfLeft !=0 && rfDown !=0 && rfRight !=0) {
     var rect_up = rfUp;
     var rect_left = rfLeft;
     var rect_down = rfDown;
@@ -1018,7 +1029,6 @@ function rfCalc(force)
   }
   xmlHttp.open("GET", src, true); // true for asynchronous 
   xmlHttp.send(null);
-
 }
 function rfLoaded(result)
 {
@@ -1100,7 +1110,7 @@ function rfLoaded(result)
     else {
       map.setView(new L.LatLng(Number(parameter[2]),Number(parameter[3])),9);
     }
-
+    document.getElementById('side-draw-del-rect').style.display="inline";
     layers.addOverlay(rfLayer,"(RF)-visibility");
     rfLayer.addTo(map);
 
@@ -1135,8 +1145,12 @@ function rfCreateUrl()
   else if (map.hasLayer(rfLayer)) //if visibility
   {
     url = url + '&rf_vis=1';
-    url = url + '&ma_lat=' + rfMarkerA._latlng['lat'] + '&ma_lon=' + rfMarkerA._latlng['lng'];
-    url = url + '&mb_lat=' + rfMarkerB._latlng['lat'] + '&mb_lon=' + rfMarkerB._latlng['lng'];
+    if (map.hasLayer(rfMarkerA)) {
+      url = url + '&ma_lat=' + rfMarkerA._latlng['lat'] + '&ma_lon=' + rfMarkerA._latlng['lng'];
+    }
+    if (map.hasLayer(rfMarkerB)) {
+      url = url + '&mb_lat=' + rfMarkerB._latlng['lat'] + '&mb_lon=' + rfMarkerB._latlng['lng'];
+    }
     url = url + '&ma_tow=' + profileTowerA + '&mb_tow=' +  profileTowerB;
     url = url + '&rf_ref=' + rfRefraction;
     if (rfTowerRx != 0) {

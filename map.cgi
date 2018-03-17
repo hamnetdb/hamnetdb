@@ -208,12 +208,16 @@ print qq(
         use exsisting visibility (faster)<br>
         );
 
-        &asCombo(0, 1, 0, $only_as, "onchange='panelChange();'");
+        
 print qq(
+        <select id="rfPreset" onchange=''>
+          <option selected="selected" value="0">&nbsp;</option>
+          <option value="1">not defined</option>
+        </select> 
         <hr>
         <div id="rfCalcNew">
           or calculate new visibility<br>
-          <form>Label: <input type="text" id="rfLabel" style='width:120px'><br>
+          <form>Label: <input type="text" id="rfLabel" style='width:120px' onchange='rfValUpd()'><br>
           <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
             <span class="side-button side-draw-point" </span></a>
           <a onclick="deleteProfileAll();" style="text-decoration:none; border-radius:2px;">
@@ -227,7 +231,7 @@ print qq(
           &nbsp;place rectangular constrain to speedup calculation<br>
           Tower size "From" (m) <input type="text" id='rfTowerFrom' value='10' onchange='rfValUpd()' style='width:20px'><br>
           Tower size "To" (m) <input type="text" id='rfTowerTo' value='10' onchange='rfValUpd()' style='width:20px'><br>
-          Tower size visibility (m) <input type="text" id='rfTowerRx' value='0' onchange='rfValUpd()' style='width:20px'><br>
+          Tower size visibility (m) <input type="text" id='rfTowerRx' value='1' onchange='rfValUpd()' style='width:20px'><br>
           
              use
              <select id="rfRefraction" onchange='rfValUpd()'>
