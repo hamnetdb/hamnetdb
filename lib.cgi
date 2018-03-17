@@ -1749,5 +1749,6 @@ $tldName{"ws"}= "Western Samoa";
 $tldName{"ye"}= "Yemen";
 $tldName{"zm"}= "Zambia";
 $tldName{"zw"}= "Zimbabwe";
+$tldName{"xx"}= "HAMCLOUD";
 
 1;

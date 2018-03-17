@@ -236,10 +236,13 @@ sub checkValues {
           $inputStatus= "The alias '$alias' exists already as host";
           last;
         }
-        unless ($alias=~/[a-z][0-9]+[a-z]+$/) {
-          $inputStatus= 
-            "Alias '$alias' must end with a callsign to be globally unique";
-          last;
+	unless ($db->selectrow_array("select callsign, no_check from hamnet_site  ".
+              "where callsign='$site' and no_check=5")){
+          unless ($alias=~/[a-z][0-9]+[a-z]+$/) {
+            $inputStatus= 
+              "Alias '$alias' must end with a callsign to be globally unique";
+            last;
+          }  
         }
         if ($alias=~/[^0-9a-z\-\.]/) {
           $inputStatus= "Alias contains invalid characters";
