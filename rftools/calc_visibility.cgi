@@ -143,12 +143,12 @@ unless ($list) {
   unless($load_saved) {
     unless ($error) {
       $cmd.= " 2>&1";
-#      $result= qx/$cmd/;
+      $result= qx/$cmd/;
     }
 
     #catch errors
     my $len=length($result);
-    if ($len == 1) {
+    if ($len >= 1) {
       open(my $fh, '>>', $path_errlog) or die "Could not open file";
       print $fh "$cmd\n";
       close $fh;
@@ -160,7 +160,7 @@ unless ($list) {
       print($output_parameter);
       listAdd($output_parameter);
     }
-    print qq($cmd);
+    #print qq($cmd);
   }
   else
   {
@@ -209,7 +209,6 @@ else {
 
 
 sub generateRndDir {
-  #my $try= map{(a..z,0..9)[rand 36]} 0..10;
   my @set = ('0' ..'9', 'a' .. 'z');
   my $try = join '' => map $set[rand @set], 1 .. 10;
   my $path= $path_out.$try;
