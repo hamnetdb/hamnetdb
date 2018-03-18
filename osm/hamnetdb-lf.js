@@ -61,7 +61,7 @@ var rfLeft = 0;
 var rfDown = 0;
 var rfRight = 0;
 var rfRefraction = 0.25;
-var rfLabel;
+var rfLabel= "";
 
 var testg;
 
@@ -83,17 +83,20 @@ function init()
   profileLabelB = getParameter("mb_lab");
   var profileFontTmp = getParameter("font");
   rfTowerRxtmp = getParameter("rf_rx");
-  rfLabel = getParameter('rf_lab');
+  rfLabeltmp = getParameter('rf_lab');
   rect_up = getParameter("rf_u");
   rect_left = getParameter("rf_l");
   rect_down = getParameter("rf_d");
   rect_right = getParameter("rf_r");
   rf_vis = getParameter("rf_vis");
   rfRefractiontmp = getParameter("rf_ref");
-  if(rfTowerRxtmp != 0) {
+  if (rfTowerRxtmp != 0) {
     rfTowerRx = rfTowerRxtmp;
   }
-  if(rfRefractiontmp != 0) { //0 is "0.0"
+  if (rfLabeltmp != 0) {
+    rfLabel = rfLabeltmp; 
+  }
+  if (rfRefractiontmp != 0) { //0 is "0.0"
     rfRefraction = rfRefraction;
   }
   if (profileTowerA == 0) {
@@ -562,6 +565,7 @@ function init()
     rfCalc(1);
     SidebarRftools.toggle();
   }
+  rfLoadPreset();
 }
 function placeProfileFrom (e) {
   if (typeof e.latlng !== 'undefined') 
@@ -852,7 +856,7 @@ function profileGenLink(width,height)
   var lat2 = profileMb._latlng['lat'];
   var lon2 = profileMb._latlng['lng'];
 
-  src="https://hamnetdb.net/calc_profile.cgi?f="+profileFrecuency+"&lon_a="+
+  src=host_calc_profile+"calc_profile.cgi?f="+profileFrecuency+"&lon_a="+
         lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+"&name_a=\""+profileLabelA+
         "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+"&name_b=\""+profileLabelB+
         "\"&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width; 
@@ -960,6 +964,36 @@ function rfBack()
   document.getElementById("rf-loading").style.visibility = "hidden";   
   document.getElementById("rfCalcNew").style.visibility = "visible";  
 }
+function rfLoadPreset()
+{
+  var src=host_calc_visibility+"rftools/calc_visibility.cgi?list=1"; 
+
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function() { 
+      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+          rfUpdatePreset(xmlHttp.responseText);
+  }
+  xmlHttp.open("GET", src, true); // true for asynchronous 
+  xmlHttp.send(null);
+}
+function rfUpdatePreset(value)
+{
+  result = value.split('\n');
+
+
+  e=document.getElementById('rfPreset').options;
+  e.length=0;
+  for (i = 0; i < result.length; i++) {
+    e[i]= new Option(result[i], result[i], false, false);
+  }
+}
+function rfGetPreset()
+{
+  rfLabel = document.getElementById('rfPreset').value;
+  if (rfLabel.length > 0) {
+    rfCalc(2);
+  }
+}
 function rfCalc(force)
 {
   //http query
@@ -1004,7 +1038,7 @@ function rfCalc(force)
     var lon1 = profileMb._latlng['lng'];
     var lat2 = 0;
     var lon2 = 0;
-  }else {
+  }else if (force != 2 ) {
     document.getElementById("rf-result").style.visibility = "visible";   
     document.getElementById("rfCalcNew").style.visibility = "hidden";   
 
@@ -1016,11 +1050,14 @@ function rfCalc(force)
   document.getElementById("rfCalcNew").style.visibility = "hidden";   
   document.getElementById("rf-loading").style.visibility = "visible";   
 
-  var src="calc_visibility.cgi?lon_a="+
+  var src=host_calc_visibility+"rftools/calc_visibility.cgi?lon_a="+
         lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+
         "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+
         "&label=\""+rfLabel+"\"&ant_c="+rfTowerRx+"&ref="+rfRefraction+
         "&up="+rect_up+"&down="+rect_down+"&left="+rect_left+"&right="+rect_right; 
+  if (force == 2) {
+    src=host_calc_visibility+"rftools/calc_visibility.cgi?load=1&label="+rfLabel;
+  }
 
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function() { 
@@ -1034,10 +1071,14 @@ function rfLoaded(result)
 {
   // path ; label; lat1; lon1; tower1; lat2; lon2; tower2; towerRX; ref; top; left; bottom; right;  
   result = result.split('\n'); 
-  if (result.length > 1) { 
+  if (result.length > 1 && result[0].indexOf('OK') != -1) { //&& $result[0].indexOf('OK') !== -1
     var parameter = result[1].split(';');
   }
   else {
+    document.getElementById("rf-loading").style.visibility = "hidden";   
+    document.getElementById("rf-result").style.visibility = "visible";   
+    var content = "<b>error calculating visibility</b><br><a onclick='rfBack();'>back</a>"
+    document.getElementById("rf-result").innerHTML=content;
     return;
   }
   if(!rfLocked && result[0].length > 1){
@@ -1102,7 +1143,7 @@ function rfLoaded(result)
     }
     if(rect_up != 0 &&rect_right != 0 && rect_down != 0 && rect_right != 0) {
       var bounds = [[rect_down,rect_left], [rect_up, rect_right]];
-      rfRect = L.rectangle(bounds, {color:'#F00',fill:false}).addTo(rfLayer);
+      rfRect = L.rectangle(bounds, {color:'#888b',fill:false}).addTo(rfLayer);
       center_lat = (Number(rect_up)+Number(rect_down))/2;
       center_lon = (Number(rect_left)+Number(rect_right))/2;
       map.setView(new L.LatLng(center_lat,center_lon),9);
@@ -1118,6 +1159,7 @@ function rfLoaded(result)
     document.getElementById("rf-result").style.visibility = "visible";   
     var content = "<b>calculation \""+parameter[1]+"\" finished</b><br><a onclick='rfBack();'>back</a>"
     document.getElementById("rf-result").innerHTML=content;
+    rfLoadPreset();
     rfLocked=0;
   }
 }

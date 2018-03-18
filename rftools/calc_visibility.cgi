@@ -11,10 +11,13 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
-do "lib.cgi" or die;
+use Scalar::Util qw(looks_like_number);
+use List::Util qw( min max );
+do "../lib.cgi" or die;
 
 my $refer = $ENV{HTTP_REFERER};
 my $list= $query->param("list")+0;
+my $load_saved= $query->param("load")+0;
 my $lat_a= $query->param("lat_a")+0; #breitengrad (bauch)
 my $lon_a= $query->param("lon_a")+0; #laengengrad
 my $antenna_a= $query->param("ant_a")+0;
@@ -41,7 +44,7 @@ $path_prog= $visibility_path_program;
 $path_srtm= $visibility_path_srtm;
 $path_errlog= $visibility_path_errorlog;
 $path_out= $visibility_path_out;
-
+$path_list= "visibility.csv";
 
 unless ($list) {
 
@@ -59,6 +62,11 @@ unless ($list) {
   $antenna_c= 3000  if $antenna_c>3000;
 
   $label= checkLabel($label);
+  $new_label= listNewLabel($label);
+
+  #if label & parameters are same in file use existing
+  #if label & no parameters use existing
+
 
 
   my $path_out_rnd= generateRndDir();
@@ -79,7 +87,7 @@ unless ($list) {
     $center_lon= ($lon_a + $lon_b)/2;
   }
 
-  my $cmd= "nice -n 19 $path_prog -p $path_srtm -o $path_out$path_out_rnd";
+  my $cmd= "nice -n 9 $path_prog -p $path_srtm -o $path_out$path_out_rnd";
   $cmd.= " -x 32000 -y 32000 -z 1 14 -d 2 -g 7 -q 2 -R $refraction";
 
   if ($border_up != 0 && $border_left != 0 && $border_down !=0 && $border_right != 0) {
@@ -130,28 +138,46 @@ unless ($list) {
   else {
     $error = 1;
   }
-#print qq($cmd);
 
-  unless ($error) {
-#    $cmd.= "2>&1";
-    $result= qx/$cmd/;
-  }
 
-  #catch errors
-  my $len=length($result);
-  if ($len == 1) {
-    open(my $fh, '>>', $path_errlog) or die "Could not open file";
-    print $fh "$cmd\n";
-    close $fh;
-    print qq(Error creating visibility! :\( \n); 
+  unless($load_saved) {
+    unless ($error) {
+      $cmd.= " 2>&1";
+#      $result= qx/$cmd/;
+    }
+
+    #catch errors
+    my $len=length($result);
+    if ($len == 1) {
+      open(my $fh, '>>', $path_errlog) or die "Could not open file";
+      print $fh "$cmd\n";
+      close $fh;
+      print qq(Error creating visibility! :\( \n); 
+    }
+    else {
+      print qq(OK! $result \n);
+      $output_parameter= "rftools/visibility/$path_out_rnd;$new_label;$lat_a;$lon_a;$antenna_a;$lat_b;$lon_b;$antenna_b;$antenna_c;$refraction;$border_up;$border_left;$border_down;$border_right\n";
+      print($output_parameter);
+      listAdd($output_parameter);
+    }
+    print qq($cmd);
   }
-  else {
-    print qq(OK! $result \n);
-    #$label= listAdd($label);
-    print("rfvisibility/$path_out_rnd;$label;$lat_a;$lon_a;$antenna_a;$lat_b;$lon_b;$antenna_b;$antenna_c;$refraction;$border_up;$border_left;$border_down;$border_right\n");
+  else
+  {
+    $output_parameter= listParameters($label);
+    if (length($output_parameter) < 10) {
+      print qq(Error creating visibility! :\( \n); 
+    }
+    else {
+      print qq(OK! $result \n);
+      print($output_parameter);
+    }
   }
-  print qq($cmd);
 }
+else {
+  listLabels();
+}
+
  # -A <m>                            Antenna A over ground [m] (10)
  # -a <lat> <long> | [locator]       Position A lat long (degrees) or qth locator
  # -B <m>                            Antenna B over ground [m] (10)
@@ -182,18 +208,6 @@ unless ($list) {
  # -Z <from> <to>                    as -z but write empty tiles too
 
 
-# 0 0 255 110  blau
-# 255 0 .0 110     rot
-# -W  255 0 255 115 0     rosa
-#-c 4 -z 1 14 -d 8
-
-
-
-#date && ./radiorange-x86-64 -a JN67NT32EW -A 20 -b JN68PC74II -B 20 -m JN68LH -C 1 -x 32000 -y 32000 -o /media/spel/daten/tmp_osm/ -p osm/ -R 0.25 -U 255 0 0 120 -V 0 0 255 120 -W 00 255 255 120 0 -z 1 14 -d 2 -g 7 -q 2 && date
-
-#$cmd= "$path_prog -b $lat_b $lon_b $name_b -a $lat_a $lon_a $name_a -p $path_srtm -i /dev/stdout $globe_val 0.25 -f $frequency -A $antenna_a -B $antenna_b -x $size_x -y $size_y $wood -F $font_size 2>>$path_errlog";
-
-
 sub generateRndDir {
   #my $try= map{(a..z,0..9)[rand 36]} 0..10;
   my @set = ('0' ..'9', 'a' .. 'z');
@@ -210,6 +224,7 @@ sub generateRndDir {
 sub checkLabel {  
   my $text= shift;
   $text =~ s/[^a-zA-Z0-9\-\_\ ]//g;
+  $text =~ s/^\s+|\s+$//g;
   if(length($text) > 30) {
     $text= substr($text, 0, 30 );
   }
@@ -220,13 +235,85 @@ sub listRead {
   open my $handle, '<', $path_list;
   chomp(my @lines = <$handle>);
   close $handle;
+  @lines= reverse(@lines);
   return @lines;
+}
+sub listParameters {
+  my $name= shift;
+  my @lines= listRead();
+  foreach $line (@lines) {
+    my @fields = split(/;/, $line);
+    if ($fields[1] eq $name) {
+      return $line;
+    }
+  }
+  return 0;
+}
+sub listLabels {
+  my $text= shift;
+  my @lines= listRead();
+
+  foreach $line (@lines) {
+    my @fields = split(/;/, $line);
+    print qq(\n$fields[1]);
+  }
+}
+sub listNewLabel {
+  #compage strings, if last word is number, dont compare number
+  #if strings matches increment number & return string with new number
+  my $name= shift;
+  my @names= split(/ /, $name);
+  my @lines= listRead();
+  my @numbers;
+  my $new_name;
+  my $size_n= scalar @names;
+
+  if (looks_like_number($names[$size_n-1])) { 
+    $size_n-= 1;
+  }
+  $name_plain= join(' ',@names[0..$size_n-1]);
+  $name_plain =~ s/^\s+|\s+$//g;
+#  print qq(plain in:"$name_plain" size_n:$size_n\n );
+  foreach $line (@lines) {
+    my @fields = split(/;/, $line);
+    my @labels = split(/ /, $fields[1]);
+    my $number;
+    $size_l= scalar @labels;
+    if (looks_like_number($labels[$size_l-1])) { 
+      $size_l-= 1;
+      $number= $labels[$size_l]+0;
+    }
+    $label_plain= join(' ',@labels[0..$size_l-1]);
+    $label_plain =~ s/^\s+|\s+$//g;
+#    print qq(plain_l:"$label_plain" size_n:$size_l\n );
+
+    if($name_plain eq $label_plain) { #find highest number
+#      print qq( equal \n);
+      push @numbers, $number+1; 
+    }
+  }
+  my $max_number = (max @numbers);
+  if ($max_number >=1) {
+    $new_name= qq($name_plain $max_number);
+  }
+  else{
+    $new_name=$name_plain;
+  }
+  if(looks_like_number($name)) {
+      $new_name= qq($max_number);
+  }
+  $new_name =~ s/^\s+|\s+$//g;
+  if ($new_name eq "") {
+    $new_name="1";
+  }
+  #print qq(\n$new_name); 
+  return $new_name;
 }
 sub listAdd {
   my $text= shift;
-  my $rnd_folder = shift;
-  #check if label exists and add _#
-  #add to file
-
+  my $handle = $path_list;
+  open(my $fh, '>>', $handle) or die "Could not open file '$handle' $!";
+  print $fh $text;
+  close $fh;
   return $text;
 }

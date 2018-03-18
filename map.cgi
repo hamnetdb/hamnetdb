@@ -50,7 +50,14 @@ $sourceselect[$source] = 'selected="selected"';
 # Embed javascript part into page
 
 
-
+$host_calc_profile= "";
+unless ($profile_path_program) {
+  $host_calc_profile="https://hamnetdb.net/";
+}
+$host_calc_visibility= "";
+unless ($visibility_path_program) {
+  $host_calc_visibility="https://hamnetdb.net/rftools/";
+}
 
 print qq(
 <!DOCTYPE html>
@@ -96,6 +103,8 @@ if ($source eq 1) {
   print('<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA58LI1avl5xzd8mj9LLidnBVhRHGoaAsA" async defer></script> <script src="osm/Leaflet.GoogleMutant.js"></script>');
 #  print('<script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> <script src="osm/L.Google.js"></script>');
 }
+
+
 print qq(
      <script type="text/javascript" src="osm/leaflet.ajax.js"></script>
     <!--<script src="osm/spin.js"></script>
@@ -115,7 +124,11 @@ print qq(
     <script src="osm/leaflet.contextmenu.js"></script>
     <!--<script src="osm/leaflet.contextmenu.min.js"></script>-->
 
+    <script type="text/javascript">var host_calc_profile="$host_calc_profile";</script>
+    <script type="text/javascript">var host_calc_visibility="$host_calc_visibility";</script> 
+
     <script src="osm/hamnetdb-lf.js"></script>
+
 
 	 
 	</head>
@@ -210,9 +223,9 @@ print qq(
 
         
 print qq(
-        <select id="rfPreset" onchange=''>
+        <select id="rfPreset" onchange='rfGetPreset();' style="width:200px;">
           <option selected="selected" value="0">&nbsp;</option>
-          <option value="1">not defined</option>
+          <option value="1">not loaded</option>
         </select> 
         <hr>
         <div id="rfCalcNew">
