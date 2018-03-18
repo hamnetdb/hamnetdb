@@ -11,7 +11,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
-do "lib.cgi" or die;
+do "../lib.cgi" or die;
 
 my $refer = $ENV{HTTP_REFERER};
 my $size_y= $query->param("h")+0;

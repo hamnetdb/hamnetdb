@@ -856,7 +856,7 @@ function profileGenLink(width,height)
   var lat2 = profileMb._latlng['lat'];
   var lon2 = profileMb._latlng['lng'];
 
-  src=host_calc_profile+"calc_profile.cgi?f="+profileFrecuency+"&lon_a="+
+  src=host_calc_profile+"rftools/calc_profile.cgi?f="+profileFrecuency+"&lon_a="+
         lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+"&name_a=\""+profileLabelA+
         "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+"&name_b=\""+profileLabelB+
         "\"&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width; 
