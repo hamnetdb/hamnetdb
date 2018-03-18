@@ -869,6 +869,12 @@ function popupSetting()
 }
 function rfPlacemarker()
 {
+  if(typeof rect !== 'undefined') {
+    rect.disable();
+  }
+  map.off('draw:created',rfPlaceA);
+  map.off('draw:created',rfPlaceB);
+  map.off('draw:created',rfRectangleFinish);
   if(rfMark !== null) {
     rfMark.disable();
     rfMark = null;
@@ -912,9 +918,14 @@ function rfOpenprofile()
 }
 function rfRectangle()
 {
+  if(typeof rfMark !== 'undefined') {
+    rfMark.disable();
+  }
+  map.off('draw:created',rfPlaceA);
+  map.off('draw:created',rfPlaceB);
   var rect= new L.Draw.Rectangle(map,{shapeOptions:{color:'#F00',fill:false}});
   rect.enable();
-  map.on('draw:created',rfRectangleFinish)
+  map.on('draw:created',rfRectangleFinish);
 }
 function rfDelRectangle()
 {
@@ -930,6 +941,8 @@ function rfDelRectangle()
   document.getElementById('side-draw-del-rect').style.display="none";
 }
 function rfRectangleFinish(e) {
+
+  map.off('draw:created',rfRectangleFinish);
   if (map.hasLayer(rfRect)) {
     rfRect.removeFrom(map);
     map.removeLayer(rfRect); 
@@ -939,7 +952,7 @@ function rfRectangleFinish(e) {
   rfRect = e.layer;
   rfRect.addTo(map);
 
-  map.off('draw:created',rfRectangleFinish);
+
 }
 function rfValUpd()
 {
