@@ -55,7 +55,7 @@ unless($profile_path_program)
 # "&axes=1&metric=1&groundrelative=1&curvature=1&freq=5800".
 # "&width=$width&height=$height&src=hamnetdb.net";
 
-$hwtimg.= "calc_profile.cgi".
+$hwtimg.= "rftools/calc_profile.cgi".
  "?lat_a=$siteLat{$left}&lon_a=$siteLong{$left}&ant_a=$siteElev{$left}".
  "&lat_b=$siteLat{$right}&lon_b=$siteLong{$right}&ant_b=$siteElev{$right}".
  "&f=5800&wood=30&name_a=$left&name_b=$right".
