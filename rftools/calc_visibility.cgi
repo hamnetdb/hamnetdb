@@ -69,7 +69,6 @@ unless ($list) {
 
 
 
-  my $path_out_rnd= generateRndDir();
   my $color_a= "255 0 0 120"; #red
   my $color_b= "0 0 255 120"; #blue
   my $color_c= "0 255 255 110"; #greenblue
@@ -87,7 +86,7 @@ unless ($list) {
     $center_lon= ($lon_a + $lon_b)/2;
   }
 
-  my $cmd= "nice -n 9 $path_prog -p $path_srtm -o $path_out$path_out_rnd";
+  my $cmd= "nice -n 9 $path_prog -p $path_srtm";
   $cmd.= " -x 32000 -y 32000 -z 1 14 -d 2 -g 7 -q 2 -R $refraction";
 
   if ($border_up != 0 && $border_left != 0 && $border_down !=0 && $border_right != 0) {
@@ -139,8 +138,21 @@ unless ($list) {
     $error = 1;
   }
 
+  #check if saved visibility is equal with current parameters, including name
+  $output_parameter= "$lat_a;$lon_a;$antenna_a;$lat_b;$lon_b;$antenna_b;$antenna_c;$refraction;$border_up;$border_left;$border_down;$border_right\n";
+  $existing_parameter= listParameters($label);
+  my @split_parameter= split(/;/, $existing_parameter);
+  $parameter_plain= join(';',@split_parameter[2..13]);
+  $output_parameter =~ s/^\s+|\s+$//g;
+  $parameter_plain =~ s/^\s+|\s+$//g;
+  if($output_parameter eq $parameter_plain) {
+    $load_saved= 1;
+  }
 
   unless($load_saved) {
+    my $path_out_rnd= generateRndDir();
+    $output_parameter= "rftools/visibility/$path_out_rnd;$new_label;".$output_parameter;
+    $cmd.= " -o $path_out$path_out_rnd";
     unless ($error) {
       $cmd.= " 2>&1";
       $result= qx/$cmd/;
@@ -155,8 +167,7 @@ unless ($list) {
       print qq(Error creating visibility! :\( \n); 
     }
     else {
-      print qq(OK! $result \n);
-      $output_parameter= "rftools/visibility/$path_out_rnd;$new_label;$lat_a;$lon_a;$antenna_a;$lat_b;$lon_b;$antenna_b;$antenna_c;$refraction;$border_up;$border_left;$border_down;$border_right\n";
+      print qq(OK! $result new\n);
       print($output_parameter);
       listAdd($output_parameter);
     }
@@ -169,7 +180,7 @@ unless ($list) {
       print qq(Error creating visibility! :\( \n); 
     }
     else {
-      print qq(OK! $result \n);
+      print qq(OK! saved $result \n);
       print($output_parameter);
     }
   }
