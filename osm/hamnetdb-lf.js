@@ -820,8 +820,8 @@ function profilePopupUpd()
     document.getElementById("labelb").value = profileLabelB; 
     document.getElementById("towera").value = profileTowerA; 
     document.getElementById("towerb").value = profileTowerB; 
-  }
-}
+  
+}}
 function profileValUpd()
 {
   profileLabelA = document.getElementById("labela").value; 
@@ -919,7 +919,9 @@ function rfOpenprofile()
 function rfRectangle()
 {
   if(typeof rfMark !== 'undefined') {
-    rfMark.disable();
+    if (rfMark != null) {
+      rfMark.disable();
+    }
   }
   map.off('draw:created',rfPlaceA);
   map.off('draw:created',rfPlaceB);
