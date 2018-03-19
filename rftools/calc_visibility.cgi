@@ -151,7 +151,7 @@ unless ($list) {
 
   unless($load_saved) {
     my $path_out_rnd= generateRndDir();
-    $output_parameter= "rftools/visibility/$path_out_rnd;$new_label;".$output_parameter;
+    $output_parameter= "rftools/visibility/$path_out_rnd;$new_label;".$output_parameter."\n";
     $cmd.= " -o $path_out$path_out_rnd";
     unless ($error) {
       $cmd.= " 2>&1";
