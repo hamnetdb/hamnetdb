@@ -157,10 +157,7 @@ print qq(
             <tr><td><img src="site-user.png"/></td><td>This site has user-access radio parameters configured.</td></tr>
             <tr><td><img src="site-green.png"/></td><td>At least one host of this site has answered to ping last 2 hours.</td></tr>
             <tr><td><img src="site-blue.png"/></td><td>Same as green, site also connected to the hamcloud.</td></tr>
-            <tr><td><img src="site-red.png"/></td><td>No ping answer last 2 hours at 
-                <a class="ovinfo" href="index.cgi?q=db0fhn">db0fhn</a>,
-                <a class="ovinfo" href="index.cgi?q=db0zm">db0zm</a>,
-                <a class="ovinfo" href="index.cgi?q=ir3dv">ir3dv</a>.</td></tr>
+            <tr><td><img src="site-red.png"/></td><td>No ping answer last 2 hours at hamcloud</td></tr>
             <tr><td><img src="site-grey.png"/></td><td>Site is documented to have no hamnet on site. </td></tr>
           </table>
           <h4> Monitoring </h4>
@@ -209,14 +206,16 @@ print qq(
       <div id="sidebar-rftools">
         <h4>RF-Tools</h4>
         An easy way to estimate <br> possilbe rf-links
+        <br><br>
         <h4>Link-profile:</h4>
         <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
-          <span class="side-button side-draw-point"></span></a>
+          <span class="side-button side-draw-point" id="side-draw-add-point1"></span></a>
         <a onclick="deleteProfileAll();" style="text-decoration:none; border-radius:2px;">
           <span class="side-button side-draw-del" id="side-draw-del-point1"></span></a>
         &nbsp;place marker "From" and "To"<br>
         
         <input type='button' value='show profile' style='height:24px;' onclick='javascript:rfOpenprofile()'> 
+        <br><br>
         <h4>(RF)-visibility:</h4>
         use exsisting visibility (faster)<br>
         );
@@ -232,32 +231,33 @@ print qq(
           or calculate new visibility<br>
           <form>Label: <input type="text" id="rfLabel" style='width:120px' onchange='rfValUpd()'><br>
           <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
-            <span class="side-button side-draw-point" </span></a>
+            <span class="side-button side-draw-point" id="side-draw-add-point2"></span></a>
           <a onclick="deleteProfileAll();" style="text-decoration:none; border-radius:2px;">
             <span class="side-button side-draw-del" id="side-draw-del-point2"></span></a>  
           &nbsp;place at least one marker <br>
 
           <a onclick="rfRectangle();" style="text-decoration:none; border-radius:2px;">
-            <span class="side-button side-draw-rect"></span></a>
+            <span class="side-button side-draw-rect" id="side-draw-add-rect"></span></a>
           <a onclick="rfDelRectangle();" style="text-decoration:none; border-radius:2px;">
           <span class="side-button side-draw-del" id="side-draw-del-rect"></span></a>
           &nbsp;place rectangular constrain to speedup calculation<br>
-          Tower size "From" (m) <input type="text" id='rfTowerFrom' value='10' onchange='rfValUpd()' style='width:20px'><br>
-          Tower size "To" (m) <input type="text" id='rfTowerTo' value='10' onchange='rfValUpd()' style='width:20px'><br>
+          <span id="rfTowerFromLine">Tower size "From" (m) <input type="text" id='rfTowerFrom' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
+          <span id="rfTowerToLine">Tower size "To" (m) <input type="text" id='rfTowerTo' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
           Tower size visibility (m) <input type="text" id='rfTowerRx' value='1' onchange='rfValUpd()' style='width:20px'><br>
           
              use
-             <select id="rfRefraction" onchange='rfValUpd()'>
+             <select id="rfRefraction" onchange='rfValUpd();'>
               <option value="0" >optical visibility</option>
               <option value="0.25" selected="selected">RF-visibility</option>
             </select> (refraction)
           </form>
           <input type='button' value='calculate visibility' style='height:24px; width:' onclick='javascript:rfCalc()'>
+          <br>
         </div>
         <div id="rf-loading"><img src="hdb.gif" width="150px" style="opacity: 0.6;"><br>
-        loading...</div>
+        loading...<br></div>
         <div id="rf-result"></div>
-        
+        <br>
         <div id="extern-permalink-rf"></div>
         <h4>hints:</h4>
         <ul><li>right click to site "snap to &lt;SITE&gt;" to use coordinates and tower size</li>

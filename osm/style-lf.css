@@ -60,6 +60,10 @@ h4 {
   font-size:13px;
   font-family: "helvetica Neue", arial, helvetica, sans-serif;
 }
+#sidebar-rftools hr {
+  margin-bottom: 2px;
+  margin-top: 4px;
+}
 #info_by
 {
   margin-top: 15px;
@@ -109,7 +113,7 @@ h4 {
 .leaflet-control-permalink
 {
   /* display:none;*/
-  font-size:12px;
+  font-size:14px;
 }
 .leaflet-control-zoom, .leaflet-control-zoom a
 {
@@ -122,7 +126,7 @@ h4 {
   padding: 0;
   max-width: 200px;
 }
-@media (max-width: 467px) {
+/*@media (max-width: 467px) {
   #rf-loading, #rf-result{
     margin-top: -200px; 
     height: 220px;
@@ -133,10 +137,11 @@ h4 {
     margin-top: -220px;
     height: 230px; 
   }
-}
+}*/
 #rf-loading, #rf-result
 {
-  visibility: hidden;
+  display: none;
+  /*visibility: hidden;
   /*width: 100%;
   padding-left: 10px;
   background-color:#fff;
@@ -148,6 +153,9 @@ h4 {
 }
 #rf-result a:hover {
   text-decoration: underline;
+}
+#rfTowerToLine {
+  color:#aaa;
 }
 .side-button
 {

@@ -229,9 +229,24 @@ vermieden werden.
 Hamnet-Ressourcen betreibt. Alle anderen Rufzeichen können in den jeweiligen
 Hostnamen untergebracht werden. Hilfreich ist es ggf., weitere am Standort
 vorhandene Rufzeichen im Kommentar der Site zu beschreiben.
+<p>
+<h3 id="monitoring">Monitoring</h3>
+<p>Eingetragene Hosts werden automatisch zyklisch mit einem Ping auf ihre 
+erreichbarkeit überprüft, sollte dies nicht erwünscht sein kann dies mit 
+"No ping check" deaktiviert werden.
+<p>
+Die Option "Monitor" bietet die Möglichkeit Linkstrecken welche mittels Transfernetzen realisiert sind zu überwachen, 
+somit ist dies nur für IP-Adressen sinnvoll, die direkt die Hardware der HF-Linkstrecken bedienen.<br> 
+Ein SNMP-Zugang mit Leserechten für die Community "public" muss auf dem Gerät eingerichtet sein.<br> 
+Die korrekt erfassten RSSI Werte werden bei den gelisteten Linkstrecken angezeigt, 
+in der Karte kann die Ebene "Hamnet RSSI" eingeblendet werden und zeigt eine farbliche abstufung der Werte. <br>
+Eine Legende kann rechts unter <b>"i"</b> gefunden werden.<br>
+Diese Option befindet sich noch in der frühen Erprobungsphase.<br>
 
 <p>
-<h3 id="linktool">Linktool</h3>
+
+<h2 id="rftools">RF-Tools</h2>
+<h3 id="linktool">Link-Profile</h3>
 Zur einfachen abschätzung ob zwischen 2 Geografischen Punkten freie Sicht 
 besteht ist ein Linktool implementiert.<br>
 Zum einen kann das Profil zwischen fix eingetragenen Standorten angezeigt 
@@ -256,24 +271,40 @@ Im Diagramm wird rechts oben die Freiraumdämpfung (free-space path loss)
 angezeigt, sollten Bäume am unteren Rand der Fresnelzone zu mehr als 10% des 
 Radius in diese hineinrage wird der Wert gelb, bei hineinragender Felsen/Erde analog rot.
 Der Parameter "Refrac" dient zur korrektur der terrestrischen Refraktion.<br>
+<p>
+<h3>(RF)-Visibility</h3>
+Zur abschätzung ob ein Gebiet erreicht werden kann, dafür werden am 
+rechten Rand der Karte die "RF-Tools" geöffnet und ein oder zwei Marker gesetzt.<br>
+Um die Position einer bestehenden Site zu übernehmen, <br>
+kann mit Rechtklick "snap FROM to SITE" bzw. "snap TO to SITE"
+ die Marker genau gesetzt und die gespeicherte Antennenhöhe übernommen werden.<br>
+Um die Berechnung zu beschleunigen, kann ein Rechteck definiert 
+werden und somit der zu berechnende Bereich eingeschänkt werden.<br>
+Wird kein Rechteck definiert dauert die Berechnung meist wesentlich länger.<br>
+Zu den gesetzten Markern, kann eine Masthöhe eingestellt werden, 
+der Standardwert sind 10m über den Grund.<br>
+Mit "Tower size visibility" wird die Höhe des Mast in der Abgedeckten 
+Fläche dargestellt, mit dem Wert 0 kann nach Reflexionen im Gelände gesucht werden.<br>
+Ein alphanumerischer Titel vereinfacht das wiederaufrufen der zuletzt gerechneten Szenarien.<br>
+Aufgund des benötigen Speicherplatzes können nicht beliebig viele 
+Szenarien zwischengespeichert werden.<br>
+Nach der Berechnung, wird der von "From" sichtbare Bereich rot, 
+der von "To" sichtbare Bereich blau markiert, 
+die Position der Maste wird jeweils durch ein "X"gekennzeichnet.<br>
+Wird ein Gebiet von beiden Positionen erreicht, wird dieser türkis markiert.<br>
+Die Markierungen werden nur bis zur Zoomstufe 14 angezeigt, 
+da darüber keine zusätzliche Information angezeigt würde.<br>
+
+<br><br>
+Im unteren Bereich gibt es einen Permalink, damit können gerechnete 
+Szenarien wieder aufgerufen oder geteilt werden,<br> solange ein Link-profile 
+geöffnet ist wird von diesem der Permalink erstellt, 
+ansonsten von der Angezeigten RF-Visibility.<br>
+Wird weder ein Link-profile noch eine RF-Visibility angezeigt,<br>
+ wird von der aktuellen Kartenansicht ein Permalink erstellt.<br>
 Die Höhendaten für die Berechnung stammen von NASA (SRTM1), ESA bzw. EU (Copernicus), 
 und DGM Österreich<br>
-Die Linkprofile werden mit einem <a href="https://github.com/oe5hpm/dxlAPRS">Programm</a> von OE5DXL berechnet.  
-<br>
-
-<p>
-<h3 id="monitoring">Monitoring</h3>
-<p>Eingetragene Hosts werden automatisch zyklisch mit einem Ping auf ihre 
-erreichbarkeit überprüft, sollte dies nicht erwünscht sein kann dies mit 
-"No ping check" deaktiviert werden.
-<p>
-Die Option "Monitor" bietet die Möglichkeit Linkstrecken welche mittels Transfernetzen realisiert sind zu überwachen, 
-somit ist dies nur für IP-Adressen sinnvoll, die direkt die Hardware der HF-Linkstrecken bedienen.<br> 
-Ein SNMP-Zugang mit Leserechten für die Community "public" muss auf dem Gerät eingerichtet sein.<br> 
-Die korrekt erfassten RSSI Werte werden bei den gelisteten Linkstrecken angezeigt, 
-in der Karte kann die Ebene "Hamnet RSSI" eingeblendet werden und zeigt eine farbliche abstufung der Werte. <br>
-Eine Legende kann rechts unter <b>"i"</b> gefunden werden.<br>
-Diese Option befindet sich noch in der frühen Erprobungsphase.<br>
+Die Link-profile und RF-Visibility werden mit <a href="https://github.com/oe5hpm/dxlAPRS">Programmen</a> von OE5DXL berechnet.  
 
 
  

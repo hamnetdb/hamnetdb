@@ -50,7 +50,7 @@ var profilePopup;
 
 var rfRect;
 var rfMark = null;
-var rfTowerRx = 1;
+var rfTowerRx = 2;
 var rfMarkerA;
 var rfMarkerB;
 var rfTiles;
@@ -62,6 +62,7 @@ var rfDown = 0;
 var rfRight = 0;
 var rfRefraction = 0.25;
 var rfLabel= "";
+var rect= null;
 
 var testg;
 
@@ -575,6 +576,8 @@ function placeProfileFrom (e) {
   deleteProfileMa();
   drawFrom(e);
   profileProceed();
+  document.getElementById('rfTowerFromLine').style.color="#000";
+
 } 
 function placeProfileTo (e) {
   if (typeof e.latlng !== 'undefined') 
@@ -584,6 +587,10 @@ function placeProfileTo (e) {
   deleteProfileMb();
   drawTo(e);
   profileProceed();
+  document.getElementById('rfTowerToLine').style.color="#000";
+  if (typeof profileMa == 'undefined') {
+    document.getElementById('rfTowerFromLine').style.color="#aaa";
+  }
 } 
 function drawFrom(latlng)
 {
@@ -610,7 +617,7 @@ function drawFrom(latlng)
           profileLabelA = "";
           profileTowerA = profileTowerDefault;
           deleteProfileLine(); 
-          map.removeLayer(profileMa);
+          deleteProfileMa();
         }
       },
       {
@@ -654,7 +661,7 @@ function drawTo(latlng)
             profileLabelB = "";
             profileTowerB = profileTowerDefault;
             deleteProfileLine();
-            map.removeLayer(profileMb); 
+            deleteProfileMb();
           }
       },
       {
@@ -711,10 +718,17 @@ function deleteProfileMa() {
   if (typeof profileMa !== 'undefined') {
     map.removeLayer(profileMa);
   }
+  if (typeof profileMb !== 'undefined') {
+    if(profileMb._latlng != null) {
+      document.getElementById('rfTowerFromLine').style.color="#aaa";
+    }
+  }
 }
 function deleteProfileMb() {
   if (typeof profileMb !== 'undefined') {
     map.removeLayer(profileMb);
+    document.getElementById('rfTowerFromLine').style.color="#000";
+    document.getElementById('rfTowerToLine').style.color="#aaa";
   }
 }
 function deleteProfileAll() {
@@ -722,7 +736,7 @@ function deleteProfileAll() {
   profileLabelB = "";
   deleteProfileLine(); 
   deleteProfileMa();
-  map.removeLayer(profileMb);
+  deleteProfileMb();
   document.getElementById('side-draw-del-point1').style.display="none"
   document.getElementById('side-draw-del-point2').style.display="none"
 }
@@ -869,21 +883,34 @@ function popupSetting()
 }
 function rfPlacemarker()
 {
+  var createnew= true;
   if(typeof rect !== 'undefined') {
-    rect.disable();
+    if (rect != null) {
+      rect.disable();
+      rfMarkRect(0);
+    }
   }
   map.off('draw:created',rfPlaceA);
   map.off('draw:created',rfPlaceB);
   map.off('draw:created',rfRectangleFinish);
-  if(rfMark !== null) {
-    rfMark.disable();
-    rfMark = null;
+  if (rfMark !== null) {
+    if (typeof rfMark._enabled !== "undefined")
+    {
+      if (rfMark._enabled == true){
+        rfMark.disable();
+        rfMark = null;
+        createnew=0;
+        rfMarkPlace(0);
+      }
+    }
   }
-  else
+  
+  if (createnew)
   {
     rfMark= new L.Draw.Marker(map);
     rfMark.enable();
     map.on('draw:created',rfPlaceA);
+    rfMarkPlace(1);
   }
 }
 function rfPlaceA(e)
@@ -903,6 +930,27 @@ function rfPlaceB(e)
   coord = {latlng: e.layer._latlng};
   placeProfileTo(coord);
   rfMark = null;
+  rfMarkPlace(0);
+}
+function rfMarkPlace(e) {
+  if(e)
+  {
+    document.getElementById('side-draw-add-point1').style.backgroundColor="#bbb";
+    document.getElementById('side-draw-add-point2').style.backgroundColor="#bbb";
+  }
+  else {
+    document.getElementById('side-draw-add-point1').style.backgroundColor="#fff";
+    document.getElementById('side-draw-add-point2').style.backgroundColor="#fff";
+  }
+}
+function rfMarkRect(e) {
+  if(e)
+  {
+    document.getElementById('side-draw-add-rect').style.backgroundColor="#bbb";
+  }
+  else {
+    document.getElementById('side-draw-add-rect').style.backgroundColor="#fff";
+  }
 }
 function rfOpenprofile()
 {
@@ -918,16 +966,34 @@ function rfOpenprofile()
 }
 function rfRectangle()
 {
-  if(typeof rfMark !== 'undefined') {
+  var createnew= true;
+  if (typeof rfMark !== 'undefined') {
     if (rfMark != null) {
       rfMark.disable();
+      rfMarkPlace(0);
     }
   }
   map.off('draw:created',rfPlaceA);
   map.off('draw:created',rfPlaceB);
-  var rect= new L.Draw.Rectangle(map,{shapeOptions:{color:'#F00',fill:false}});
-  rect.enable();
-  map.on('draw:created',rfRectangleFinish);
+
+  if (rect != null) {
+    if (typeof rect._enabled !== "undefined") {
+      if (rect._enabled == true) {
+        rect.disable();
+        rect = null;
+        createnew = false
+        rfMarkRect(0);
+      }
+    }
+  }
+
+  if (createnew) {
+    rect= new L.Draw.Rectangle(map,{shapeOptions:{color:'#F00',fill:false}});
+    rect.enable();
+    map.on('draw:created',rfRectangleFinish);
+    rfMarkRect(1);
+  }
+  
 }
 function rfDelRectangle()
 {
@@ -953,8 +1019,7 @@ function rfRectangleFinish(e) {
   var type = e.layerType;
   rfRect = e.layer;
   rfRect.addTo(map);
-
-
+  rfMarkRect(0);
 }
 function rfValUpd()
 {
@@ -975,9 +1040,12 @@ function rfUpdForm()
 }
 function rfBack()
 {
-  document.getElementById("rf-result").style.visibility = "hidden";   
-  document.getElementById("rf-loading").style.visibility = "hidden";   
-  document.getElementById("rfCalcNew").style.visibility = "visible";  
+  //document.getElementById("rf-result").style.visibility = "hidden";   
+  //document.getElementById("rf-loading").style.visibility = "hidden";   
+  //document.getElementById("rfCalcNew").style.visibility = "visible";  
+  document.getElementById("rf-result").style.display = "none";   
+  document.getElementById("rf-loading").style.display = "none";   
+  document.getElementById("rfCalcNew").style.display = "inline";  
 }
 function rfLoadPreset()
 {
@@ -1015,10 +1083,11 @@ function rfCalc(force)
 
   //check rectangle
   if (map.hasLayer(rfRect) == false && (typeof force === 'undefined')) {
-    document.getElementById("rf-result").style.visibility = "visible";   
-    document.getElementById("rfCalcNew").style.visibility = "hidden";   
-
-    var content = "<br><b>No rectangle placed, time of calculation may be long!</b><br><a onclick='rfBack();'>cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onclick='rfBack(); rfCalc(1);'>continue</a>"
+    //document.getElementById("rf-result").style.visibility = "visible";   
+    //document.getElementById("rfCalcNew").style.visibility = "hidden";   
+    document.getElementById("rf-result").style.display = "inline";   
+    document.getElementById("rfCalcNew").style.display = "none";   
+    var content = "<br><b>No rectangle placed, time of calculation may be long!</b><br><a onclick='rfBack();'>cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;<a onclick='rfBack(); rfCalc(1);'>continue</a><br>"
     document.getElementById("rf-result").innerHTML=content;
     return; 
   }
@@ -1054,16 +1123,20 @@ function rfCalc(force)
     var lat2 = 0;
     var lon2 = 0;
   }else if (force != 2 ) {
-    document.getElementById("rf-result").style.visibility = "visible";   
-    document.getElementById("rfCalcNew").style.visibility = "hidden";   
+    //document.getElementById("rf-result").style.visibility = "visible";   
+    //document.getElementById("rfCalcNew").style.visibility = "hidden"; 
+    document.getElementById("rf-result").style.display = "inline";   
+    document.getElementById("rfCalcNew").style.display = "none";   
 
-    var content = "<br><b>At least one Marker has to be set!</b><br><a onclick='rfBack();'>back</a>"
+    var content = "<br><b>At least one Marker has to be set!</b><br><a onclick='rfBack();'>back</a><br>"
     document.getElementById("rf-result").innerHTML=content;
     return;
   }
 
-  document.getElementById("rfCalcNew").style.visibility = "hidden";   
-  document.getElementById("rf-loading").style.visibility = "visible";   
+  //document.getElementById("rfCalcNew").style.visibility = "hidden";   
+  //document.getElementById("rf-loading").style.visibility = "visible";   
+  document.getElementById("rfCalcNew").style.display = "none";   
+  document.getElementById("rf-loading").style.display = "inline"; 
 
   var src=host_calc_visibility+"rftools/calc_visibility.cgi?lon_a="+
         lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+
@@ -1090,9 +1163,11 @@ function rfLoaded(result)
     var parameter = result[1].split(';');
   }
   else {
-    document.getElementById("rf-loading").style.visibility = "hidden";   
-    document.getElementById("rf-result").style.visibility = "visible";   
-    var content = "<b>error calculating visibility</b><br><a onclick='rfBack();'>back</a>"
+    //document.getElementById("rf-loading").style.visibility = "hidden";   
+    //document.getElementById("rf-result").style.visibility = "visible"; 
+    document.getElementById("rf-loading").style.display = "none";   
+    document.getElementById("rf-result").style.display = "inline";   
+    var content = "<br><b>error calculating visibility</b><br><a onclick='rfBack();'>back</a><br>"
     document.getElementById("rf-result").innerHTML=content;
     return;
   }
@@ -1170,9 +1245,11 @@ function rfLoaded(result)
     layers.addOverlay(rfLayer,"(RF)-visibility");
     rfLayer.addTo(map);
 
-    document.getElementById("rf-loading").style.visibility = "hidden";   
-    document.getElementById("rf-result").style.visibility = "visible";   
-    var content = "<b>calculation \""+parameter[1]+"\" finished</b><br><a onclick='rfBack();'>back</a>"
+    //document.getElementById("rf-loading").style.visibility = "hidden";   
+    //document.getElementById("rf-result").style.visibility = "visible";   
+    document.getElementById("rf-loading").style.display = "none";   
+    document.getElementById("rf-result").style.display = "inline";  
+    var content = "<br><b>calculation \""+parameter[1]+"\" finished</b><br><a onclick='rfBack();'>back</a><br>"
     document.getElementById("rf-result").innerHTML=content;
     rfLoadPreset();
     rfLocked=0;
