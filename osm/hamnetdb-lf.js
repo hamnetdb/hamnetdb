@@ -813,7 +813,7 @@ function profileDraw () {
         Width: width,
         Height: (height+70),
       })
-      .setLatLng([(lat1 + lat2)/2, (lon1+lon2)/2])
+      .setLatLng([(Number(lat1) + Number(lat2))/2, (Number(lon1)+Number(lon2))/2])
       .setContent(popupcontent)
       .openOn(map);
     
@@ -823,7 +823,7 @@ function profileDraw () {
       L.DomUtil.setPosition(profilePopup._wrapper.parentNode,pos);
       var draggable = new L.Draggable(profilePopup._container, profilePopup._wrapper);
       draggable.enable();
-      map.panTo(pos)
+      map.setView(new L.LatLng((Number(lat1) + Number(lat2))/2, (Number(lon1)+Number(lon2))/2));
     }
   }
 }
@@ -1226,6 +1226,7 @@ function rfLoaded(result)
         draggable: false,
       });
       rfMarkerB.addTo(rfLayer)
+      document.getElementById('rfTowerToLine').style.color="#000";
     }
     if (map.hasLayer(rfRect)) {
       rfRect.removeFrom(map);
