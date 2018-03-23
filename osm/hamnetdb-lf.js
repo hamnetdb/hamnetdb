@@ -526,7 +526,6 @@ function init()
     getAs(as); 
   if(site != 0)
     getSite(site); 
- // map.setView([51.2, 7], 9);
 
   //Profile init
   if ((ma_lat!=0) && (ma_lon!=0) && (mb_lat!=0) && (mb_lon!=0) && rf_vis == 0)
@@ -541,7 +540,6 @@ function init()
       profileDraw();
     }
     map.setView([((Number(ma_lon)+Number(ma_lon))/2), ((Number(ma_lat)+Number(mb_lat))/2)], 9);
-    //map.setZoom(9);
   }
   // if visibility is set
   if (rf_vis) {
@@ -601,7 +599,6 @@ function drawFrom(latlng)
         iconAnchor: [8, 25],
         popupAnchor: [0, 0],
         zIndex: 9997,
-        //zIndexOffset: 3000,
       }),
     draggable: true,
     contextmenu: true,
@@ -1040,9 +1037,6 @@ function rfUpdForm()
 }
 function rfBack()
 {
-  //document.getElementById("rf-result").style.visibility = "hidden";   
-  //document.getElementById("rf-loading").style.visibility = "hidden";   
-  //document.getElementById("rfCalcNew").style.visibility = "visible";  
   document.getElementById("rf-result").style.display = "none";   
   document.getElementById("rf-loading").style.display = "none";   
   document.getElementById("rfCalcNew").style.display = "inline";  
@@ -1123,8 +1117,6 @@ function rfCalc(force)
     var lat2 = 0;
     var lon2 = 0;
   }else if (force != 2 ) {
-    //document.getElementById("rf-result").style.visibility = "visible";   
-    //document.getElementById("rfCalcNew").style.visibility = "hidden"; 
     document.getElementById("rf-result").style.display = "inline";   
     document.getElementById("rfCalcNew").style.display = "none";   
 
@@ -1163,8 +1155,6 @@ function rfLoaded(result)
     var parameter = result[1].split(';');
   }
   else {
-    //document.getElementById("rf-loading").style.visibility = "hidden";   
-    //document.getElementById("rf-result").style.visibility = "visible"; 
     document.getElementById("rf-loading").style.display = "none";   
     document.getElementById("rf-result").style.display = "inline";   
     var content = "<br><b>error calculating visibility</b><br><a onclick='rfBack();'>back</a><br>"
@@ -1246,8 +1236,6 @@ function rfLoaded(result)
     layers.addOverlay(rfLayer,"(RF)-visibility");
     rfLayer.addTo(map);
 
-    //document.getElementById("rf-loading").style.visibility = "hidden";   
-    //document.getElementById("rf-result").style.visibility = "visible";   
     document.getElementById("rf-loading").style.display = "none";   
     document.getElementById("rf-result").style.display = "inline";  
     var content = "<br><b>calculation \""+parameter[1]+"\" finished</b><br><a onclick='rfBack();'>back</a><br>"
@@ -1259,7 +1247,6 @@ function rfLoaded(result)
 function rfCreateUrl()
 {
   var url = '';
-  //ma_lat=47.80396&ma_lon=13.109844&ma_tow=12&ma_lab=oe2xzr&mb_lat=48.575137&mb_lon=12.901848&mb_tow=10&mb_lab=nocall_1458237163
 
   //if profile
   if(map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(profilePopup)){
@@ -1387,8 +1374,6 @@ function setGetParameter(paramName, paramValue, reload)
       window.location.href = url;
     else
       window.history.pushState("", "HamnetDB Map", url);
-    //alert(url);
-    //window.location = url;
 }
 
 //get Site data and center map to it

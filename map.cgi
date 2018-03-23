@@ -204,8 +204,8 @@ print qq(
         <div id="extern-permalink"></div>
       </div>
       <div id="sidebar-rftools">
-        <h4>RF-Tools</h4>
-        An easy way to estimate <br> possilbe rf-links
+        <h3>RF-Tools</h3>
+        An easy way to estimate <br> possilbe RF-links
         <br><br>
         <h4>Link-profile:</h4>
         <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">

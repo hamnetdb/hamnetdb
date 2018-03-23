@@ -64,6 +64,9 @@ h4 {
   margin-bottom: 2px;
   margin-top: 4px;
 }
+#sidebar-rftools h3 {
+  margin: 0px;
+}
 #info_by
 {
   margin-top: 15px;
