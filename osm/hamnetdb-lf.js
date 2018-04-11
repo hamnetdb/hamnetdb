@@ -1224,7 +1224,7 @@ function rfLoaded(result)
     }
     if(rect_up != 0 &&rect_right != 0 && rect_down != 0 && rect_right != 0) {
       var bounds = [[rect_down,rect_left], [rect_up, rect_right]];
-      rfRect = L.rectangle(bounds, {color:'#888b',fill:false}).addTo(rfLayer);
+      rfRect = L.rectangle(bounds, {color:'#F00F',fill:false}).addTo(rfLayer);
       center_lat = (Number(rect_up)+Number(rect_down))/2;
       center_lon = (Number(rect_left)+Number(rect_right))/2;
       map.setView(new L.LatLng(center_lat,center_lon),9);
