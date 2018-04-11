@@ -1199,7 +1199,7 @@ function rfLoaded(result)
             iconUrl: 'osm/images/cross-red.png',
             iconSize: [30, 30],
             iconAnchor: [15, 15],
-            zIndex: 9996,
+            zIndex: -996,
           }),
         draggable: false,
       });
@@ -1211,7 +1211,7 @@ function rfLoaded(result)
             iconUrl: 'osm/images/cross-blue.png',
             iconSize: [30, 30],
             iconAnchor: [15, 15],
-            zIndex: 9996,
+            zIndex: -996,
           }),
         draggable: false,
       });
