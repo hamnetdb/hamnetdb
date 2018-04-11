@@ -164,7 +164,7 @@ unless ($list) {
       open(my $fh, '>>', $path_errlog) or die "Could not open file";
       print $fh "$cmd\n";
       close $fh;
-      print qq(Error creating visibility! :\( \n); 
+      print qq(Error creating visibility! $result :\( \n); 
     }
     else {
       print qq(OK! $result new\n);

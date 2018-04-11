@@ -240,7 +240,7 @@ print qq(
             <span class="side-button side-draw-rect" id="side-draw-add-rect"></span></a>
           <a onclick="rfDelRectangle();" style="text-decoration:none; border-radius:2px;">
           <span class="side-button side-draw-del" id="side-draw-del-rect"></span></a>
-          &nbsp;place rectangular constrain to speedup calculation<br>
+          &nbsp;place rectangular constrain to speedup calculation (red frame)<br>
           <span id="rfTowerFromLine">Tower size "From" (m) <input type="text" id='rfTowerFrom' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
           <span id="rfTowerToLine">Tower size "To" (m) <input type="text" id='rfTowerTo' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
           Tower size visibility (m) <input type="text" id='rfTowerRx' value='1' onchange='rfValUpd()' style='width:20px'><br>
