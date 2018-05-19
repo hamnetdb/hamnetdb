@@ -71,31 +71,38 @@ print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
         left:300px;
       }
     </style>
+     <meta charset="UTF-8"> 
   </head>
   <body>
    <h3>Antenna: $antenna</h3>
-    <canvas id="azimuth_gain" width="270" height="270"></canvas>
+    <canvas id="azimuth_gain"  ></canvas>
     <canvas id="elevation_gain" width="270" height="270"></canvas>
     <br>
     Download: <a href="?old=$old&name=$antenna&func=download">$antenna.ant</a>
     <script src="chart.js"></script>
     <script>
+      var size= 1;
+      var canvas_size=270*size;
+      document.getElementById('azimuth_gain').width=canvas_size;
+      document.getElementById('azimuth_gain').height=canvas_size;
+      document.getElementById('elevation_gain').width=canvas_size;
+      document.getElementById('elevation_gain').height=canvas_size;
+      document.getElementById('elevation_gain').style.left=canvas_size+"px";
       var antenna = [$js_azimuth_ant];
       var canvas_azimuth = document.getElementById('azimuth_gain');
       var canvas_elevation = document.getElementById('elevation_gain');
       var ant_azimuth = canvas_azimuth.getContext('2d'); 
       var ant_elevation = canvas_elevation.getContext('2d'); 
 
-      var center_x = 135;
-      var center_y = 145;
-      var radius = 100;
-      var factor= 1;
-      ant_azimuth.lineWidth = 2;
+      var center_x = 135*size;
+      var center_y = 145*size;
+      var radius = 100*size;
+      ant_azimuth.lineWidth = 2*size;
       ant_azimuth.strokeStyle='#a0a0a0';
       //outer circle
       ant_azimuth.arc(center_x, center_y, radius, 0, 2 * Math.PI, false);
       //lines though circle
-      ant_azimuth.lineWidth = 0.7
+      ant_azimuth.lineWidth = 0.7*size;
       ant_azimuth.strokeStyle='#c0c0c0';
       
       var minimum = Math.min.apply(Math, antenna);
@@ -117,21 +124,21 @@ print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
       ant_azimuth.stroke();
       ant_azimuth.beginPath();
       
-      ant_azimuth.font = 'bold 16px Sans-Serif';
-      ant_azimuth.fillText('Azimuth Gain', 75, 15);
+      ant_azimuth.font = 'bold '+16*size+'px Sans-Serif';
+      ant_azimuth.fillText('Azimuth Gain', 75*size, 15*size);
       ant_azimuth.fillStyle = '#000';
-      ant_azimuth.font = '14px Sans-Serif';
+      ant_azimuth.font = size*14+'px Sans-Serif';
       ant_azimuth.textBaseline = 'Top';
-      ant_azimuth.fillText('0°', 130, 40);
-      ant_azimuth.fillText('90°', 240, 150);
-      ant_azimuth.fillText('180°', 120, 260);
-      ant_azimuth.fillText('270°', 0, 150);
+      ant_azimuth.fillText('0°', 130*size, 40*size);
+      ant_azimuth.fillText('90°', 240*size, 150*size);
+      ant_azimuth.fillText('180°', 120*size, 260*size);
+      ant_azimuth.fillText('270°', 0*size, 150*size);
       
       ant_azimuth.fillStyle = '#f5f5f5';
-      ant_azimuth.font = '11px Sans-Serif';
-      ant_azimuth.fillText('by Hamnetdb', 190, 260);
+      ant_azimuth.font = 11*size+'px Sans-Serif';
+      ant_azimuth.fillText('by Hamnetdb', 190*size, 260*size);
 
-      ant_azimuth.lineWidth = 1;
+      ant_azimuth.lineWidth = 1*size;
       ant_azimuth.strokeStyle='#ff0000';
 
       //startpoint of diagram   
@@ -149,12 +156,12 @@ print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
 
  //////////////////////////////////////////////////////////////////////////////////////////////////////   
     
-      ant_elevation.lineWidth = 2;
+      ant_elevation.lineWidth = 2*size;
       ant_elevation.strokeStyle='#a0a0a0';
       //outer circle
       ant_elevation.arc(center_x, center_y, radius, 0, 2 * Math.PI, false);
       //lines though circle
-      ant_elevation.lineWidth = 0.7
+      ant_elevation.lineWidth = 0.7*size
       ant_elevation.strokeStyle='#c0c0c0';
       
       //dB scale
@@ -173,21 +180,21 @@ print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
       ant_elevation.stroke();
       ant_elevation.beginPath();
       
-      ant_elevation.font = 'bold 16px Sans-Serif';
-      ant_elevation.fillText('Elevation Gain', 75, 15);
+      ant_elevation.font = 'bold '+16*size+'px Sans-Serif';
+      ant_elevation.fillText('Elevation Gain', 75*size, 15*size);
       ant_elevation.fillStyle = '#000';
-      ant_elevation.font = '14px Sans-Serif';
+      ant_elevation.font = 14*size+'px Sans-Serif';
       ant_elevation.textBaseline = 'Top';
-      ant_elevation.fillText('90°', 127, 40);
-      ant_elevation.fillText('0°', 240, 150);
-      ant_elevation.fillText('-90°', 122, 260);
-      ant_elevation.fillText('180°', 0, 150);
+      ant_elevation.fillText('90°', 127*size, 40*size);
+      ant_elevation.fillText('0°', 240*size, 150*size);
+      ant_elevation.fillText('-90°', 122*size, 260*size);
+      ant_elevation.fillText('180°', 0*size, 150*size);
 
       ant_elevation.fillStyle = '#f5f5f5';
-      ant_elevation.font = '11px Sans-Serif';
-      ant_elevation.fillText('by Hamnetdb', 190, 260);
+      ant_elevation.font = 11*size+'  px Sans-Serif';
+      ant_elevation.fillText('by Hamnetdb', 190*size, 260*size);
 
-      ant_elevation.lineWidth = 1;
+      ant_elevation.lineWidth = 1*size;
       ant_elevation.strokeStyle='#ff0000';
 
       //startpoint of diagram   
