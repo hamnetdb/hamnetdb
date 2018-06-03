@@ -17,8 +17,8 @@ $table= "hamnet_$suffix";
 $table_history= "${table}_hist";
 $requiredPermission= $suffix;
 
-($callsign,$fullname,$email,$comment,$permissions)= &loadFormData
-("callsign,fullname,email,comment,permissions");
+($callsign,$fullname,$email,$comment,$permissions,$dp_accept)= &loadFormData
+("callsign,fullname,email,comment,permissions,dp_accept");
 
 if ($mustLoadFromDB) {
   $perm_as= ($permissions=~/as,/)?1:0;
@@ -88,6 +88,11 @@ print qq(
 
 print qq(
   <br><br>
+  );
+&checkBox("Privacy term has been accepted (can only be set by user)", 
+          "dp_accept", 0, $dp_accept);
+
+print qq(
   </td>
   </tr>
   <tr><td colspan=4>
@@ -137,8 +142,6 @@ sub checkValues {
   $permissions.= "host," if $perm_host;
   $permissions.= "maintainer," if $perm_maintainer;
   $permissions.= "sysadmin," if $perm_sysadmin && $mySysPerm;
-  my $cc= "";
-  $cc= "at." if $callsign=~/^oe/i;
 
   if (! $inputStatus && $do_notify) {
     $passwd= &pwGenerate(8);
@@ -147,7 +150,7 @@ sub checkValues {
     if ($callsign=~/^(d[a-p]|oe|hb[09])/i) {
       &sendmail("Dein Zugang zur Hamnet-DB",
         qq(Hallo $name,\n$username ).
-        qq(hat Dir einen Login bei http://${cc}hamnetdb.net eingerichtet.\n\n).
+        qq(hat Dir einen Login bei https://hamnetdb.net eingerichtet.\n\n).
         qq(Login: $callsign\n).
         qq(Passwort: $passwd\n\n).
         qq(Bitte vergib unter "Login" Dein eigenes Passwort.\n\n).
@@ -159,7 +162,7 @@ sub checkValues {
     else {
       &sendmail("Your Hamnet-DB access data",
         qq(Hello $name,\n$username ).
-        qq(has created a login for you at http://${cc}hamnetdb.net\n\n).
+        qq(has created a login for you at https://hamnetdb.net\n\n).
         qq(Login: $callsign\n).
         qq(Password: $passwd\n\n).
         qq(Please change your password at item "Login".\n\n).
@@ -175,9 +178,14 @@ sub checkValues {
     $pwField= "passwd=password(".$db->quote($passwd)."), ";
   }
 
+  my $dp;
+  unless ($dp_accept) {
+    $dp= "dp_accept=0,";
+  }
+
   return  "comment=".$db->quote($comment).", ".$pwField.
           "callsign=".$db->quote($callsign).", ".
           "fullname=".$db->quote($fullname).", ".
-          "permissions=".$db->quote($permissions).", ".
+          "permissions=".$db->quote($permissions).", ".$dp.
           "email=".$db->quote($email);
 }

@@ -140,7 +140,8 @@ unless ($found) {
                order by last_act desc limit 0,1));
     }
     else {
-      $fullname=~s/ .*$//;
+      #$fullname=~s/ .*$//;
+      $fullname= "";
       $email= "";
     }
 

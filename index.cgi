@@ -87,8 +87,24 @@ print qq(
      src="hamnetdb-64.png"></a>
 );
 
+unless ($m=~/login/i) {
+  if ($username && ! $myDp_accept) {
+    $m= "login";
+  }
+}
 if ($m=~/login/i) {
-  print qq(<h3>Hamnet-DB write access login</h3>);
+  print qq(</form><form method="POST" action="login.cgi">
+      <input type="hidden" name="logout" value="1">
+      <h3>Hamnet-DB write access login &nbsp;&nbsp;
+  );
+
+  if ($username) {
+    my $t= time;
+    print qq(
+      <input type="submit" value="Logout">
+    );
+  }
+  print qq(</h3>);
 }
 elsif ($m=~/util/i) {
   my $sub= &subMenu("func:Utility functions",
@@ -336,8 +352,7 @@ if ($m=~/help/i) {
 }
 
 if ($m=~/login/i) {
-  print qq(</form><div class="utility vgrad" 
-                       style="padding-top:10px;padding-bottom:10px;">);
+  print qq(</form><div class="utility vgrad" style="padding:10px;">);
   my $errMsg= $query->param("errMsg");
   if ($errMsg) {
     $errMsg=~s/[^a-z0-9\-\. ]//gi;
@@ -349,16 +364,149 @@ if ($m=~/login/i) {
     print("<b style='color:green'>$okMsg</b><br><br>");
   }
   if ($username) {
+    my $dp= $myDp_accept?"Yes":"No";
+    my $cp= $myCall_public?"Yes":"No";
+    my $warning= "";
+    if (! $myDp_accept) {
+      $warning= qq(<p><div style='color:#b00000;font-weight:bold;'>
+      Before you proceed, you need
+      to care about your data protection options. Please read the following
+      and decide how we should proceed with your personal data.</div>);
+    }
+    
     print qq(
-      Login: $username ($myFullname, $myEmail) | 
-      <a href="login.cgi?logout=1">Logout</a><br><br>
+      <style>
+      .tab {
+        width: 0px;
+        border-spacing: 0px;
+        bordeR-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      .tab td {
+        font-family: arial,helvetica,sans-serif;
+        font-size: 13px;
+        padding: 3px;
+        padding-right: 8px;
+        padding-left: 8px;
+        border: 1px solid #c0c0c0;
+        white-space: nowrap;
+        background: url(vert-verlauf.png) repeat-x;
+      }
+      .dp-button {
+        padding: 5px;
+        width: 90%;
+        height: 70px;
+      }
+      .dp-button:Hover {
+        background-color:#e0e0e0;
+      }
+      </style>
+      <div style='max-width:600px'>
+      <h2>Your personal data</h2>
+      You currently have write-access to the contents of the Hamnet-DB.
+      To ensure integrity of the hamnet configuration data, 
+      we need to store your contact information as listed below:
+      <p>
+      <table class='tab'>
+      <tr><td>Callsign</td>
+          <td width='100%'>$username</td></tr>
+      <tr><td>Full name</td>
+          <td>$myFullname</td></tr>
+      <tr><td>eMail-address</td>
+          <td>$myEmail</td></tr>
+      <tr><td>Comment &nbsp;&nbsp;</td>
+          <td>$myComment</td></tr>
+      <!--tr><td>Show my callsign public&nbsp;&nbsp;</td>
+          <td>$cp</td></tr-->
+      <tr><td>Privacy term accepted&nbsp;&nbsp;</td>
+          <td>$dp</td></tr>
+      </table>
+      $warning
+      <p>
+      Your callsign will be shown with each entry you create or change. This
+      information is public, thus it may also appear at search engines.
+      Your full name and eMail is not public, it will only be shown to 
+      other Hamnet-administrators registered with the Hamnet-DB.
+      <p>
+      Your eMail address is only used for correspondence about your 
+      Hamnet-DB activity.
+      <br>
+      We will neither use it for other purposes nor share it
+      with third parties.
+      <p>
+      Do you agree that the information above will continue to be stored 
+      in the Hamnet-DB?
+      <p>
+      <table cellspacing=0 cellpadding=0 border=0>
+      <tr><td align='left'>);
+    if ($myDp_accept) {
+      print qq(
+        <a href="mailto:info\@hamnetdb.net?subject=Userdata correction $username">
+        <button class='dp-button'>
+        I have already agreed, but my personal data need to be corrected
+      );
+    }
+    else {
+      print qq(
+        <a href='login.cgi?dp_accept=1'>
+        <button class='dp-button'>
+        Yes, I agree.
+        </button></a>
+        </td><td align='center'>
+        <a href="mailto:info\@hamnetdb.net?subject=Userdata correction $username">
+        <button class='dp-button'>
+        Before I agree, my personal data need to be corrected
+      );
+    }
+    print qq(
+      </button></a>
+      </td><td align='right'>
+      <a href="mailto:info\@hamnetdb.net?subject=Delete hamnetdb-account $username">
+      <button class='dp-button'>
+      No, I do not agree. <b>Please delete my user profile.</b> 
+      I am aware that I cannot longer edit entries in the Hamnet-DB.
+      Existing entries from my callsign will be anonymized
+      </button>
+      </a>
+      </td></tr></table>
+      <br>
+      </form>
+      <b>You may change your decision at any time. 
+      Please return to this page if you want to 
+      change or delete your personal data.</b>
+      <br>
+      </div></div>
+
+      <div class="utility vgrad" style="padding:10px">
+      <h2>Change your Hamnet-DB Password</h2>
       <form method="POST" action="login.cgi">
-      Change Password - 
-      Current: <input type="password" size=8 name="pw">
-      New: <input type="password" size=8 name="newpw">
-      Confirm: <input type="password" size=8 name="newagain">
-      <input type="submit" value="Change"></form>
+      <p>
+      <table border=0 class='tab' cellpadding="2">
+      <tr><td>Your current password:</td>
+          <td><input type="password" size=20 name="pw"></td></tr>
+      <tr><td>Your new password:</td>
+          <td><input type="password" size=20 name="newpw"></td></tr>
+      <tr><td>Confirm your new password: &nbsp;&nbsp;</td>
+          <td><input type="password" size=20 name="newagain"></td></tr>
+      <tr><td></td><td><button type="submit" value="Change">Change</button>
+      </td></tr>
+      </table>
+      </form>
+      </div>
+
+      </div>
     );
+    # Do you agree that your callsign will also be displayed to 
+    # non-registered users, so it may also be found 
+    # in search engines?
+    # <p>
+    # <input type="radio" name="call_public" value="0"> 
+    # Yes, my callsign should be displayed.
+    # <p>
+    # <input type="radio" name="call_public" value="1"> 
+    # No, my callsign shall not be readable.
+    # <p>
+    # <button type="submit">Store data protection options</button>
   }
   elsif ($query->param("func") eq "forgot") {
     print qq(
@@ -374,7 +522,7 @@ if ($m=~/login/i) {
       <form method="POST" action="login.cgi">
       Callsign: <input type="text" size=10 name="login" autofocus="autofocus">
       Password: <input type="password" size=10 name="pw">
-      <input type="submit" value="Login">
+      <button type="submit" value="Login">Login</button>
       &nbsp;&nbsp;
     );
       &checkBox("Remember login cookie","persist");
@@ -1438,7 +1586,7 @@ sub maintainerList {
   my $where= "1";
   my $sth= $db->prepare(qq(
     select id,callsign,fullname,email,unix_timestamp(last_login),
-    comment,permissions,editor,unix_timestamp(edited)
+    comment,permissions,editor,unix_timestamp(edited),dp_accept
     from hamnet_maintainer where $where
   ));
   $sth->execute;
@@ -1454,6 +1602,7 @@ sub maintainerList {
     my $permissions= $line[$idx++];
     my $editor= $line[$idx++];
     my $edited= $line[$idx++];
+    my $dp_accept= $line[$idx++];
 
     next unless !$filterPerm || $permissions=~/$filterPerm/i;
 
@@ -1465,15 +1614,13 @@ sub maintainerList {
     #  "<a href='?q=$callsign'>$callsign</a></td>\n"; 
     $sort= $callsign if ($scrit eq "c");
     
-    $ret.= "<td valign=top>$fullname</td>\n"; 
-    $sort= $fullname if ($scrit eq "n");
-
     if ($username)  {
+      $ret.= "<td valign=top>$fullname</td>\n"; 
+      $sort= $fullname if ($scrit eq "n");
+
       $ret.= "<td valign=top><a href='mailto:$email'>$email</a></td>\n"; 
       $sort= $email if ($scrit eq "e");
-    }
 
-    if ($username) {
       if ($last_login>0) {
         $ret.= "<td valign=top>".&timespan(time-$last_login)."</td>\n"; 
       }
@@ -1500,6 +1647,9 @@ sub maintainerList {
       $p.= "y" if $permissions=~/sysadmin/ && $mySysPerm;
       $sort= $p if $scrit eq "p";
       $ret.= "<td valign=top>$p</td>\n"; 
+
+      $ret.= "<td valign=top>$dp_accept</td>\n"; 
+      $sort= $dp_accept if ($scrit eq "d");
     }
 
     $ret.= "<td valign=top>".&maxlen($comment,$commentMax)."</td>\n"; 
@@ -1517,12 +1667,13 @@ sub maintainerList {
   &listHeader("Maintainers with write-access in this database$p");
   &sortq("e", "") if &editIcon($t);
   &sortq("c", "Callsign");
-  &sortq("n", "Full Name");
   if ($username) {
+    &sortq("n", "Full Name");
     &sortq("e", "eMail");
     &sortq("lr", "Login");
     &sortq("ar", "Act");
     &sortq("p", "Perm");
+    &sortq("d", "A");
   }
   &sortq("k", "Comment");
   &sortq("zr", "Edited");

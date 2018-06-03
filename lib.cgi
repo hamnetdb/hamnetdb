@@ -104,8 +104,12 @@ $myFullname= "";
 $myEmail= "";
 $myPermissions= "";
 $mySysPerm= 0;
+$myComment= "";
+$myCall_public= 0;
+$myDp_accept= 0;
 if ($username) {
-  my $sth= $db->prepare("select fullname,email,permissions ".
+  my $sth= $db->prepare("select fullname,email,permissions, ".
+          "comment, call_public, dp_accept ".
           "from hamnet_maintainer where callsign='$username'");
   $sth->execute or &fatal(qq(
     Cannot select from DB <b>$db_name</b>.<br>
@@ -115,6 +119,9 @@ if ($username) {
     $myFullname= $line[0];
     $myEmail= $line[1];
     $myPermissions= $line[2];
+    $myComment= $line[3];
+    $myCall_public = $line[4];
+    $myDp_accept= $line[5];
     $db->do("update hamnet_session set last_act=now(),last_ip=".
        $db->quote($ENV{REMOTE_ADDR})." where token=".$db->quote($sessionToken));
     $mySysPerm= ($myPermissions=~/sysadmin,/)?1:0;
@@ -829,7 +836,7 @@ sub sendmail {
   my $tolist= join(",", @to);
   
   if (open(ERR,
-    "|/usr/sbin/sendmail -fnoreply\@hamnetdb.net -FHamnet-DB $toline")){
+    "|/usr/sbin/sendmail -finfo\@hamnetdb.net -FHamnet-DB $toline")){
     print ERR "To: $tolist\n";
     print ERR "Subject: $subject\n\n";
     print ERR $text;
@@ -1495,6 +1502,39 @@ sub checkMapSource
   return 0;
 }
 
+# ---------------------------------------------------------------------------
+# Create a list of call signs that may be displayed due to data protection
+# requirements
+sub loadPrivacyWhitelist {
+  # site callsigns are by definition always public
+  my $sth= $db->prepare("select callsign from hamnet_site");
+  $sth->execute;
+  while (@line= $sth->fetchrow_array) {
+    $privacyWhitelist{$line[0]}= 1;
+  }
+  # user callsigns need to be distinguished
+  my $sth= $db->prepare("select callsign,call_public from hamnet_maintainer ".
+                        "where dp_accept=1");
+  $sth->execute;
+  while (@line= $sth->fetchrow_array) {
+    $privacyWhitelist{$line[0]}= 1 if $line[1] || $username;
+  }
+}
+
+# ---------------------------------------------------------------------------
+# Anonymize (i.e. shorten) all callsigns that are not whitelisted
+sub anonymizeCallsign {
+  my $calls= shift;
+  my $res= "";
+  foreach $call (split(/[ \,]+/, $calls)) {
+    if ($privacyWhitelist{$call}) {
+      $call=~s/..$/../;
+    }
+    $res.= "," if $res;
+    $res.= $call;
+  }
+  return $res;
+}
 
 
 $tldName{"af"}= "Afghanistan";

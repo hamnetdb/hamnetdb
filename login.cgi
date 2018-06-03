@@ -11,15 +11,28 @@
 # -------------------------------------------------------------------------
 #
 do "lib.cgi" or die;
+$cookiePath="/";
+
 #
+if ($query->param("dp_accept")) {
+  if ($username) {
+    $db->do("update hamnet_maintainer set dp_accept=1 ".
+    "where callsign=".$db->quote($username));
+  }
+  print qq(Expires: 0\n).
+        qq(Status: 302 Moved\n).
+        qq(Location: $baseUri/?m=Login\&okMsg=Privacy+term+was+accepted\n\n);
+  exit;
+}
 if ($query->param("logout")) {
   if ($sessionToken && $username) {
     $db->do("update hamnet_session set is_valid=0 ".
     "where token=".$db->quote($sessionToken));
   }
-  print qq(Status: 302 Moved\n).
-        qq(Set-Cookie: HAMNETDB_SESSION=; path=$baseUri;\n).
-        qq(Location: $baseUri/?m=Login\n\n);
+  print qq(Expires: 0\n).
+        qq(Status: 302 Moved\n).
+        qq(Set-Cookie: HAMNETDB_SESSION=; path=$cookiePath;\n).
+        qq(Location: $baseUri/?m=Login\&errMsg=You+are+logged+out\n\n);
   exit;
 }
 $pw= $query->param("pw");
@@ -28,7 +41,8 @@ if ($query->param("newpw") && $username) {
   my $newagain= $query->param("newagain");
 
   if ($newpw ne $newagain) {
-    print qq(Status: 302 Moved\n).
+    print qq(Expires: 0\n).
+          qq(Status: 302 Moved\n).
           qq(Location: $baseUri/?m=Login&errMsg=Passwords+do+not+match.\n\n);
     exit;
   }
@@ -38,7 +52,8 @@ if ($query->param("newpw") && $username) {
     " where callsign=".$db->quote($username).
     " and passwd=password(".$db->quote($pw).")");
   unless ($fullname) {
-    print qq(Status: 302 Moved\n).
+    print qq(Expires: 0\n).
+          qq(Status: 302 Moved\n).
           qq(Location: $baseUri/?m=Login&errMsg=Old+password+is+incorrect.\n\n);
     exit;
   }
@@ -47,7 +62,8 @@ if ($query->param("newpw") && $username) {
       "passwd=password(".$db->quote($newpw).") ".
       "where callsign='$username'");
   }
-  print qq(Status: 302 Moved\n).
+  print qq(Expires: 0\n).
+        qq(Status: 302 Moved\n).
         qq(Location: $baseUri/?m=Login&okMsg=Password+changed\n\n);
   exit;
 }
@@ -62,7 +78,8 @@ if ($query->param("forgotpw")) {
     " where callsign=".$db->quote($callsign).
     " and email=".$db->quote($email));
   unless ($fullname) {
-    print qq(Status: 302 Moved\n).
+    print qq(Expires: 0\n).
+          qq(Status: 302 Moved\n).
           qq(Location: $baseUri/?m=Login&errMsg=).
           qq(Could+not+find+callsign+and+email+address.\n\n);
     exit;
@@ -76,7 +93,7 @@ if ($query->param("forgotpw")) {
   if ($callsign=~/^(d[a-p]|oe|hb[09])/i) {
     &sendmail("Dein neues Hamnet-DB Passwort",
       qq(Hallo $fullname,\n).
-      qq(Du hast auf http://hamnetdb.net ein neues Passwort angefordert.\n\n).
+      qq(Du hast auf https://hamnetdb.net ein neues Passwort angefordert.\n\n).
       qq(Es ist: $newpw\n\n).
       qq(Bitte vergib unter "Login" Dein eigenes Passwort.\n\n).
       qq(Viele Gruesse vom Hamnet-DB Team :-\)\n\n),
@@ -85,14 +102,15 @@ if ($query->param("forgotpw")) {
   else {
     &sendmail("Your new Hamnet-DB Password",
       qq(Hello $fullname,\n).
-      qq(You have requested a new password on http://hamnetdb.net\n\n).
+      qq(You have requested a new password on https://hamnetdb.net\n\n).
       qq(It is: $newpw\n\n).
       qq(Please change your password at item "Login".\n\n).
       qq(Your Hamnet-DB team :-\)\n\n),
       $email);
   }
  
-  print qq(Status: 302 Moved\n).
+  print qq(Expires: 0\n).
+        qq(Status: 302 Moved\n).
     qq(Location: $baseUri/?m=Login&okMsg=New+password+sent+to+your+email\n\n);
   exit;
 }
@@ -124,20 +142,23 @@ if ($fullname) {
      expires=date_add(now(),interval $sessionExp)))) {
   }
   else {
-    print qq(Status: 302 Moved\n).
-          qq(Set-Cookie: HAMNETDB_SESSION=; path=$baseUri/;\n).
+    print qq(Expires: 0\n).
+          qq(Status: 302 Moved\n).
+          qq(Set-Cookie: HAMNETDB_SESSION=; path=$cookiePath/;\n).
           qq(Location: $baseUri/?m=Login&errMsg=Cannot+store+session.\n\n);
     exit;
   }
   $db->do(qq(update hamnet_maintainer set
      last_login=now() where callsign='$login'));
 
-  print qq(Status: 302 Moved\n).
-    qq(Set-Cookie: HAMNETDB_SESSION=$sessionToken; path=$baseUri;$cookieExp\n).
+  print qq(Expires: 0\n).
+        qq(Status: 302 Moved\n).
+    qq(Set-Cookie: HAMNETDB_SESSION=$sessionToken; path=$cookiePath;$cookieExp\n).
     qq(Location: $baseUri/?login=$login\n\n);
 }
 else {
-  print qq(Status: 302 Moved\n).
-        qq(Set-Cookie: HAMNETDB_SESSION=; path=$baseUri/;\n).
+  print qq(Expires: 0\n).
+        qq(Status: 302 Moved\n).
+        qq(Set-Cookie: HAMNETDB_SESSION=; path=$cookiePath/;\n).
         qq(Location: $baseUri/?m=Login&errMsg=Login+incorrect.\n\n);
 }
