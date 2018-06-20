@@ -21,7 +21,7 @@ my $q= lc $query->param("q");
 if ($q eq "" && $ARGV[0]) {
   $q= lc $ARGV[0];
 }
-$q=~s/[^a-z0-9\.\/\-_:]//g;        # avoid sql bombs.n
+$q=~s/[^a-z0-9\.\/\-_:]//g;        # avoid sql bombs.
 
 my $found= 0;
 my $isHost= 0;
@@ -58,6 +58,7 @@ unless ($found) {
     &brprint(&macColon($mac));
     &brprint($comment);
     if ($aliases) {
+      $aliases=~s/, */ /g;
       print("<br>Aliases: <b>$aliases</b>");
     }
     print("<br><br>\n");
