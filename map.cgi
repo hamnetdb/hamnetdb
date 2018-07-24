@@ -172,7 +172,8 @@ print qq(
           <h4> Coverage </h4>
           The receive signal power is based on a 16dBi, 60km maximum radius
 	        <table>
-            <tr><td bgcolor="#59ed59">&nbsp;</td><td>Received power level better than -65 dBm.</td></tr> 
+            <tr><td bgcolor="#59ed59">&nbsp;</td><td>Received power level better than -60 dBm.</td></tr> 
+	        	<tr><td bgcolor="#59db9b">&nbsp;</td><td>Received power level better than -65 dBm.</td></tr> 
 	        	<tr><td bgcolor="#59dbd9">&nbsp;</td><td>Received power level better than -70 dBm.</td></tr> 
 	        	<tr><td bgcolor="#81a9ff">&nbsp;</td><td>Received power level better than -75 dBm.</td></tr>   
 	        	<tr><td bgcolor="#a759ff">&nbsp;</td><td>Received power level better than -80 dBm.</td></tr>
@@ -202,6 +203,7 @@ print qq(
 print qq(          
         </form></div>
         <div id="extern-permalink"></div>
+        <br><a href="#" onclick="javascript:getFullscreen();">Fullscreen</a>
       </div>
       <div id="sidebar-rftools">
         <h3>RF-Tools</h3>

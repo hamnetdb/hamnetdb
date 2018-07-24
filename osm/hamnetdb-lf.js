@@ -64,10 +64,36 @@ var rfRefraction = 0.25;
 var rfLabel= "";
 var rect= null;
 
+
+var elem;
 var testg;
+window.addEventListener("load",function() {
+	// Set a timeout...
+	setTimeout(function(){
+		// Hide the address bar!
+		window.scrollTo(0, 1);
+	}, 0);
+});
+
+function hideAddressBar()
+{
+  if(!window.location.hash)
+  {
+      if(document.height < window.outerHeight)
+      {
+          document.body.style.height = (window.outerHeight + 50) + 'px';
+      }
+
+      setTimeout( function(){ window.scrollTo(0, 1); }, 50 );
+  }
+}
+
+//window.addEventListener("load", function(){ if(!window.pageYOffset){ hideAddressBar(); } } );
+//window.addEventListener("orientationchange", hideAddressBar );
 
 function init()
 {  
+
   //get page parameters
   var source = getParameter("source");
   hoverpop = getParameter("hover");
@@ -539,7 +565,7 @@ function init()
       profileProceed();
       profileDraw();
     }
-    map.setView([((Number(ma_lon)+Number(ma_lon))/2), ((Number(ma_lat)+Number(mb_lat))/2)], 9);
+    map.setView([((Number(ma_lat)+Number(ma_lat))/2), ((Number(ma_lon)+Number(mb_lon))/2)], 9);
   }
   // if visibility is set
   if (rf_vis) {
@@ -1651,3 +1677,19 @@ function coverage(event)
   }
   return 1;
 }
+function getFullscreen()
+{
+  elem=document.getElementById("map");
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  }
+}
+
+

@@ -40,9 +40,8 @@ unless ($siteId{$left} && $siteId{$right}) {
 }
 left
 #$width= 800  if $width<400;
-$width= 3200 if $width>3200;
+$width= 4000+0 if ($width>4000);
 $height= 250;
-
 
 
 unless($profile_path_program)

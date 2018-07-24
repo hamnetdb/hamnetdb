@@ -72,8 +72,10 @@ unless ($list) {
   my $color_a= "255 0 0 120"; #red
   my $color_b= "0 0 255 120"; #blue
   my $color_c= "0 255 255 110"; #greenblue
+  #my $dx = 1.3;
   my $dx = 1.3;
-  my $dy = 0.9;
+  #my $dy = 0.9;
+  my $dy = 0.8;
   my $center_lat;
   my $center_lon;
 
