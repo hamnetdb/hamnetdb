@@ -116,6 +116,7 @@ sub get_api_data{
   $url=shift;
  
   my $ua      = LWP::UserAgent->new(); 
+  $ua->timeout(120);
   my $request = HTTP::Request->new(GET => $url);
 
   my $response = $ua->request($request);

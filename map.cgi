@@ -135,7 +135,7 @@ print qq(
 	<body onload="init()">
       <div class="hidden">
         Hamnet map, showing Hamnet infrastructure 
-        also including  RF planing tools
+        including  RF tools for planing
         <br><br>
         <img src="site-user-red.png" />
         <img src="site-user-grey.png" />
