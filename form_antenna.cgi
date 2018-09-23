@@ -14,7 +14,7 @@
 #
 # fully integrate to form.cgi (restore/recover)
 # remove "valid" collum
-
+push @INC,'.';
 do "form.cgi" or die;
 use Scalar::Util qw(looks_like_number);
 

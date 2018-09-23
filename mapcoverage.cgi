@@ -12,6 +12,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+push @INC,'.';
 do "config.cgi" or die;
 do "lib.cgi" or die;
 

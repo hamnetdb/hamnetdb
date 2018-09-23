@@ -16,6 +16,7 @@
 # -------------------------------------------------------------------------
 #
 # Determine current directory to run properly as cronjob
+use lib qw(.);
 my $home= $0;
 $home=~s/[^\/]*$//;
 chdir($home);

@@ -11,6 +11,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+use lib qw(.);
 do "../lib.cgi" or die;
 
 my $refer = $ENV{HTTP_REFERER};

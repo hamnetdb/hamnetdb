@@ -10,6 +10,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+push @INC,'.';
 do "form.cgi" or die;
 
 $suffix= "subnet";

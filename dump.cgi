@@ -10,6 +10,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+push @INC,'.';
 do "lib.cgi" or die;
 #
 $date= strftime("%Y-%m-%d-%H%M", localtime);

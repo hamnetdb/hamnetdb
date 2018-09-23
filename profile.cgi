@@ -10,6 +10,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+push @INC,'.';
 do "lib.cgi" or die;
 #
 print("Content-Type: text/html\nExpires: 0\n\n");

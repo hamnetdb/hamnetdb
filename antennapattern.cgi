@@ -11,8 +11,7 @@
 # - you may change, distribute and use in non-commecial projects
 # - you must leave author and license conditions
 # ---------------------------------------------------------------
-
-
+push @INC,'.';
 use CGI;
 $query=  new CGI;
 

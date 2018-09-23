@@ -11,6 +11,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+use lib qw(.);
 use Scalar::Util qw(looks_like_number);
 use List::Util qw( min max );
 do "../lib.cgi" or die;

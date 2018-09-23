@@ -12,7 +12,9 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+push @INC,'.';
 do "lib.cgi" or die;
+#print qq(Content-Type: text/html\n\n);
 
 # Maximum width in table
 $nameMax= 40;

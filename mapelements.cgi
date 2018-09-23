@@ -10,6 +10,7 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+push @INC,'.';
 use Fcntl qw(:flock);
 do "lib.cgi" or die;
 
