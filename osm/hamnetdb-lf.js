@@ -966,9 +966,9 @@ function profileGenMetaLink(width,height)
   var lat2 = profileMb._latlng['lat'];
   var lon2 = profileMb._latlng['lng'];
   src = host_calc_profile+"calc_profile_metadata.cgi?mode=1&f="+profileFrecuency+"&lon_a="+
-        lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+"&name_a='"+profileLabelA+
-        "'&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+"&name_b='"+profileLabelB+
-        "'&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width;
+        lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+
+        "&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+
+        "&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width;
   return src;
 }
 function profilePosition(e)

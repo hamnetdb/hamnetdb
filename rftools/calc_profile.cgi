@@ -29,6 +29,7 @@ my $name_a= $query->param("name_a");
 my $name_b= $query->param("name_b");
 my $wood= $query->param("wood")+0;
 my $font_size= $query->param("font")+0;
+my $mode= $query->param("mode")+0;
 
 #print("Content-Type: text/html\nExpires: 0\n\n");
 
@@ -75,22 +76,36 @@ else
 {
 	$wood= "";
 }
-
-$cmd= "$path_prog -b $lat_b $lon_b $name_b -a $lat_a $lon_a $name_a -p $path_srtm -i /dev/stdout $globe_val 0.25 -f $frequency -A $antenna_a -B $antenna_b -x $size_x -y $size_y $wood -F $font_size 2>>$path_errlog";
-
-if (not $refer =~ m/hamnetdb\.net/ )
-{
-  $cmd_wartermark= " | convert png:- -gravity Center -pointsize 30 -stroke none -fill 'rgba(180,180,180,0.25)' -annotate 0 'hamnetdb.net' png:- 2>>$path_errlog";
-  $cmd.= $cmd_wartermark;
+if ($mode > 0) {
+  $output_mode= "-c"; 
 }
-$result_profile= qx/$cmd/;
+else
+{
+  $output_mode= "-i";
+}
 
-print("Content-type: image/png\n\n");
 
+$cmd= "$path_prog -b $lat_b $lon_b $name_b -a $lat_a $lon_a $name_a -p $path_srtm $output_mode /dev/stdout $globe_val 0.25 -f $frequency -A $antenna_a -B $antenna_b -x $size_x -y $size_y $wood -F $font_size 2>>$path_errlog";
+
+
+if ($mode > 0) {
+  print("Content-Type: text/html\nExpires: 0\n\n");
+  $result_profile= qx/$cmd/;
+}
+else
+{
+  if (not $refer =~ m/hamnetdb\.net/ )
+  {
+    $cmd_wartermark= " | convert png:- -gravity Center -pointsize 30 -stroke none -fill 'rgba(180,180,180,0.25)' -annotate 0 'hamnetdb.net' png:- 2>>$path_errlog";
+    $cmd.= $cmd_wartermark;
+  }
+  $result_profile= qx/$cmd/;
+  print("Content-type: image/png\n\n");
+}
 
 #catch errors
 my $len=length($result_profile);
-if ($len < 1000)
+if ($len < 1000 && $mode<0)
 {
   $cmd_err="cat $path_errimg";
   $result_err= qx/$cmd_err/;

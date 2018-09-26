@@ -51,11 +51,11 @@ $sourceselect[$source] = 'selected="selected"';
 # Embed javascript part into page
 
 
-$host_calc_profile= "";
+$host_calc_profile= "rftools/";
 unless ($profile_path_program) {
   $host_calc_profile="https://hamnetdb.net/rftools/";
 }
-$host_calc_visibility= "";
+$host_calc_visibility= "rftools/";
 unless ($visibility_path_program) {
   $host_calc_visibility="https://hamnetdb.net/rftools/";
 }
