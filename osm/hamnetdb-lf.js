@@ -1026,7 +1026,7 @@ function profileProcessMetadata(event)
 
 function profileGetMetadata(url)
 {
-  //url="test.html"
+  profileMetadata = []; //empty array
   var xmlhttp = null;
   // Mozilla
   if (window.XMLHttpRequest) 
@@ -1054,7 +1054,6 @@ function profileGetMetadata(url)
 function profileGotMetadata(meta_content)
 {
   result = meta_content.split('\n');
-  profileMetadata = []; //empty array
   for (i = 0; i < result.length; i++) {
     //parse csv & fill object
     line=result[i].split(',');
