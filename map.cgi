@@ -53,7 +53,7 @@ $sourceselect[$source] = 'selected="selected"';
 
 $host_calc_profile= "";
 unless ($profile_path_program) {
-  $host_calc_profile="https://hamnetdb.net/";
+  $host_calc_profile="https://hamnetdb.net/rftools/";
 }
 $host_calc_visibility= "";
 unless ($visibility_path_program) {
@@ -121,7 +121,8 @@ print qq(
     <script src="osm/Permalink.Layer.js"></script>
     <script src="osm/Permalink.Overlay.js"></script>
 	  <script src="osm/L.Control.LSP.js"></script>
-    
+    <script src="osm/Leaflet.Geodesic.js"></script>
+
     <script src="osm/leaflet.contextmenu.js"></script>
     <!--<script src="osm/leaflet.contextmenu.min.js"></script>-->
 

@@ -45,8 +45,11 @@ var profileTowerA = profileTowerDefault;
 var profileTowerB = profileTowerDefault;
 var profileMa;
 var profileMb;
+var profileMpos;
 var profileLine;
 var profilePopup;
+var profileMetadata = new Array();
+
 
 var rfRect;
 var rfMark = null;
@@ -190,10 +193,12 @@ function init()
     ]});
   //plugin MousePosition
   L.control.mousePosition({position: 'bottomright'}).addTo(map);
+  
   //plugin Minimap
-  var miniMapnik = new L.TileLayer(mapnikUrl, {minZoom: 0, maxZoom: 13, attribution: " " });
-  var miniMap = new L.Control.MiniMap(miniMapnik, { toggleDisplay: true }).addTo(map);
-  miniMap._minimize();
+  //var miniMapnik = new L.TileLayer(mapnikUrl, {minZoom: 0, maxZoom: 13, attribution: " " });
+  //var miniMap = new L.Control.MiniMap(miniMapnik, { toggleDisplay: true }).addTo(map);
+  //miniMap._minimize();
+  
   //zoombutton top right
   L.control.zoom({position: 'topright'}).addTo(map);
   //scale
@@ -708,20 +713,37 @@ function profileProceed()
   document.getElementById('side-draw-del-point1').style.display="inline"
   document.getElementById('side-draw-del-point2').style.display="inline"
   if ((typeof profileMa !== 'undefined') &&(typeof profileMb !== 'undefined')) {
-  
     if((profileMa._icon != null) && (profileMb._icon != null))
     {
       deleteProfileLine();
       var pointList = [profileMa._latlng, profileMb._latlng];
-      profileLine = new L.Polyline(pointList, {
-        color: 'red',
-        weight: 3,
-        opacity: 0.9,
-        smoothFactor: 1,
-        zIndex:9994,
-      });
+      var ua = window.navigator.userAgent;
+      var msie = ua.indexOf("MSIE ");
+
+      if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))// If Internet Explorer, puke
+      {
+        profileLine = new L.Polyline(pointList, {
+          color: 'red',
+          weight: 4,
+          opacity: 0.9,
+          smoothFactor: 1,
+          zIndex:9994,
+        });
+      }
+      else
+      {
+        profileLine = new L.geodesic([[profileMa.getLatLng(), profileMb.getLatLng()]], {
+          color: 'red',
+          weight: 4,
+          opacity: 0.9,
+          //smoothFactor: 1,
+          zIndex:9994,
+        });
+      }
       profileLine.addTo(map);
-      profileLine.on("click", function(e) {profileDraw();});
+      profileLine.on("click", function(e) {profileDraw(); profilePosition(e)});
+      //profileLine.on("mouseover", function (e) {profilePosition(e);}); 
+      profileLine.on("mousemove", function (e) {profilePosition(e);}); 
       if (map.hasLayer(profilePopup)){
         document.getElementById("popup-updated").style.border= "3px solid red"
       }
@@ -736,6 +758,7 @@ function deleteProfileLine() {
      map.removeLayer(profileLine);
    }
   };
+  deleteProfileMpos();
 }
 function deleteProfileMa() {
   if (typeof profileMa !== 'undefined') {
@@ -746,12 +769,26 @@ function deleteProfileMa() {
       document.getElementById('rfTowerFromLine').style.color="#aaa";
     }
   }
+  deleteProfileMpos();
 }
 function deleteProfileMb() {
   if (typeof profileMb !== 'undefined') {
     map.removeLayer(profileMb);
     document.getElementById('rfTowerFromLine').style.color="#000";
     document.getElementById('rfTowerToLine').style.color="#aaa";
+  }
+  deleteProfileMpos();
+}
+function deleteProfileMpos(){
+  if (map.hasLayer(profileMpos)) {
+    if(profileMpos._latlng != null) {
+      map.removeLayer(profileMpos);
+    }
+  }
+  if (typeof profilePopup !== 'undefined') { //catch open popup
+    if (profilePopup._map !=null) {
+      document.getElementById('profile-free').innerHTML = "";
+    }
   }
 }
 function deleteProfileAll() {
@@ -801,8 +838,10 @@ function profileDraw () {
         fontSelected3 = "selected";
       }
 
-      var popupcontent="<span class='popup-darg'>drag and drop popup and markers</span> \
-        <img id='proifleimg' src='"+profilelink+"' style='font-size:40px;' alt='loading...'/>\
+      var popupcontent="<span class='popup-darg'>drag and drop popup and markers</span><span id='profile-free'></span> \
+        <img id='proifleimg' src='"+profilelink+"' style='font-size:40px;'\
+         onmouseover='javascript:profileProcessMetadata(event);' onmousemove='javascript:profileProcessMetadata(event);' alt='loading...'/>\
+        <img id='profile-marker' src='osm/images/mouse_marker.png'>\
         <p><form id='profile'>&nbsp;&nbsp;\
         <b>tower size \"From\"<input id='towera' value='"+profileTowerA+"' size='3' style='width:22px' \
         onchange='profileValUpd();'/>m</b>&nbsp;&nbsp;\
@@ -847,6 +886,10 @@ function profileDraw () {
       var draggable = new L.Draggable(profilePopup._container, profilePopup._wrapper);
       draggable.enable();
       map.setView(new L.LatLng((Number(lat1) + Number(lat2))/2, (Number(lon1)+Number(lon2))/2));
+      deleteProfileMpos();
+      document.getElementById("profile-marker").style.visibility = "hidden";
+      var meta_url=profileGenMetaLink(width,height);
+      profileGetMetadata(meta_url);
     }
   }
 }
@@ -857,8 +900,8 @@ function profilePopupUpd()
     document.getElementById("labelb").value = profileLabelB; 
     document.getElementById("towera").value = profileTowerA; 
     document.getElementById("towerb").value = profileTowerB; 
-  
-}}
+  }
+}
 function profileValUpd()
 {
   profileLabelA = document.getElementById("labela").value; 
@@ -876,6 +919,12 @@ function profileRedraw(width,height)
   var src = profileGenLink(width,height);
   document.getElementById("proifleimg").src = src;
   document.getElementById("popup-updated").style.border= "0px";
+  document.getElementById("profile-marker").style.visibility = "hidden";
+  //profile metadata
+  deleteProfileMpos();
+  document.getElementById("profile-marker").style.visibility = "hidden";
+  var meta_url=profileGenMetaLink(width,height);
+  profileGetMetadata(meta_url);
 }
 function profileOpenBig()
 {
@@ -886,19 +935,136 @@ function profileOpenBig()
   //open new window
   window.open(src, '_blank');
 }
+function profileCalcParameters(width,height)
+{
+  var lat1 = profileMa._latlng['lat'];
+  var lon1 = profileMa._latlng['lng'];
+  var lat2 = profileMb._latlng['lat'];
+  var lon2 = profileMb._latlng['lng'];
+  src = "f="+profileFrecuency+"&lon_a="+
+        lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+"&name_a=\""+profileLabelA+
+        "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+"&name_b=\""+profileLabelB+
+        "\"&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width;
+  return src;
+}
 function profileGenLink(width,height)
 {
   var lat1 = profileMa._latlng['lat'];
   var lon1 = profileMa._latlng['lng'];
   var lat2 = profileMb._latlng['lat'];
   var lon2 = profileMb._latlng['lng'];
-
-  src=host_calc_profile+"rftools/calc_profile.cgi?f="+profileFrecuency+"&lon_a="+
+  src = host_calc_profile+"calc_profile.cgi?f="+profileFrecuency+"&lon_a="+
         lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+"&name_a=\""+profileLabelA+
         "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+"&name_b=\""+profileLabelB+
-        "\"&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width; 
+        "\"&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width;
   return src;
 } 
+function profileGenMetaLink(width,height)
+{
+  var lat1 = profileMa._latlng['lat'];
+  var lon1 = profileMa._latlng['lng'];
+  var lat2 = profileMb._latlng['lat'];
+  var lon2 = profileMb._latlng['lng'];
+  src = host_calc_profile+"calc_profile_metadata.cgi?mode=1&f="+profileFrecuency+"&lon_a="+
+        lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+"&name_a='"+profileLabelA+
+        "'&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+"&name_b='"+profileLabelB+
+        "'&wood="+profileWood+"&font="+profileFont+"&h="+height+"&w="+width;
+  return src;
+}
+function profilePosition(e)
+{
+  if (map.hasLayer(profilePopup)) {
+    var lat1 = profileMa._latlng['lat'];
+    var lon1 = profileMa._latlng['lng'];
+    var lat2 = profileMb._latlng['lat'];
+    var lon2 = profileMb._latlng['lng'];
+    var lon_mouse = e.latlng.lng;
+    var lat_mouse = e.latlng.lat;
+    if (profileFont == 1) {
+      offset = 36;
+      netto_pixels = 608;
+    }else if (profileFont == 2) {
+      offset = 46;
+      netto_pixels = 598;
+    }else if (profileFont == 3) {
+      offset = 56;
+      netto_pixels = 588;
+    }
+    length = getDistance(lat1,lon1,lat2,lon2);
+    length_mouse = getDistance(lat1,lon1,lat_mouse,lon_mouse);
+    position_marker = length_mouse/length*netto_pixels;
+    document.getElementById("profile-marker").style.visibility = "visible";
+    document.getElementById("profile-marker").style.left = offset-1+position_marker+"px";
+    deleteProfileMpos();
+  }
+}
+function profileProcessMetadata(event)
+{
+  img = document.getElementById("proifleimg");
+  pos_x = event.offsetX?(event.offsetX):event.pageX-img.offsetLeft;
+  pos_y = event.offsetY?(event.offsetY):event.pageY-img.offsetTop;
+  if(typeof profileMetadata[pos_x] !== 'undefined')
+  {
+    document.getElementById("profile-marker").style.visibility = "visible";
+    document.getElementById("profile-marker").style.left = pos_x-1.5+"px";
+    deleteProfileMpos();
+    latlngpos = new L.LatLng(profileMetadata[pos_x].lat, profileMetadata[pos_x].lon);
+    profileMpos = L.marker(latlngpos, {
+      icon: L.icon({
+        iconUrl: 'osm/images/marker-red-round.png',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+        zIndex: 9997,
+      }),
+      draggable: false,
+      contextmenu: false
+    }).addTo(map);
+    profileMpos.setZIndexOffset(7099);
+    document.getElementById('profile-free').innerHTML = "Free space to ground: " + profileMetadata[pos_x].free + "m";
+  }
+}
+
+function profileGetMetadata(url)
+{
+  //url="test.html"
+  var xmlhttp = null;
+  // Mozilla
+  if (window.XMLHttpRequest) 
+  {
+    xmlhttp = new XMLHttpRequest();
+  }
+  // IE
+  else if (window.ActiveXObject) 
+  {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.open("GET", url, true);
+  xmlhttp.onreadystatechange = function(){
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //if OK
+    {
+      get_str = xmlhttp.responseText;
+      if (get_str.length > 5)
+      {
+        profileGotMetadata(get_str);
+      }
+    }
+  }  
+  xmlhttp.send(null);
+}
+function profileGotMetadata(meta_content)
+{
+  result = meta_content.split('\n');
+  profileMetadata = []; //empty array
+  for (i = 0; i < result.length; i++) {
+    //parse csv & fill object
+    line=result[i].split(',');
+    pixel = Number(line[0]);
+    profileMetadata[pixel] = new Object()
+    profileMetadata[pixel].lat = Number(line[1]);
+    profileMetadata[pixel].lon = Number(line[2]);
+    profileMetadata[pixel].free = Number(line[3]);
+  }
+}
 function popupSetting()
 {
   var pop = document.getElementById("hoverpopup").checked;
@@ -1069,7 +1235,7 @@ function rfBack()
 }
 function rfLoadPreset()
 {
-  var src=host_calc_visibility+"rftools/calc_visibility.cgi?list=1"; 
+  var src=host_calc_visibility+"calc_visibility.cgi?list=1"; 
 
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function() { 
@@ -1156,13 +1322,13 @@ function rfCalc(force)
   document.getElementById("rfCalcNew").style.display = "none";   
   document.getElementById("rf-loading").style.display = "inline"; 
 
-  var src=host_calc_visibility+"rftools/calc_visibility.cgi?lon_a="+
+  var src=host_calc_visibility+"calc_visibility.cgi?lon_a="+
         lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+
         "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+
         "&label=\""+rfLabel+"\"&ant_c="+rfTowerRx+"&ref="+rfRefraction+
         "&up="+rect_up+"&down="+rect_down+"&left="+rect_left+"&right="+rect_right; 
   if (force == 2) {
-    src=host_calc_visibility+"rftools/calc_visibility.cgi?load=1&label="+rfLabel;
+    src=host_calc_visibility+"calc_visibility.cgi?load=1&label="+rfLabel;
   }
 
   var xmlHttp = new XMLHttpRequest();
@@ -1691,5 +1857,15 @@ function getFullscreen()
     elem.webkitRequestFullscreen();
   }
 }
+function getDistance(lat1,lon1,lat2,lon2) {
+  var r = 6371;     
+  var pi = Math.atan2(1,1)*4;
 
+  lat1= lat1  * (pi/180);
+  lon1= lon1 * (pi/180);
+  lat2= lat2  * (pi/180);
+  lon2= lon2 * (pi/180);
+
+  return Math.acos(Math.cos(lat1)*Math.cos(lon1)*Math.cos(lat2)*Math.cos(lon2) + Math.cos(lat1)*Math.sin(lon1)*Math.cos(lat2)*Math.sin(lon2) + Math.sin(lat1)*Math.sin(lat2)) * r;
+}
 

@@ -415,6 +415,12 @@ font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 
 
 /**********profile popup********/
+#profile-marker {
+  position: absolute;
+  top: 21px;
+  left: 40px;
+  visibility: hidden;
+}
 .popupProfile .leaflet-popup-tip,
 .popupProfile .leaflet-popup-content-wrapper {
     background: #ffffff;
@@ -449,4 +455,9 @@ font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
   position: absolute;
   margin-top: -17px;
   margin-left: 10px;
+}
+#profile-free {
+  position: absolute;
+  margin-top:  -17px;
+  margin-left: 300px;
 }
