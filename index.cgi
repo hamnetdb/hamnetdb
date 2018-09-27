@@ -126,7 +126,8 @@ elsif ($m=~/history/i) {
   &subMenu("func:List",
            "last200+:Last 200 changes",
            "last2000+:Last 2000 changes",
-           "relnotes:Software release notes"
+           "relnotes:Software release notes",
+           "monitor:Last monitoring updates"
   );
   $sortDefault= "zr";
 }
@@ -220,6 +221,9 @@ if ($m eq "history") {
     }
     print qq(</div>);
   }
+  elsif ($func eq "monitor") {
+    &showMonitorStatus;
+  } 
   else {
     &loadCheckList(1);
     &showHistoryList;
@@ -2335,6 +2339,32 @@ sub neighbourList {
   }  
   &listOut("", @list);
 }
+sub showMonitorStatus {
+  my $ts_ping="";  
+  my $ts_rssi="";   
+
+  my $sth = $db->prepare("SELECT ts FROM `hamnet_check` where service='ping' and status=1 order by ts desc limit 1 ");
+    $sth->execute;   
+  while(@line= $sth->fetchrow_array)
+  {
+    $ts_ping= $line[0];
+  }
+  my $sth = $db->prepare("SELECT ts FROM `hamnet_check` where service='rssi' and status=1 order by ts desc limit 1 ");
+    $sth->execute;
+  while(@line= $sth->fetchrow_array)
+  {
+    $ts_rssi= $line[0];
+  }
+  print qq(<div class="monitorstatus utility">
+    <h3>Monitoring Status</h3>
+    Last successful ping check: $ts_ping (CET)<br>
+    Last sucessful RSSI query: $ts_rssi (CET)<br>
+    <br>
+    Last RSSI provisioning: Host: 2018-09-29 12:23:45 (CET)<br><br>
+    The timestamps above do not show the timestamps of all successful queries only the timestamp of the newest entry. 
+
+    </div>);
+}
 
 # ---------------------------------------------------------------------------
 sub mapMenu {
@@ -2352,7 +2382,7 @@ sub mapMenu {
       if (val == "full") {
         hamnetdb.openMap(1, $as, "$site", $mapHamnet);
       }
-      else if (val == "map") {
+      elsif (val == "map") {
         hamnetdb.openMap(0, $as, "$site", $mapHamnet);
       }
       else {
