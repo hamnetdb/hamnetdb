@@ -78,19 +78,6 @@ window.addEventListener("load",function() {
 	}, 0);
 });
 
-function hideAddressBar()
-{
-  if(!window.location.hash)
-  {
-      if(document.height < window.outerHeight)
-      {
-          document.body.style.height = (window.outerHeight + 50) + 'px';
-      }
-
-      setTimeout( function(){ window.scrollTo(0, 1); }, 50 );
-  }
-}
-
 //window.addEventListener("load", function(){ if(!window.pageYOffset){ hideAddressBar(); } } );
 //window.addEventListener("orientationchange", hideAddressBar );
 
@@ -119,6 +106,7 @@ function init()
   rect_down = getParameter("rf_d");
   rect_right = getParameter("rf_r");
   rf_vis = getParameter("rf_vis");
+  rf_tools = getParameter("rf_tools");
   rfRefractiontmp = getParameter("rf_ref");
   if (rfTowerRxtmp != 0) {
     rfTowerRx = rfTowerRxtmp;
@@ -594,6 +582,9 @@ function init()
 
     rfCalc(1);
     SidebarRftools.toggle();
+  }
+  if (rf_tools) {
+    SidebarRftools.toggle(); 
   }
   rfLoadPreset();
 }
