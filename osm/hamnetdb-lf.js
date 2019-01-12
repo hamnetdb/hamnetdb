@@ -1011,7 +1011,7 @@ function profileProcessMetadata(event)
       contextmenu: false
     }).addTo(map);
     profileMpos.setZIndexOffset(7099);
-    document.getElementById('profile-free').innerHTML = "Free space to ground: " + profileMetadata[pos_x].free + "m";
+    document.getElementById('profile-free').innerHTML = "Free space to ground: " + profileMetadata[pos_x].free + "m &nbsp;&nbsp; Radius of 1st order Fresnel zone: " + profileMetadata[pos_x].fresnel + "m" ;
   }
 }
 
@@ -1053,6 +1053,7 @@ function profileGotMetadata(meta_content)
     profileMetadata[pixel].lat = Number(line[1]);
     profileMetadata[pixel].lon = Number(line[2]);
     profileMetadata[pixel].free = Number(line[3]);
+    profileMetadata[pixel].fresnel = Number(line[4]);
   }
 }
 function popupSetting()

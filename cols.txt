@@ -1,0 +1,15 @@
+200 120 0   earth
+20 40 180   heaven
+290 80 0    fresnel kernel
+120 180 20  fresnel outside
+90 150 150  optical line of sight
+600 600 500 scaler lines
+25 25 25    altitude line
+130 130 0   fesnel ellips
+80 250 0    meadow
+800 700 100 text line 1
+700 700 500 text line 2
+700 700 500 text line 3
+700 700 700 text scalers
+0 500 0     tree green
+300 200 0   tree trunc
