@@ -85,8 +85,9 @@ else
 }
 
 
-$cmd= "$path_prog -b $lat_b $lon_b $name_b -a $lat_a $lon_a $name_a -p $path_srtm $output_mode /dev/stdout $globe_val 0.25 -f $frequency -A $antenna_a -B $antenna_b -x $size_x -y $size_y $wood -F $font_size 2>>$path_errlog";
+$cmd= "$path_prog -b $lat_b $lon_b $name_b -a $lat_a $lon_a $name_a -p $path_srtm $output_mode /dev/stdout $globe_val 0.25 -f $frequency -A $antenna_a -B $antenna_b -x $size_x -y $size_y $wood -F $font_size -C $profile_path_color 2>>$path_errlog";
 
+#-C $profile_path_color
 
 if ($mode > 0) {
   print("Content-Type: text/html\nExpires: 0\n\n");

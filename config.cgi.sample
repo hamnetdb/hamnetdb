@@ -50,6 +50,8 @@ sub htmlFoot {
 #$profile_path_srtm= "/path/to/srtm";
 #$profile_path_errorlog= "/path/to/logfile";
 #$profile_errorimg= "error.png"
+#$profile_path_color= "/path/to/cols.txt";
+
 
 #$visibility_path_program= "/path/to/program/visibility";
 #$visibility_path_srtm= "/path/to/srtm";
