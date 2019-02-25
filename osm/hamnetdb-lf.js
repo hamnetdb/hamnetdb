@@ -33,7 +33,7 @@ var kmlUrl = "mapelements.cgi?geojson=1&rnd="+Math.random();
 
 var CoverUrl = "coverage/";
 var CoverageLayers = new Array();
-var GreenCover = new L.layerGroup();
+var GreenCover;
 
 var profileFrecuency = 5800;
 var profileWood = 30;
@@ -65,7 +65,24 @@ var rfDown = 0;
 var rfRight = 0;
 var rfRefraction = 0.25;
 var rfLabel= "";
+
+var rfTowerFromP = 10;
+var rfElevation = 0;
+var rfAngle = 50;
+var rfRefractionPanorama = 0.25;
+var rfFontPanorama = 1 ;
+var rfZoom = 1;
+var rfPoiInput;
+var rfPoiHamnet;
+var rfPoiFWC;
+var rfPoiMT;
+var rfPoiSota;
+var rfPoi;
+var rfPanoramaPopup;
+var panoramaMetadata = new Array();
+
 var rect= null;
+
 
 
 var elem;
@@ -83,7 +100,7 @@ window.addEventListener("load",function() {
 
 function init()
 {  
-
+  GreenCover = new L.layerGroup();
   //get page parameters
   var source = getParameter("source");
   hoverpop = getParameter("hover");
@@ -107,7 +124,16 @@ function init()
   rect_right = getParameter("rf_r");
   rf_vis = getParameter("rf_vis");
   rf_tools = getParameter("rf_tools");
+  rf_pan = getParameter("rf_pan"); 
   rfRefractiontmp = getParameter("rf_ref");
+  rfRefractionPtmp = getParameter("rf_p_ref");
+  rfElevation = getParameter("rf_el");
+  rfAngletmp = getParameter("rf_ang");
+  rfZoomtmp = getParameter("rf_z");
+  rfFontPanoramatmp = getParameter("rf_p_font");
+  rfPoiInput = getParameter("rf_poi"); 
+  rfTowerFromPtmp = getParameter("rf_p_tow");
+
   if (rfTowerRxtmp != 0) {
     rfTowerRx = rfTowerRxtmp;
   }
@@ -132,6 +158,22 @@ function init()
   if (profileFontTmp != 0) {
     profileFont = profileFontTmp;
   }
+  if (rfRefractionPtmp != 0) { //0 is "0.0"
+    rfRefractionPanorama = rfRefractionPtmp;
+  }
+  if (rfAngletmp != "0") { 
+    rfAngle = rfAngletmp;
+  }
+  if (rfFontPanoramatmp != "0") { 
+    rfFontPanorama = rfFontPanoramatmp;
+  }
+  if (rfTowerFromPtmp != "0") { 
+    rfTowerFromP = rfTowerFromPtmp;
+  }
+  if (rfZoomtmp != 0) {
+    rfZoom = rfZoomtmp;
+  }
+
 
   var CoverUrl= "coverage/";
   if (country && country.length==2) {
@@ -156,6 +198,7 @@ function init()
     var cycleUrl = 'https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
     var outdoorUrl = 'https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
     var opentopoURL = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
+    var osmbwURL = 'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png';
     var mapnikZoom = 18;
     var landscapeZoom = 18;
     var outdoorZoom = 18;
@@ -163,11 +206,13 @@ function init()
     var opentopoZoom = 17;
   }
   
-  var attribution = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'; 
+  var attribution = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a> | <a href="osm/copyright.html" target="_blank">Copyright</a>'; 
   map = new L.Map('map', 
     {center: new L.LatLng(49.26, 12.47), 
     zoom: 7, 
     zoomControl:false,
+    preferCanvas: true,
+    //renderer: L.canvas(),
     contextmenu: true,
       contextmenuWidth: 160,
         contextmenuItems: [
@@ -228,6 +273,14 @@ function init()
       maxZoom: satZoom
     }
   );
+  var osmbwLayer = L.tileLayer(
+    osmbwURL,
+    {
+      attribution: attribution,
+      maxZoom: mapnikZoom
+    }
+  );
+
 
 	if(source == 3)
 	{
@@ -359,8 +412,10 @@ function init()
               loc= new L.LatLng(feature.geometry.coordinates[1],feature.geometry.coordinates[0])
               profileLabelA = feature.properties.callsign;
               profileTowerA = feature.properties.anthight;
+              rfTowerFromP = feature.properties.anthight;
               placeProfileFrom(loc);
               rfUpdForm();
+              rfPanUpdForm();
               profilePopupUpd();
            }
           }
@@ -371,8 +426,10 @@ function init()
             loc= new L.LatLng(feature.geometry.coordinates[1],feature.geometry.coordinates[0])
             profileLabelB = feature.properties.callsign;
             profileTowerB = feature.properties.anthight;
+            rfTowerFromP = feature.properties.anthight;
             placeProfileTo(loc);
             rfUpdForm();
+            rfPanUpdForm();
             profilePopupUpd();
           }
         }],
@@ -485,6 +542,7 @@ function init()
       'CycleMap':cycleLayer,
       'Outdoor':outdoorLayer, 
       'OpenTopo':openttopoLayer,
+      'OSM b&w' :osmbwLayer,
       'GoogleMaps': roadMutant,
       'Google Terrain': terrainMutant,
       'Google Satellite': satMutant,
@@ -509,6 +567,7 @@ function init()
       'CycleMap':cycleLayer,
       'Outdoor':outdoorLayer,
       'OpenTopo':openttopoLayer,
+      'OSM b&w' :osmbwLayer
     };
   }
   
@@ -525,6 +584,20 @@ function init()
     //  window.history.pushState("", "HamnetDB Map", url);//add by OE2LSP (end of _update_href)
   document.getElementById('extern-permalink').appendChild(extPermalink);
   document.getElementById('extern-permalink-rf').appendChild(extPermalink);
+  map.addControl( new L.Control.Search({
+    url: 'map_search.cgi?q={s}',
+    //url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+    //jsonpParam: 'json_callback',
+    propertyName: 'display_name',
+    propertyLoc: ['lat','lon'],
+    markerLocation: true,
+    autoCollapse: true,
+    autoType: false,
+    minLength: 2,
+    zoom: 11,
+    position: 'topright'
+  }) );
+
   SidebarInfo = L.control.sidebar('sidebar-info', {
     position: 'right'
   });  
@@ -547,7 +620,7 @@ function init()
     getSite(site); 
 
   //Profile init
-  if ((ma_lat!=0) && (ma_lon!=0) && (mb_lat!=0) && (mb_lon!=0) && rf_vis == 0)
+  if ((ma_lat!=0) && (ma_lon!=0) && (mb_lat!=0) && (mb_lon!=0) && rf_vis == 0 && rf_pan == 0)
   {
     ma = new L.LatLng(ma_lat, ma_lon);
     mb = new L.LatLng(mb_lat, mb_lon);
@@ -586,7 +659,67 @@ function init()
   if (rf_tools) {
     SidebarRftools.toggle(); 
   }
+  if (rf_pan) {
+    ma = new L.LatLng(ma_lat, ma_lon);
+    mb = new L.LatLng(mb_lat, mb_lon);
+    drawFrom(ma);
+    drawTo(mb);
+
+
+    rfPanUpdForm();
+    rfPanUpd();
+    if(rfPoiInput.length > 2)
+    {
+      if(rfPoiInput.includes('hamnet'))
+        document.getElementById("rfPoiHamnet").checked = 1;
+      else
+        document.getElementById("rfPoiHamnet").checked = 0;
+      if(rfPoiInput.includes('wc'))
+        document.getElementById("rfPoiFWC").checked = 1;
+      else
+        document.getElementById("rfPoiFWC").checked = 0;
+      if(rfPoiInput.includes('mt'))
+        document.getElementById("rfPoiMT").checked = 1;
+      else
+        document.getElementById("rfPoiMT").checked = 0;
+      if(rfPoiInput.includes('small'))
+        document.getElementById("rfPoi").checked = 1;
+      else 
+        document.getElementById("rfPoi").checked = 0;
+      if(rfPoiInput.includes('sota'))
+        document.getElementById("rfPoiSota").checked = 1;
+      else 
+        document.getElementById("rfPoiSota").checked = 0;
+    }
+
+    var sel;
+    if(rfRefractionPanorama == 0.0)
+      sel = 0;
+    else if(rfRefractionPanorama == 0.13)
+      sel = 1;
+    else if(rfRefractionPanorama == 0.25)
+      sel = 2;
+    else 
+      sel = 2;
+    document.getElementById("rfRefractionPanorama").selectedIndex=sel;
+    var selFont;
+    if(rfPanoramaFont == 0.0)
+      selFont = 0;
+    else if(rfPanoramaFont == 1)
+      selFont = 1;
+    else if(rfPanoramaFont == 2)
+      selFont = 2;
+    else if(rfPanoramaFont == 3)
+      selFont = 3;
+    else 
+      selFont = 1;
+    document.getElementById("rfPanoramaFont").selectedIndex=selFont;
+
+    SidebarRftools.toggle();
+    rfOpenpanorama(); 
+  }
   rfLoadPreset();
+  panoramaMsgInit();
 }
 function placeProfileFrom (e) {
   if (typeof e.latlng !== 'undefined') 
@@ -703,6 +836,7 @@ function profileProceed()
 {
   document.getElementById('side-draw-del-point1').style.display="inline"
   document.getElementById('side-draw-del-point2').style.display="inline"
+  document.getElementById('side-draw-del-point3').style.display="inline"
   if ((typeof profileMa !== 'undefined') &&(typeof profileMb !== 'undefined')) {
     if((profileMa._icon != null) && (profileMb._icon != null))
     {
@@ -790,6 +924,7 @@ function deleteProfileAll() {
   deleteProfileMb();
   document.getElementById('side-draw-del-point1').style.display="none"
   document.getElementById('side-draw-del-point2').style.display="none"
+  document.getElementById('side-draw-del-point3').style.display="none"
 }
 //profile Popup content
 function profileDraw () {
@@ -999,18 +1134,7 @@ function profileProcessMetadata(event)
     document.getElementById("profile-marker").style.visibility = "visible";
     document.getElementById("profile-marker").style.left = pos_x-1.5+"px";
     deleteProfileMpos();
-    latlngpos = new L.LatLng(profileMetadata[pos_x].lat, profileMetadata[pos_x].lon);
-    profileMpos = L.marker(latlngpos, {
-      icon: L.icon({
-        iconUrl: 'osm/images/marker-red-round.png',
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
-        zIndex: 9997,
-      }),
-      draggable: false,
-      contextmenu: false
-    }).addTo(map);
-    profileMpos.setZIndexOffset(7099);
+    rfPoint(profileMetadata[pos_x].lat, profileMetadata[pos_x].lon);
     document.getElementById('profile-free').innerHTML = "Free space to ground: " + profileMetadata[pos_x].free + "m &nbsp;&nbsp; Radius of 1st order Fresnel zone: " + profileMetadata[pos_x].fresnel + "m" ;
   }
 }
@@ -1117,10 +1241,12 @@ function rfMarkPlace(e) {
   {
     document.getElementById('side-draw-add-point1').style.backgroundColor="#bbb";
     document.getElementById('side-draw-add-point2').style.backgroundColor="#bbb";
+    document.getElementById('side-draw-add-point3').style.backgroundColor="#bbb";
   }
   else {
     document.getElementById('side-draw-add-point1').style.backgroundColor="#fff";
     document.getElementById('side-draw-add-point2').style.backgroundColor="#fff";
+    document.getElementById('side-draw-add-point3').style.backgroundColor="#fff";
   }
 }
 function rfMarkRect(e) {
@@ -1208,7 +1334,26 @@ function rfValUpd()
   rfRefraction = document.getElementById("rfRefraction").value
   profileTowerA = document.getElementById("rfTowerFrom").value; 
   profileTowerB = document.getElementById("rfTowerTo").value; 
+
+  rfTowerFromP = document.getElementById("rfTowerFromP").value;
+  rfElevation = document.getElementById("rfElevation").value;
+  rfAngle = document.getElementById("rfAngle").value;
+  rfZoom = document.getElementById("rfZoom").value;
+  rfRefractionPanorama = document.getElementById("rfRefractionPanorama").value;
+  rfFontPanorama = document.getElementById("rfPanoramaFont").value;
+  rfPoiHamnet = document.getElementById("rfPoiHamnet").checked;
+  rfPoiFWC = document.getElementById("rfPoiFWC").checked;
+  rfPoiSota = document.getElementById("rfPoiSota").checked;
+  rfPoiMT = document.getElementById("rfPoiMT").checked;
+  rfPoi = document.getElementById("rfPoi").checked;
   profilePopupUpd();
+}
+function rfPanUpd()
+{
+  document.getElementById("rfAngletlbl").innerHTML=document.getElementById("rfAngle").value+"°";
+  document.getElementById("rfElevationlbl").innerHTML=document.getElementById("rfElevation").value+"°";
+  document.getElementById("rfZoomlbl").innerHTML=document.getElementById("rfZoom").value;
+  rfValUpd();
 }
 function rfUpdForm()
 {
@@ -1472,8 +1617,481 @@ function rfCreateUrl()
       url = url + '&rf_r=' + rfRect._bounds._northEast.lng;
     }
   }
+  else if(map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(rfPanoramaPopup)){
+    url = url + '&ma_lat=' + profileMa._latlng['lat'] + '&ma_lon=' + profileMa._latlng['lng'];
+    url = url + '&mb_lat=' + profileMb._latlng['lat'] + '&mb_lon=' + profileMb._latlng['lng'];
+    
+    url = url + '&rf_p_ref=' + rfRefractionPanorama;
 
+    if(rfAngle != "50")
+    {
+      url = url + '&rf_ang=' + rfAngle;
+    }
+    if(rfZoom != "1")
+    {
+      url = url + '&rf_z=' + rfZoom;
+    }
+    if(rfElevation != "0")
+    {
+      url = url + '&rf_el=' + rfElevation;
+    }
+    if (rfFontPanorama != 1) {
+      url = url + '&rf_p_font=' + rfFontPanorama;
+    }  
+    url = url + '&rf_poi=' + rfPoiInput;
+    url = url + '&rf_pan=1';
+
+  }
   return url;
+}
+function rfPoint(lat,lon) //point with marker to map
+{
+  deleteProfileMpos();
+  latlngpos = new L.LatLng(lat, lon);
+  profileMpos = L.marker(latlngpos, {
+    icon: L.icon({
+      iconUrl: 'osm/images/marker-red-round.png',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+      zIndex: 9997,
+    }),
+    draggable: false,
+    contextmenu: false
+  }).addTo(map);
+  profileMpos.setZIndexOffset(7099);
+}
+function rfOpenpanorama()
+{
+  if (map.hasLayer(profileMa) && map.hasLayer(profileMb)) {
+    if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+      panoramaDraw();
+    }
+    else
+      alert("At least one marker missing!");
+  }
+  else
+    alert("At least one marker missing!");
+}
+function panoramaDraw()
+{
+  width = 650;
+  height = 350;
+  if ((typeof profileMa !== 'undefined') && (typeof profileMb !== 'undefined')) {
+    if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+      if (typeof rfPanoramaPopup !== 'undefined') { //catch open popup
+        if (rfPanoramaPopup._map !=null) {
+          panoramaRedraw(width,height);
+          return;
+        }
+      }
+      rfValUpd();
+      panoramaMetadata = new Array(); //init
+
+      var lat1 = profileMa._latlng['lat'];
+      var lon1 = profileMa._latlng['lng'];
+      var lat2 = profileMb._latlng['lat'];
+      var lon2 = profileMb._latlng['lng'];
+      var customOptions ={
+        className: 'popuppanorama',
+        minWidth:550,
+        maxWidth:550,
+        maxHeight:250,
+      }
+      panoramalink=panoramaGenLink(width,height);
+      panoramaCalc(panoramalink);
+
+      var popupcontent="<span class='popup-darg'>drag and drop popup and markers &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double-click on panorama to jump to location or open Webcam!</span> \
+        <div id='panorama-loading'><img src='hdb.gif'\
+          alt='loading...'/>calculating...</div>\
+        <div><img id='panorama-img' src='' onmouseover='javascript:panoramaProcessMetadata(event);' \
+        onmousemove='javascript:panoramaProcessMetadata(event);' ondblclick='javascript:panoramaProcessMetadata(event);'\
+        onclick='javascript:panoramaProcessMetadata(event);' /></div>\
+        <form id='panorama'>&nbsp;&nbsp;\
+        <span id='panorama-updated'><input type='button' value='recalculate' style='height:24px' onclick='javascript:panoramaRedraw("+width+","+height+");' ></span>\
+        &nbsp;&nbsp;<input type='button' value='open big Panorama' \
+        style='height:24px' onclick='javascript:panoramaOpenBig();'></form>&nbsp;<span id='panorama-meta'></span>  ";
+
+      rfPanoramaPopup = L.popup({
+        closeButton: true,
+        closeOnClick:false,
+        autoClose: false,
+        className: 'popupPanorama', 
+        minWidth: width,
+        //maxWidth: 650,
+        Width: width,
+        Height: (height+40),
+      })
+      .setLatLng([(Number(lat1) + Number(lat2))/2, (Number(lon1)+Number(lon2))/2])
+      .setContent(popupcontent)
+      .openOn(map);
+    
+      map.addLayer(rfPanoramaPopup);
+
+      var pos = map.latLngToLayerPoint(rfPanoramaPopup._latlng);
+      L.DomUtil.setPosition(rfPanoramaPopup._wrapper.parentNode,pos);
+      var draggable = new L.Draggable(rfPanoramaPopup._container, rfPanoramaPopup._wrapper);
+      draggable.enable();
+      map.setView(new L.LatLng((Number(lat1) + Number(lat2))/2, (Number(lon1)+Number(lon2))/2));
+      document.getElementById("panorama-loading").style.display = "inline"; 
+      document.getElementById("panorama-img").src = "";
+//      deleteProfileMpos();
+    }
+  }
+}
+function panoramaRedraw()
+{
+  panoramalink=panoramaGenLink(width,height);
+  panoramaCalc(panoramalink);
+  document.getElementById("panorama-loading").style.display = "inline"; 
+  document.getElementById("panorama-img").src = "";
+  panoramaMetadata = new Array(); //init
+}
+function rfPanoramaAdvanced() //toogle advanced menu
+{
+  adv = document.getElementById("panoramaAdv").style.display;
+  if(adv == "block")
+  {
+    document.getElementById("panoramaAdv").style.display = "none";
+  }
+  else 
+  {
+    document.getElementById("panoramaAdv").style.display = "block"
+  }  
+}
+function panoramaGenLink(width,height)
+{
+  if (map.hasLayer(profileMa) && map.hasLayer(profileMb)) {
+    if((profileMa._latlng == null) || (profileMb._latlng == null)) {
+      alert("At least one marker missing!");
+      return;
+    }
+  }
+  else
+  {
+    alert("At least one marker missing!");
+    return;
+  }
+  var lat1 = profileMa._latlng['lat'];
+  var lon1 = profileMa._latlng['lng'];
+  var lat2 = profileMb._latlng['lat'];
+  var lon2 = profileMb._latlng['lng'];
+  var poi ="l"
+  if (rfPoiHamnet)
+    poi+="hamnet";
+  if (rfPoiFWC)
+    poi+="wc";
+  if (rfPoiMT)
+    poi+="mt";
+  if (rfPoiSota)
+    poi+="sota";
+  if (rfPoi)
+    poi+="small";
+  rfPoiInput=poi; //also output to permalink
+  src = "?lon_a="+lon1+"&lat_a="+lat1+"&ant_a="+rfTowerFromP+"&poi="+poi+
+        "&lon_b="+lon2+"&lat_b="+lat2+"&el="+rfElevation+"&angle="+rfAngle+"&z="+rfZoom+
+        "&ref="+rfRefractionPanorama+"&font="+rfFontPanorama+"&y="+height+"&x="+width;
+  return src;
+} 
+function panoramaCalc(url)
+{
+  src=host_calc_profile+"calc_panorama.cgi"+url;
+  var xmlHttpP = new XMLHttpRequest();
+  //xmlHttpP.timeout = 180000;
+  xmlHttpP.open("GET", src, true); // true for asynchronous 
+  xmlHttpP.send(null);
+  xmlHttpP.onreadystatechange = function() { 
+    if (xmlHttpP.readyState == 4 && xmlHttpP.status == 200) {
+      panoramaCalcReady(url);
+    }
+  }
+}
+function panoramaCalcReady(url)
+{
+  document.getElementById("panorama-loading").style.display = "none"; 
+  if (document.getElementById("panorama-img-parent") != null)
+    document.getElementById("panorama-img-parent").style.display = "block"; 
+  document.getElementById("panorama-img").src = host_calc_profile+"calc_panorama_image.cgi"+url;
+  panoramaGetMeta(url);
+}
+function panoramaGetMeta(url)
+{
+  src=host_calc_profile+"calc_panorama_metadata.cgi"+url;
+  var xmlHttpP = new XMLHttpRequest();
+  //xmlHttpP.timeout = 180000;
+  xmlHttpP.open("GET", src, true); // true for asynchronous 
+  xmlHttpP.send(null);
+  xmlHttpP.onreadystatechange = function() { 
+    if (xmlHttpP.readyState == 4 && xmlHttpP.status == 200) {
+      //xmlhttp.responseText;
+      panoramaGotMetadata(xmlHttpP.responseText);
+    }
+  }
+}
+function panoramaGotMetadata(meta_content)
+{
+  //parse csv, => panorama array
+  //panoramaMetadata[x][y]
+  result = meta_content.split('\n');
+  for (i = 0; i < result.length; i++) {
+    //parse csv & fill object
+    line = result[i].split(',');
+    testg = result;
+    pixelX = Number(line[0]);
+    pixelY = Number(line[1]);
+    if(typeof panoramaMetadata[pixelX] === 'undefined')
+      panoramaMetadata[pixelX] = new Array();
+    if(typeof panoramaMetadata[pixelX][pixelY] !== 'undefined')
+    {
+      if (typeof line[6] !== 'undefined' )
+      {   
+        if (line[6].length > 0)
+        {
+          pixelY +=1;
+        }
+      }
+    }
+    panoramaMetadata[pixelX][pixelY] = new Object();
+    panoramaMetadata[pixelX][pixelY].lat = Number(line[2]);
+    panoramaMetadata[pixelX][pixelY].lon = Number(line[3]);
+    panoramaMetadata[pixelX][pixelY].hm = line[4];
+    panoramaMetadata[pixelX][pixelY].info = line[5];
+    panoramaMetadata[pixelX][pixelY].typ = line[6];
+  }
+}
+function rfPanUpdForm()
+{
+  document.getElementById("rfTowerFromP").value = rfTowerFromP;
+  document.getElementById("rfElevation").value = rfElevation;
+  document.getElementById("rfAngle").value = rfAngle;
+  document.getElementById("rfZoom").value = rfZoom;
+}
+function panoramaOpenBig()
+{
+  
+  if (document.documentMode || /Edge/.test(navigator.userAgent)) 
+  {
+    alert('Does not work for Microsoft "Browsers"!');
+  }
+  else
+  {
+    newwindow=window.open('panorama.cgi','HamnetDB Panorama','width=650,height=410,toolbar=0,menubar=0,location=0');  
+    if (window.focus) {newwindow.focus()}
+  }
+}
+function panoramaBig()//create new panorama
+{
+    //recalc big image 
+  //  get parameter from main window
+  //  get window size or alternative size
+  var height;
+  var width;
+  var prepare = true;
+  document.getElementById("panorama-loading").style.display = "block"; 
+  document.getElementById("panorama-img-parent").style.display = "none"; 
+  document.getElementById("panorama-img-parent").src = ""; 
+  if (document.getElementById('pan-custom').checked)
+  {
+    width = document.getElementById('pan-x-custom').value;
+    height = document.getElementById('pan-y-custom').value;
+    if (width > 6000)
+    {
+      document.getElementById('panorama-meta-big').innerHTML = "";
+      document.getElementById('panorama-error').innerHTML = "max width = 6000px !!";
+      prepare = false;
+    }
+    else if (height > 2160)
+    {
+      document.getElementById('panorama-meta-big').innerHTML = "";
+      document.getElementById('panorama-error').innerHTML = "max height = 2160px !!";
+      prepare = false;
+    }
+    else
+    {
+      //document.getElementById('panorama-meta').innerHTML = "";
+      document.getElementById('panorama-error').innerHTML = "";
+    }
+  }
+  else
+  {
+    height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    height -= 60;
+  }
+  if (prepare)
+    channel.postMessage({cmd: 'preplnk', width: width, height: height, id: windowID})
+}
+function panoramaResize()
+{
+  var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  height = ""+(height - 50)+"px";
+  if ( document.getElementById('panorama-img-parent')  != null)
+  {
+    document.getElementById('panorama-img-parent').style.height = height;
+  }
+  //#panorama-img  height: 350px;   width: 650px;
+}
+function panoramaBigChg() //manage input fields
+{
+  if (document.getElementById('pan-custom').checked)
+  {
+    document.getElementById('pan-x-custom').disabled=false;
+    document.getElementById('pan-y-custom').disabled=false;
+  }
+  else
+  {
+    document.getElementById('pan-x-custom').disabled=true;
+    document.getElementById('pan-y-custom').disabled=true;    
+  }
+}
+function panoramaMsgInit() //setup messageing
+{
+  channel = new BroadcastChannel('panorama');
+  channel.onmessage = panoramaGotMsg;
+}
+function panoramaBigInit()
+{
+  panoramaMsgInit();
+  panoramaBig();
+  document.getElementById('panorama-img-parent').style.display = 'none';
+}
+function panoramaGotMsg(msg)
+{
+  if (typeof msg.data.cmd !== 'undefined')
+  {
+    if (msg.data.cmd == 'preplnk')
+    {
+      var lnk = panoramaGenLink(msg.data.width,msg.data.height)
+      channel.postMessage({ cmd: 'recalc', value: lnk, id: msg.data.id, lat: profileMa._latlng['lat'],lon: profileMa._latlng['lng'] });
+    }
+    if (msg.data.cmd == 'recalc')
+    { 
+      if (msg.data.id == windowID)
+      {
+        panoramaCalc(msg.data.value);
+        panoramaResize();
+        own_lat = msg.data.lat;
+        own_lon = msg.data.lon;
+      }
+    }
+    if (msg.data.cmd == 'point')
+    {
+      rfPoint(msg.data.lat,msg.data.lon);
+    }
+    if (msg.data.cmd == 'move')
+    {
+      map.setView([msg.data.lat, msg.data.lon], 13);
+
+    }
+  }
+}
+function panoramaProcessMetadata(event)
+{
+  //also trigger on click => center map
+  img = document.getElementById("panorama-img");
+  pos_x = event.offsetX?(event.offsetX):event.pageX-img.offsetLeft;
+  pos_y = event.offsetY?(event.offsetY):event.pageY+img.offsetTop;
+  pos_y = parseInt(img.offsetHeight-pos_y);
+  //check region x, y,  
+  pixel = checkArray(panoramaMetadata,pos_x,pos_y);
+
+  if(pixel.length > 0)
+  {
+    var link = "";
+
+    if ( typeof panoramaMetadata[pixel[0][0]][pixel[0][1]].info === 'undefined') //generic poi no name
+    {
+     link = ""; 
+    }
+    else if(panoramaMetadata[pixel[0][0]][pixel[0][1]].info.includes('Webcam'))//if POI==webcam
+    {
+      wc = panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(' ');
+      link = "POI: <a href='"+panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(';')[1]+"' target='_blank'>"+panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(';')[0]+"</a>";  
+      if (event.type == 'dblclick')
+      {
+        var win = window.open(panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(';')[1], '_blank');
+        win.focus();
+      }
+    }
+    else //no webcam
+      link = "POI: "+panoramaMetadata[pixel[0][0]][pixel[0][1]].info;
+    //meters above sea level
+    var hm = '';
+    if (panoramaMetadata[pixel[0][0]][pixel[0][1]].hm.length > 0)
+      hm = panoramaMetadata[pixel[0][0]][pixel[0][1]].hm+"m "
+    else 
+      hm = '';
+    //catch small panorama
+    if (typeof own_lat === 'undefined')
+    {
+      own_lat = profileMa._latlng['lat'];
+      own_lon = profileMa._latlng['lng'];
+    }
+    distance = getDistance(panoramaMetadata[pixel[0][0]][pixel[0][1]].lat,panoramaMetadata[pixel[0][0]][pixel[0][1]].lon,own_lat,own_lon);
+    link = distance.toFixed(2)+"km "+hm+link; //+'x:'+pixel[0][0]+'y:'+pixel[0][1];
+    //if BIG-panorama window
+    if(window.location.pathname.includes('panorama.cgi'))
+    {
+      channel.postMessage({ cmd: 'point', lat: panoramaMetadata[pixel[0][0]][pixel[0][1]].lat, lon: panoramaMetadata[pixel[0][0]][pixel[0][1]].lon });
+      document.getElementById('panorama-meta-big').innerHTML = link;
+      //move map on click
+      if (event.type == 'dblclick')
+      {
+        channel.postMessage({ cmd: 'move', lat: panoramaMetadata[pixel[0][0]][pixel[0][1]].lat, lon: panoramaMetadata[pixel[0][0]][pixel[0][1]].lon });
+      }
+    }
+    else //inline popup
+    {
+      rfPoint(panoramaMetadata[pixel[0][0]][pixel[0][1]].lat, panoramaMetadata[pixel[0][0]][pixel[0][1]].lon);
+      document.getElementById('panorama-meta').innerHTML = link;
+      //move map on click
+      if (event.type == 'dblclick')
+      {
+        map.setView([panoramaMetadata[pixel[0][0]][pixel[0][1]].lat, panoramaMetadata[pixel[0][0]][pixel[0][1]].lon]);
+        rfPanoramaPopup.setLatLng([panoramaMetadata[pixel[0][0]][pixel[0][1]].lat, panoramaMetadata[pixel[0][0]][pixel[0][1]].lon]);
+      }
+    }
+    //point to metapixel debug only
+    //document.getElementById('rf-point').style.left = pixel[0][0]+5+'px';
+    //document.getElementById('rf-point').style.top = img.offsetHeight-pixel[0][1]+20+'px';
+  }
+}
+function checkArray(input,x,y)
+{
+  output = new Array();
+  x_cnt = [0,1,-1,2,-2,3,-3,4,-4,5,-5];
+  for (i=0;i<x_cnt.length;i++)
+  {
+    if (typeof input[x+x_cnt[i]] !== 'undefined')//x is valid
+    {
+      for (j=y+2;j>=y-29;j--)
+      {
+        if (typeof input[x+x_cnt[i]][j] !== 'undefined')//y  is valid
+        {
+          delta = Math.abs(j-y);
+          if (input[x+x_cnt[i]][j].typ !== 'undefined')   
+          {        
+            if (delta < 29 && input[x+x_cnt[i]][j].typ == "wc")
+            {
+              output[0]=[x+x_cnt[i],j];
+            }
+            else if (delta < 14 && input[x+x_cnt[i]][j].typ == "h") //hamnet //bigger poi for webcam
+            {
+              output[0]=[x+x_cnt[i],j];
+              return output;
+            }
+            else if (delta < 7 && input[x+x_cnt[i]][j].typ == "MT")
+              output.push([x+x_cnt[i],j]);
+            else if (delta < 8 && input[x+x_cnt[i]][j].typ == "sota")
+              output.push([x+x_cnt[i],j]);
+            else if (delta < 5) //generic poi
+              output.push([x+x_cnt[i],j]);
+          }
+        }
+      }
+    }
+  }
+  //console.log(output);
+  return output;
 }
 function mapSource()
 {
@@ -1859,4 +2477,3 @@ function getDistance(lat1,lon1,lat2,lon2) {
 
   return Math.acos(Math.cos(lat1)*Math.cos(lon1)*Math.cos(lat2)*Math.cos(lon2) + Math.cos(lat1)*Math.sin(lon1)*Math.cos(lat2)*Math.sin(lon2) + Math.sin(lat1)*Math.sin(lat2)) * r;
 }
-

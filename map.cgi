@@ -76,7 +76,7 @@ print qq(
 	  <title>HamnetDB Map</title>
 	  <link rel="stylesheet" type="text/css" href="osm/leaflet.css" />
 	  <link rel="stylesheet" type="text/css" href="osm/style-lf.css" />
-    <script src="osm/leaflet.js"></script>
+    <script src="osm/leafletn.js"></script>
     
     <!--<script src="osm/GeoJSON.Style.js"></script>
     <script src="osm/GeoJSON.Ajax.js"></script>
@@ -122,6 +122,8 @@ print qq(
     <script src="osm/Permalink.Overlay.js"></script>
 	  <script src="osm/L.Control.LSP.js"></script>
     <script src="osm/Leaflet.Geodesic.js"></script>
+    <script src="osm/leaflet-search.js"></script>
+    
 
     <script src="osm/leaflet.contextmenu.js"></script>
     <!--<script src="osm/leaflet.contextmenu.min.js"></script>-->
@@ -181,7 +183,9 @@ print qq(
 	        	<tr><td bgcolor="#a759ff">&nbsp;</td><td>Received power level better than -80 dBm.</td></tr>
 	        </table>
         </div>
-        <div id="info_by">HamnetDB by DL8MBT <br />Map by OE2LSP</div>
+        <div id="info_by">HamnetDB by DL8MBT <br />Map by OE2LSP <br> 
+	  see  <a href="osm/copyright.html" target="_blank">Copyright</a>
+	</div>
       </div>
       <div id="sidebar-setting">
 	    <h4>Map-Settings</h4>
@@ -210,8 +214,8 @@ print qq(
       <div id="sidebar-rftools">
         <h3>RF-Tools</h3>
         An easy way to estimate <br> possilbe RF-links
-        <br><br>
-        <h4>Link-profile:</h4>
+        <hr>
+        <h4>Link-Profile:</h4>
         <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
           <span class="side-button side-draw-point" id="side-draw-add-point1"></span></a>
         <a onclick="deleteProfileAll();" style="text-decoration:none; border-radius:2px;">
@@ -219,8 +223,8 @@ print qq(
         &nbsp;place marker "From" and "To"<br>
         
         <input type='button' value='show profile' style='height:24px;' onclick='javascript:rfOpenprofile()'> 
-        <br><br>
-        <h4>(RF)-visibility:</h4>
+        <hr>
+        <h4>(RF)-Visibility:</h4>
         use exsisting visibility (faster)<br>
         );
 
@@ -230,7 +234,7 @@ print qq(
           <option selected="selected" value="0">&nbsp;</option>
           <option value="1">not loaded</option>
         </select> 
-        <hr>
+        <!--<hr>-->
         <div id="rfCalcNew">
           or calculate new visibility<br>
           <form>Label: <input type="text" id="rfLabel" style='width:120px' onchange='rfValUpd()'><br>
@@ -261,9 +265,52 @@ print qq(
         <div id="rf-loading"><img src="hdb.gif" width="150px" style="opacity: 0.6;"><br>
         loading...<br></div>
         <div id="rf-result"></div>
-        <br>
+        <hr>
+        
+	
+	<h4>(RF)-Panorama</h4>
+	<div>
+        <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
+        <span class="side-button side-draw-point" id="side-draw-add-point3"></span></a>
+        <a onclick="deleteProfileAll();" style="text-decoration:none; border-radius:2px;">
+        <span class="side-button side-draw-del" id="side-draw-del-point3"></span></a>
+        &nbsp;place marker "From" and "To"<br>"From" is position of camera <br>
+	"To" defines the direction and virtual horizon.<br>
+	<span id="rfTowerFromLbl">Tower size (m) <input type="text" id='rfTowerFromP' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
+	<span id="rfElevationt">Elevation &nbsp;<label id='rfElevationlbl' for='rfElevation'>0°</label> 
+  <input type="range"id='rfElevation'  min="-20" max="20" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
+	<span id="rfAnglet">horizontal sight angle <label id='rfAngletlbl' for='rfAngle'>50°</label>
+  <input type="range" id='rfAngle' min="1" max="360" value="50" oninput='rfPanUpd();' onchange='rfPanUpd();'><br></span>
+	</div><a onclick="rfPanoramaAdvanced();"><span>advanced options</span></a><br><div id="panoramaAdv">
+	<span id="rfZoomt">vertical zoom &nbsp;<label id='rfZoomlbl' for='rfZoom'>1</label> 
+  <input type="range"id='rfZoom'  min="0.1" max="10" value="1" step="0.1"; oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
+  Font size 
+	<select id="rfPanoramaFont" onchange='rfValUpd();'>
+              <option value="0" >disabled</option>
+	      <option value="1" selected="selected">1</option>
+	      <option value="2" >2</option>
+	      <option value="3" >3</option>
+	</select><br>
+	POI:<br>
+	<input type="checkbox" name="rfPoiHamnet" id="rfPoiHamnet" value="PoiHamnet" onchange='rfValUpd();' checked >Hamnet<br>
+	<input type="checkbox" name="rfPoiFWC" id="rfPoiFWC" value="PoiFWC" onchange='rfValUpd();' checked>Foto-Webcam<br>
+  <input type="checkbox" name="rfPoiMT" id="rfPoiMT" value="PoiMT" onchange='rfValUpd();' checked>Mountains<br>
+	<input type="checkbox" name="rfPoiSota" id="rfPoiSota" value="PoiSota" onchange='rfValUpd();' >SOTA<br>
+	<input type="checkbox" name="rfPoi" id="rfPoi" value="PoiSmall" onchange='rfValUpd();'>additional POI<br>
+
+	<select id="rfRefractionPanorama" onchange='rfValUpd();'>
+    <option value="0.0" >vacuum</option>
+    <option value="0.13" >optical visibility</option>
+    <option value="0.25" selected="selected">RF-visibility</option>
+  </select> (refraction)
+					
+	
+	</div>
+	<input type='button' value='show panorama' style='height:24px;' onclick='javascript:rfOpenpanorama()'> 
+	<hr>
+	<br>
         <div id="extern-permalink-rf"></div>
-        <h4>hints:</h4>
+        <h4>Hints:</h4>
         <ul><li>right click to site "snap to &lt;SITE&gt;" to use coordinates and tower size</li>
         <li>detailed documentation can be found <a href="index.cgi?m=help#rftools">here</a></li>
         </ul>

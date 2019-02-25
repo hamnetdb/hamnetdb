@@ -300,3 +300,6 @@ textarea {
 .select_site_width select{
   max-width: 150px;
 }
+.help-inline {
+  float: right;
+}
