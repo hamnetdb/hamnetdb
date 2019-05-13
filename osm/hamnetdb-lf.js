@@ -349,7 +349,7 @@ function init()
         case "ISM":
           color = "#ad00e1";//d800ff
           weight = 6;
-          opacity= 0.85
+          opacity= 0.5
           zIndex = 400;
           break;
         case "hf1":
