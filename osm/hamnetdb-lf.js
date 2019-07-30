@@ -197,7 +197,8 @@ function init()
     var landscapeUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
     var cycleUrl = 'https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
     var outdoorUrl = 'https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=4ccd4e27d3a1419fb33801754a62191b';
-    var opentopoURL = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
+    var opentopoURL = 'webcam/map/otm/{z}/{x}/{y}.png';
+    //var opentopoURL = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
     var osmbwURL = 'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png';
     var mapnikZoom = 18;
     var landscapeZoom = 18;
