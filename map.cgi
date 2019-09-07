@@ -252,7 +252,8 @@ print qq(
           <span id="rfTowerFromLine">Tower size "From" (m) <input type="text" id='rfTowerFrom' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
           <span id="rfTowerToLine">Tower size "To" (m) <input type="text" id='rfTowerTo' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
           Tower size visibility (m) <input type="text" id='rfTowerRx' value='1' onchange='rfValUpd()' style='width:20px'><br>
-          
+          use tree information<input type="checkbox" name="rfVisTree" id="rfVisTree" value="rfVisTree" onchange='rfValUpd();' checked ><br>
+
              use
              <select id="rfRefraction" onchange='rfValUpd();'>
               <option value="0" >optical visibility</option>
@@ -286,7 +287,7 @@ print qq(
   <input type="range"id='rfZoom'  min="0.1" max="10" value="1" step="0.1"; oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
   Font size 
 	<select id="rfPanoramaFont" onchange='rfValUpd();'>
-              <option value="0" >disabled</option>
+        <option value="0" >disabled</option>
 	      <option value="1" selected="selected">1</option>
 	      <option value="2" >2</option>
 	      <option value="3" >3</option>
@@ -303,8 +304,16 @@ print qq(
     <option value="0.13" >optical visibility</option>
     <option value="0.25" selected="selected">RF-visibility</option>
   </select> (refraction)
-					
-	
+	<span id="rfSnow1s">snow line &nbsp;<label id='rfSnow1lbl' for='rfSnow1'>2500 m</label> 
+  <input type="range" id='rfSnow1' min="0" max="3000" value="2500" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
+  <span id="rfSnow2s">snow line distribution&nbsp;±<label id='rfSnow2lbl' for='rfSnow2'>500 m</label> 
+  <input type="range" id='rfSnow2' min="0" max="2000" value="500" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
+  <span id="rfSun1">sun azimuth&nbsp;<label id='rfSunAzlbl' for='rfSunAz'>0°</label> 
+  <input type="range" id='rfSunAz' min="70" max="290" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>       
+  <span id="rfSun2">sun elevation&nbsp;<label id='rfSunEllbl' for='rfSunEl'>0°</label> 
+  <input type="range" id='rfSunEl' min="0" max="90" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>       
+  <input type="checkbox" name="rfDesert" id="rfDesert" value="rfDesert" onchange='rfValUpd();' >desert mode<br>
+
 	</div>
 	<input type='button' value='show panorama' style='height:24px;' onclick='javascript:rfOpenpanorama()'> 
 	<hr>

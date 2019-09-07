@@ -15,9 +15,9 @@ push @INC,'.';
 print("Content-Type: text/html\nExpires: 0\n\n");
 
 $host_calc_profile= "rftools/";
-unless ($profile_path_program) {
-  $host_calc_profile="https://hamnetdb.net/rftools/";
-}
+#unless ($profile_path_program) {
+#  $host_calc_profile="https://hamnetdb.net/rftools/";
+#}
 
 print qq(<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">

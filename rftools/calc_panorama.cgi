@@ -31,6 +31,12 @@ my $zoom= $query->param("z")+0;
 my $font_size= $query->param("font")+0;
 my $elevation= $query->param("el")+0;
 my $angle= $query->param("angle")+0;
+my $waves= $query->param("waves")+0;
+my $snow1= $query->param("snow1")+0;
+my $snow2= $query->param("snow2")+0;
+my $sun_az= $query->param("sun_az")+0;
+my $sun_el= $query->param("sun_el")+0;
+my $desert= $query->param("desert")+0;
 
 #print("Content-Type: text/html\nExpires: 0\n\n");
 #print("test result___ $0\n");
@@ -67,6 +73,8 @@ $path_web= $panorama_path_web;
   $elevation= -90 if $font_size<-90;
   $angle= 1 if $angle<1;
   $zoom= 1 if $zoom < 0.1;
+  $sun_az= 0 if $sun_az < 0;
+  $sun_el= -2 if $sun_el < -2;
 
   #max
   $refraction= 1 if $refraction>1;
@@ -77,6 +85,8 @@ $path_web= $panorama_path_web;
   $elevation= 90 if $font_size>90;
   $angle= 360 if $angle>360;
   $zoom= 10 if $zoom>10;
+  $sun_az= 360 if $sun_az > 360;
+  $sun_el= 90 if $sun_el > 90;
 
 #./panorama-x86-32 -A 20 -a JN67OH74WD -b JN68DE93KQ  -i /home/hamnetdb/htdocs/pan1.png -p /opt/coverage/ -w 60.0 -x 1920 -y 1080 -e -6 -H 0 0 200 -F 1 -g 2.3 -I marker1.png  -P hamnet.txt -I cam.png -P 255 255 255 255 fotowebcam.txt -o 3 -I markerg.png -P 254 80 254 fone.txt
   if ($font_size > 0) 
@@ -97,49 +107,73 @@ $path_web= $panorama_path_web;
   #europe
   if ($poi=~/hamnet/) 
   {
-    $poi_param.="-J h -I $path_web/rftools/mk_w.png -P 255 0 0 240 $path_web/rftools/hamnet.txt "; 
+    $poi_param.= "-J h -I $path_web/rftools/mk_w.png -P 255 0 0 240 $path_web/rftools/hamnet.txt "; 
   }
   if ($poi=~/sota/)
   {  
-    $poi_param.="-J sota -I $path_web/rftools/mks_w.png -P 0 255 0 250 $path_web/rftools/sota.txt ";
+    $poi_param.= "-J sota -I $path_web/rftools/mks_w.png -P 0 255 0 250 $path_web/rftools/sota.txt ";
   }
   if ($poi=~/wc/) 
   {
-    $poi_param.="-J wc -I $path_web/rftools/mk_cam.png -P 255 255 255 200 $path_web/rftools/fotowebcam.txt ";
+    $poi_param.= "-J wc -I $path_web/rftools/mk_cam.png -P 255 255 255 200 $path_web/rftools/fotowebcam.txt ";
   }
   if ($poi=~/fone/) 
   {
-    $poi_param.="-J f -I $path_web/rftools/mk_w.png -P 0 255 0 100 $path_web/rftools/fone.txt ";
+    $poi_param.= "-J f -I $path_web/rftools/mk_w.png -P 0 255 0 100 $path_web/rftools/fone.txt ";
   }
   if ($poi=~/mt/) 
   {
-    $poi_param.="-J MT -I $path_web/rftools/mkss_w.png -P 100 100 100 200 $path_web/rftools/alps.txt ";
-    $poi_param.="-J MT -I $path_web/rftools/mkss_w.png -P 100 100 100 200 $path_web/rftools/MT.txt ";
+    $poi_param.= "-J MT -I $path_web/rftools/mkss_w.png -P 100 100 100 200 $path_web/rftools/alps.txt ";
+    $poi_param.= "-J MT -I $path_web/rftools/mkss_w.png -P 100 100 100 200 $path_web/rftools/MT.txt ";
   }
   if ($poi=~/small/)
   {  
-    $poi_param.="-J s -I $path_web/rftools/mkxs_w.png -P 60 60 60 100 $path_web/rftools/AT.txt ";
+    $poi_param.= "-J s -I $path_web/rftools/mkxs_w.png -P 60 60 60 100 $path_web/rftools/AT.txt ";
+  }
+  $sun_param= "";
+  if ($sun_az > 0 && $sun_el > 0)
+  {
+    $sun_param= "-S $sun_az $sun_el";
+  }
+  $snow_param= "";
+  if ($snow1 > 0 && $snow2 > 0)
+  {
+    $snow_param= "-G $snow1 $snow2";
+  }
+  $desert_param= "";
+  if ($desert > 0)
+  {
+    $desert_param= "-t 1 0 -u ";
+  }
+  else
+  {
+    $desert_param= "-W 0.7 2 0 ";
   }
 
   my $cmd= "nice -n 9 $path_prog -p $path_srtm -A $antenna_a ";
   $cmd.= "-a $lat_a $lon_a -b $lat_b $lon_b -z $zoom ";
-  $cmd.= "-e $elevation $font_cmd -g 2.3 -o 5 -q -C 3 ";
+  $cmd.= "-e $elevation $font_cmd -g 2.3 -o 5 -C 3 ";
   $cmd.= "-x $size_x -y $size_y -w $angle $poi_param ";
-  $cmd.= "-r $refraction ";
+  $cmd.= "-r $refraction $sun_param $desert_param $snow_param ";
+  
+  #high contrast -l 1.0 0.0 
+
+ #-W 0.7 2 0  -W 0.6 1 0 $snow_param
+
   $pan_hash= md5_hex($cmd);
 
   #if file $pan_hash exists dont calc
   #  $pan_hash= "test";
-  $output_file="$path_web/rftools/panorama/$pan_hash";
+  $output_file= "$path_web/rftools/panorama/$pan_hash";
   if (-e "$output_file.csv") 
   {
- #   print("use existing\n");
+#    print("use existing\n");
   }	  
   else
   {
 
     $cmd.= "-i $output_file.png -c $output_file.csv ";
- #   print("$cmd \n\n $pan_hash");
+#    print("$cmd \n\n $pan_hash");
 
     $result= qx/$cmd/;
 
@@ -154,8 +188,8 @@ $path_web= $panorama_path_web;
   {
 
     $cmd_image="cat $output_file.png";
-    if (not $refer =~ m/hamnetdb\.net/ )
-    #if (0)
+    #if (not $refer =~ m/hamnetdb\.net|localhost/ )
+    if (0)
     {
       $size_watermark= $size_y/6;
       $cmd_wartermark= " | convert png:- -gravity Center -pointsize $size_watermark -stroke none -fill 'rgba(180,180,180,0.3)' -annotate 0 'hamnetdb.net' png:- 2>>$path_errlog";
@@ -180,7 +214,7 @@ $path_web= $panorama_path_web;
   else 
   {
     print("Content-type: text/html\n\n");
-    print("preparing\n\n\n\n");
+    print("preparing\n\n$cmd\n\n");
   }
 
 
