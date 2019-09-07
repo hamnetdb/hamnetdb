@@ -95,7 +95,7 @@ if ($mode > 0) {
 }
 else
 {
-  if (not $refer =~ m/hamnetdb\.net/ )
+  if (not $refer =~ m/hamnetdb\.net|localhost/ )
   {
     $cmd_wartermark= " | convert png:- -gravity Center -pointsize 30 -stroke none -fill 'rgba(180,180,180,0.25)' -annotate 0 'hamnetdb.net' png:- 2>>$path_errlog";
     $cmd.= $cmd_wartermark;

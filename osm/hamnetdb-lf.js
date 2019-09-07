@@ -78,6 +78,13 @@ var rfPoiFWC;
 var rfPoiMT;
 var rfPoiSota;
 var rfPoi;
+var rfSnow1 = 2500;
+var rfSnow2 = 500;
+var rfSunAz = 0; 
+var rfSunEL = 0;
+var rfDesert = 0;
+var rfVisTree = 1;
+
 var rfPanoramaPopup;
 var panoramaMetadata = new Array();
 
@@ -133,6 +140,12 @@ function init()
   rfFontPanoramatmp = getParameter("rf_p_font");
   rfPoiInput = getParameter("rf_poi"); 
   rfTowerFromPtmp = getParameter("rf_p_tow");
+  rfSnow1tmp = getParameter("rf_snow1");
+  rfSnow2tmp = getParameter("rf_snow2");
+  rfSunAztmp = getParameter("rf_sun_az");
+  rfSunEltmp = getParameter("rf_sun_el");
+  rfDeserttmp = getParameter("rf_desert");
+  rfVisTreetmp  = getParameter("rf_tree");
 
   if (rfTowerRxtmp != 0) {
     rfTowerRx = rfTowerRxtmp;
@@ -173,7 +186,27 @@ function init()
   if (rfZoomtmp != 0) {
     rfZoom = rfZoomtmp;
   }
-
+  if (rfSnow1tmp != 0) {
+    rfSnow1 = rfSnow1tmp;
+  }
+  if (rfSnow2tmp != 0) {
+    rfSnow2 = rfSnow2tmp;
+  }
+ if (rfSunAztmp != 0) {
+    rfSunAz = rfSunAztmp;
+  }
+  if (rfSunEltmp != 0) {
+    rfSunEl = rfSunEltmp;
+  }
+  if (rfVisTreetmp === "0") {
+    rfVisTree = 0;
+  } 
+  if (rfDeserttmp == "0") {
+    rfDesert = 0;
+  } 
+  else {
+    rfDesert = 1;
+  }
 
   var CoverUrl= "coverage/";
   if (country && country.length==2) {
@@ -1347,6 +1380,13 @@ function rfValUpd()
   rfPoiSota = document.getElementById("rfPoiSota").checked;
   rfPoiMT = document.getElementById("rfPoiMT").checked;
   rfPoi = document.getElementById("rfPoi").checked;
+  rfSnow1 = document.getElementById("rfSnow1").value;
+  rfSnow2 = document.getElementById("rfSnow2").value;
+  rfSunAz = document.getElementById("rfSunAz").value;
+  rfSunEl = document.getElementById("rfSunEl").value;
+  rfVisTree = document.getElementById("rfVisTree").checked;
+  rfDesert = document.getElementById("rfDesert").checked;
+
   profilePopupUpd();
 }
 function rfPanUpd()
@@ -1354,6 +1394,10 @@ function rfPanUpd()
   document.getElementById("rfAngletlbl").innerHTML=document.getElementById("rfAngle").value+"°";
   document.getElementById("rfElevationlbl").innerHTML=document.getElementById("rfElevation").value+"°";
   document.getElementById("rfZoomlbl").innerHTML=document.getElementById("rfZoom").value;
+  document.getElementById("rfSnow1lbl").innerHTML=document.getElementById("rfSnow1").value+" m";
+  document.getElementById("rfSnow2lbl").innerHTML=document.getElementById("rfSnow2").value+" m";
+  document.getElementById("rfSunAzlbl").innerHTML=document.getElementById("rfSunAz").value+"°";
+  document.getElementById("rfSunEllbl").innerHTML=document.getElementById("rfSunEl").value+"°";
   rfValUpd();
 }
 function rfUpdForm()
@@ -1363,6 +1407,7 @@ function rfUpdForm()
   document.getElementById("rfTowerTo").value = profileTowerB; 
   document.getElementById("rfLabel").value = rfLabel; 
   document.getElementById("rfTowerRx").value = rfTowerRx; 
+  document.getElementById("rfVisTree").checked = rfVisTree;
 }
 function rfBack()
 {
@@ -1458,11 +1503,17 @@ function rfCalc(force)
   //document.getElementById("rf-loading").style.visibility = "visible";   
   document.getElementById("rfCalcNew").style.display = "none";   
   document.getElementById("rf-loading").style.display = "inline"; 
+  var rfVisTreeOut;
+  if (rfVisTree) // true => 1
+    rfVisTreeOut = 1;
+  else
+    rfVisTreeOut = 0;
 
   var src=host_calc_visibility+"calc_visibility.cgi?lon_a="+
         lon1+"&lat_a="+lat1+"&ant_a="+profileTowerA+
         "\"&lon_b="+lon2+"&lat_b="+lat2+"&ant_b="+profileTowerB+
         "&label=\""+rfLabel+"\"&ant_c="+rfTowerRx+"&ref="+rfRefraction+
+        "&tree="+rfVisTreeOut+
         "&up="+rect_up+"&down="+rect_down+"&left="+rect_left+"&right="+rect_right; 
   if (force == 2) {
     src=host_calc_visibility+"calc_visibility.cgi?load=1&label="+rfLabel;
@@ -1505,15 +1556,17 @@ function rfLoaded(result)
         rfMarkerB = null;
       }
     }
+    rfLabel = parameter[1];
+    
     profileTowerA = parameter[4];
     profileTowerB = parameter[7];
     rfTowerRx = parameter[8];
     rfRefraction = parameter[9];
-    rfLabel = parameter[1];
-    rect_up = parameter[10];
-    rect_left = parameter[11];
-    rect_down = parameter[12];
-    rect_right = parameter[13];
+    rfVisTree = parseInt(parameter [10]);
+    rect_up = parameter[11];
+    rect_left = parameter[12];
+    rect_down = parameter[13];
+    rect_right = parameter[14];
     rfUpdForm();
 
     if (parameter[0].length < 2) {
@@ -1610,6 +1663,12 @@ function rfCreateUrl()
     if (rfLabel != '') {
       url = url + '&rf_lab=' + rfLabel;
     }
+    var rfVisTreeOut;
+    if (rfVisTree)
+      rfVisTreeOut = 1;
+    else
+      rfVisTreeOut = 0; 
+    url = url + '&rf_tree=' + rfVisTreeOut; 
     if(map.hasLayer(rfRect)) //if rectangle exists
     {
       url = url + '&rf_d=' + rfRect._bounds._southWest.lat;
@@ -1618,7 +1677,7 @@ function rfCreateUrl()
       url = url + '&rf_r=' + rfRect._bounds._northEast.lng;
     }
   }
-  else if(map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(rfPanoramaPopup)){
+  else if(map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(rfPanoramaPopup)){ //if panorama
     url = url + '&ma_lat=' + profileMa._latlng['lat'] + '&ma_lon=' + profileMa._latlng['lng'];
     url = url + '&mb_lat=' + profileMb._latlng['lat'] + '&mb_lon=' + profileMb._latlng['lng'];
     
@@ -1641,7 +1700,16 @@ function rfCreateUrl()
     }  
     url = url + '&rf_poi=' + rfPoiInput;
     url = url + '&rf_pan=1';
-
+    if (rfSnow1 != 2500) {
+      url= url + "&rf_snow1="+rfSnow1;
+    }
+    if (rfSnow2 != 500) {
+      url = url +"&rf_snow2="+rfSnow2;
+    }
+    if (rfDesert) {
+      url = url +"&rf_desert=1";
+    }
+    url = url + "&rf_sun_az="+rfSunAz+"&rf_sun_El="+rfSunEl;
   }
   return url;
 }
@@ -1788,9 +1856,16 @@ function panoramaGenLink(width,height)
   if (rfPoi)
     poi+="small";
   rfPoiInput=poi; //also output to permalink
+
+  if(rfDesert)
+    rfDesertOut = 1;
+  else 
+    rfDesertOut = 0; 
   src = "?lon_a="+lon1+"&lat_a="+lat1+"&ant_a="+rfTowerFromP+"&poi="+poi+
         "&lon_b="+lon2+"&lat_b="+lat2+"&el="+rfElevation+"&angle="+rfAngle+"&z="+rfZoom+
-        "&ref="+rfRefractionPanorama+"&font="+rfFontPanorama+"&y="+height+"&x="+width;
+        "&ref="+rfRefractionPanorama+"&font="+rfFontPanorama+
+        "&desert="+rfDesertOut+"&snow1="+rfSnow1+"&snow2="+rfSnow2+
+        "&sun_az="+rfSunAz+"&sun_el="+rfSunEl+"&y="+height+"&x="+width;
   return src;
 } 
 function panoramaCalc(url)
@@ -1865,6 +1940,9 @@ function rfPanUpdForm()
   document.getElementById("rfElevation").value = rfElevation;
   document.getElementById("rfAngle").value = rfAngle;
   document.getElementById("rfZoom").value = rfZoom;
+  document.getElementById("rfSnow1").value = rfSnow1;
+  document.getElementById("rfSnow2").value = rfSnow2;
+  document.getElementById("rfDesert").checked = rfDesert;
 }
 function panoramaOpenBig()
 {

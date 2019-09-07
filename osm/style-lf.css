@@ -478,7 +478,7 @@ font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 #panorama {
   margin-bottom: -15px;
 }
-#rfElevation, #rfAngle, #rfZoom {
+#rfElevation, #rfAngle, #rfZoom, #rfSnow1, #rfSnow2, #rfSunAz, #rfSunEl {
   width: 100%;
   margin: 0px;
 }

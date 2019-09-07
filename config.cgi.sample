@@ -52,9 +52,14 @@ sub htmlFoot {
 #$profile_errorimg= "error.png"
 #$profile_path_color= "/path/to/cols.txt";
 
-
 #$visibility_path_program= "/path/to/program/visibility";
 #$visibility_path_srtm= "/path/to/srtm";
 #$visibility_path_errorlog= "/path/to/logfile";
 #$visibility_path_out= "/path/to/tile_output";
+
+#$panorama_path_program= "/path/to/program/panorama";
+#$panorama_path_srtm= "/path/to/srtm";
+#$panorama_path_errorlog= "/path/to/logfile";
+#$panorama_path_web= "/path/to/web/root";
+
 1;

@@ -32,12 +32,13 @@ my $border_up= $query->param("up")+0;
 my $border_left= $query->param("left")+0;
 my $border_down= $query->param("down")+0;
 my $border_right= $query->param("right")+0;
+my $tree= $query->param("tree")+0;
 
 
 print("Content-Type: text/html\nExpires: 0\n\n");
 
 #print("test result___\n");
-# path ; label; lat1; lon1; tower1; lat2; lon2; tower2; towerRX; ref; top; left; bottom; right;  
+# path ; label; lat1; lon1; tower1; lat2; lon2; tower2; towerRX; ref; tree; top; left; bottom; right;  
 #print("/osm_disk;testbereich;47.80;13.10;9;47.80;12.99;8;0;0.25;48.22;12.8;47.36;14.0\n");
 #print("/osm_disk;testbereich;47.80;13.10;9;47.80;12.99;8;0;0.25;0;0;0;0\n");
 #use paths from config.cgi
@@ -89,7 +90,7 @@ unless ($list) {
     $center_lon= ($lon_a + $lon_b)/2;
   }
 
-  my $cmd= "nice -n 9 $path_prog -p $path_srtm";
+  my $cmd= "nice -n 9 $path_prog -p $path_srtm"; #reduce priority 
   $cmd.= " -x 32000 -y 32000 -z 1 14 -d 2 -g 7 -q 2 -R $refraction";
 
   if ($border_up != 0 && $border_left != 0 && $border_down !=0 && $border_right != 0) {
@@ -113,14 +114,12 @@ unless ($list) {
     }
   }
   else { #  create border?
-
-
     $border_up= $center_lat + $dy;
     $border_left= $center_lon - $dx;
     $border_down= $center_lat - $dy ;
     $border_right= $center_lon + $dx;
   }
-    $cmd.= " -m $border_up $border_left -n $border_down $border_right"; 
+  $cmd.= " -m $border_up $border_left -n $border_down $border_right"; 
 
 
   #define colors
@@ -141,14 +140,18 @@ unless ($list) {
     $error = 1;
   }
 
+  if ($tree > 0) {
+    $cmd.= " -t 30 2 ";
+  }
+
   #check if saved visibility is equal with current parameters, including name
-  $output_parameter= "$lat_a;$lon_a;$antenna_a;$lat_b;$lon_b;$antenna_b;$antenna_c;$refraction;$border_up;$border_left;$border_down;$border_right\n";
+  $output_parameter= "$lat_a;$lon_a;$antenna_a;$lat_b;$lon_b;$antenna_b;$antenna_c;$refraction;$tree;$border_up;$border_left;$border_down;$border_right\n";
   $existing_parameter= listParameters($label);
   my @split_parameter= split(/;/, $existing_parameter);
-  $parameter_plain= join(';',@split_parameter[2..13]);
+  $parameter_plain= join(';',@split_parameter[2..14]);
   $output_parameter =~ s/^\s+|\s+$//g;
   $parameter_plain =~ s/^\s+|\s+$//g;
-  if($output_parameter eq $parameter_plain) {
+  if($output_parameter eq $parameter_plain) { 
     $load_saved= 1;
   }
 
