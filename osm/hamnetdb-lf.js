@@ -271,7 +271,7 @@ function init()
     opentopoURL,
     {
       attribution: attribution,
-      maxZoom: satZoom
+      maxZoom: opentopoZoom
     }
   );
   var osmbwLayer = L.tileLayer(

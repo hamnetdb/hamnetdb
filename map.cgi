@@ -76,7 +76,7 @@ print qq(
 	  <title>HamnetDB Map</title>
 	  <link rel="stylesheet" type="text/css" href="osm/leaflet.css" />
 	  <link rel="stylesheet" type="text/css" href="osm/style-lf.css" />
-    <script src="osm/leafletn.js"></script>
+    <script src="osm/leaflet.js"></script>
     
     <!--<script src="osm/GeoJSON.Style.js"></script>
     <script src="osm/GeoJSON.Ajax.js"></script>
