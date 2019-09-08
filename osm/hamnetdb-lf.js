@@ -1908,6 +1908,7 @@ function panoramaGotMetadata(meta_content)
   //parse csv, => panorama array
   //panoramaMetadata[x][y]
   result = meta_content.split('\n');
+  panoramaMetadata = []; //cleanup old content
   for (i = 0; i < result.length; i++) {
     //parse csv & fill object
     line = result[i].split(',');
@@ -1959,7 +1960,7 @@ function panoramaOpenBig()
 }
 function panoramaBig()//create new panorama
 {
-    //recalc big image 
+  //recalc big image 
   //  get parameter from main window
   //  get window size or alternative size
   var height;
