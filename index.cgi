@@ -1008,7 +1008,8 @@ sub showLinkByIP {
     $rssi1= $rssi1." dBm" if length($rssi1) >2;
     $rssi2= $rssi2." dBm" if length($rssi2) >2;
     if (length($rssi1)>1 || length($rssi2)>1) {
-      $rssi= $rssi1." / ".$rssi2;
+      $rssi= "<a href='https://grafana.hamnetdb.net/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
+        $ip."'>".$rssi1." / ".$rssi2."</a>";
     }
     my $ed= "";
     $ed= &editIcon("subnet", $id, 1);
