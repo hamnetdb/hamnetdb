@@ -261,13 +261,20 @@ if ($m eq "util") {
 
     print qq(
       <div class="utility vgrad">
-      <h3>CSV-export of Hamnet-DB tables</h3>
-      Download: &nbsp; 
+      <h3>Export of Hamnet-DB tables</h3>
+      Download CSV: &nbsp; 
       <a href="csv.cgi?tab=as">as.csv</a> &nbsp;
       <a href="csv.cgi?tab=site">site.csv</a> &nbsp;
       <a href="csv.cgi?tab=host">host.csv</a> &nbsp;
       <a href="csv.cgi?tab=subnet">subnet.csv</a> &nbsp;
-      <a href="csv.cgi?tab=edge">edge.csv</a> &nbsp;
+      <a href="csv.cgi?tab=edge">edge.csv</a> &nbsp;<br>
+      
+      Download JSON: &nbsp; 
+      <a href="csv.cgi?tab=as&json=1">as.json</a> &nbsp;
+      <a href="csv.cgi?tab=site&json=1">site.json</a> &nbsp;
+      <a href="csv.cgi?tab=host&json=1">host.json</a> &nbsp;
+      <a href="csv.cgi?tab=subnet&json=1">subnet.json</a> &nbsp;
+      <a href="csv.cgi?tab=edge&json=1">edge.json</a> &nbsp;
       </div>
     );
 
@@ -717,14 +724,7 @@ sub subnetShow {
       <h3>Broadcast: $end_ipa &nbsp;&nbsp;&nbsp; 
           Netmask: $mask &nbsp;&nbsp;&nbsp; 
           $adrnum IPs</h3>
-    );
-    if ($myPermissions=~/$t,/) {
-      print qq(<a href="javascript:hamnetdb.edit('monitoring','$ip');">test SNMP monitoring</a><br>);
-
-    }
-    
-    print qq(
-	  $radioparam
+      $radioparam
     );
     if ($comment) {
       print qq(<br>$comment<br>);
@@ -764,7 +764,7 @@ sub hostShow {
 
   my $sth= $db->prepare("select ".
     "id,name,ip,rawip,mac,aliases,typ,radioparam,site,".
-    "comment,editor,date(edited) ".
+    "comment,monitor,routing,editor,date(edited) ".
     "from hamnet_$t where ip=".$db->quote($search));
   $sth->execute;
 
@@ -780,6 +780,8 @@ sub hostShow {
     my $radioparam= $line[$idx++];
     my $site= $line[$idx++];
     my $comment= $line[$idx++];
+    my $monitor= $line[$idx++];
+    my $routing= $line[$idx++];
     my $editor= $line[$idx++];
     my $edited= $line[$idx++];
   
@@ -788,6 +790,8 @@ sub hostShow {
     $aliases= "DNS Aliases: <b>$aliases</b><br>" if $aliases;
     $mac= "MAC on radio interface: <b>$mac</b><br>" if $mac;
     $radioparam= "Radio parameters: <b>$radioparam</b><br>" if $radioparam;
+	$monitor= "Link monitoring - <b>Enabled</b><br>" if $monitor;
+	$routing= "Routing monitoring - <b>Enabled</b><br>" if $routing;
 
     print qq(<div class="infobox vgrad">);
     print qq(<h2>).&editIcon($t, $id, 1);
@@ -796,6 +800,9 @@ sub hostShow {
       $radioparam
       $aliases
       $mac
+      $monitor
+      $routing
+      
     );
     if ($comment) {
       print qq(<br>$comment<br>);
@@ -1015,16 +1022,7 @@ sub showLinkByIP {
     $rssi1= $rssi1." dBm" if length($rssi1) >2;
     $rssi2= $rssi2." dBm" if length($rssi2) >2;
     if (length($rssi1)>1 || length($rssi2)>1) {
-      my $rssi_host;
-      # check if client comes from hamnet
-      unless(checkMapSource()) {
-	$rssi_host= "https://grafana.hamnetdb.net";
-      }
-      else {
-      	$rssi_host= "http://44.148.129.16";
-      }
-      $rssi= "<a href='".$rssi_host."/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
-        $ip."&kiosk=tv' target='_blank'>".$rssi1." / ".$rssi2."</a>";
+      $rssi= $rssi1." / ".$rssi2;
     }
     my $ed= "";
     $ed= &editIcon("subnet", $id, 1);
