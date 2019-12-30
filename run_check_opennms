@@ -30,25 +30,33 @@ do "lib.cgi" or die;
 print localtime."\n";
 
 # take all IPs of monitored hosts from database 
-my @all_ips= ();
+my @all_rssi_ips= ();
 my $sth= $db->prepare(qq(select ip 
          from hamnet_host where monitor=1));
 $sth->execute;
 while (@line= $sth->fetchrow_array) {
-  push(@all_ips, $line[0]);
+  push(@all_rssi_ips, $line[0]);
+#  print $line[0], "\n";
+}
+my @all_routing_ips= ();
+my $sth= $db->prepare(qq(select ip 
+         from hamnet_host where routing=1));
+$sth->execute;
+while (@line= $sth->fetchrow_array) {
+  push(@all_routing_ips, $line[0]);
 #  print $line[0], "\n";
 }
 
 $i=0;
 foreach $agent (@monitorAgents) { 
-  
-  performCheck($monitorAgents[$i][0],$monitorAgents[$i][1]);
+  performCheckRSSI($monitorAgents[$i][0],$monitorAgents[$i][1]);
+  performCheckRouting($routingAgents[$i][0],$routingAgents[$i][1]);
   $i++;
 }
 exit;
 
 
-sub performCheck{
+sub performCheckRSSI{
   my $agent= shift;
   my $url= shift;
   
@@ -78,8 +86,11 @@ sub performCheck{
 
   #update database
   $service="rssi";
+  my $Count= 0;
+  my $okCount= 0;
+  my $notokCount= 0;
 
-  foreach $ip (@all_ips) {
+  foreach $ip (@all_rssi_ips) {
   #  print $ip, " ", $rssi{$ip}," ",$rssi_timestamp{$ip},"\n";
     if (defined($rssi{$ip})) {
       my $where= "ip='$ip' and agent='$agent' and service='$service' and status=1";
@@ -108,7 +119,79 @@ sub performCheck{
     $Count++;
 
   }
-  print $Count,"\nok:", $okCount,  "\nnotok:", $notokCount,"\n";
+  print "RSSI:  ",$Count,"\nok:", $okCount,  "\nnotok:", $notokCount,"\n";
+
+
+}
+
+sub performCheckRouting{
+  my $agent= shift;
+  my $url= shift;
+  
+  # fetch data and make it usable
+  $json_data= get_api_data($url);
+  my @decoded_json = @{decode_json($json_data)};
+  #{
+  #  "remoteAddress": "44.224.10.54",
+  #  "localAddress": "44.225.20.193",
+  #  "localCallsign": "DB0ZM",
+  #  "peeringName": "DB0TVM",
+  #  "uptime": "138.11:48:28",
+  #  "prefixCount": 748,
+  #  "peeringState": "established",
+  #  "unixtimestamp": 1577544159,
+  #  "stamp": "2019-12-28T14:42:39+00:00"
+  #},
+  my %routing= ();
+  my %routing_timestamp= ();
+  my %routing_uptime= ()
+  foreach my $entry (@decoded_json) {
+    if ($entry->{'peeringState'} eq 'established')
+    {
+      print $entry->{'peeringState'},$entry->{'remoteAddress'}, "\n\n";  	
+    	
+      $routing{$entry->{'remoteAddress'}}=$entry->{'prefixCount'};
+      $routing_timestamp{$entry->{'remoteAddress'}}=$entry->{'unixtimestamp'};
+      $routing_uptime->{'remoteAddress'}}=$entry->{'uptime'};
+    }
+  } 
+
+  #update database
+  $service="routing";
+  my $Count= 0;
+  my $okCount= 0;
+  my $notokCount= 0;
+
+  foreach $ip (@all_routing_ips) {
+  #  print $ip, " ", $rssi{$ip}," ",$rssi_timestamp{$ip},"\n";
+    if (defined($routing{$ip})) {
+      my $where= "ip='$ip' and agent='$agent' and service='$service' and status=1";
+      my $set=   "set ts=FROM_UNIXTIME($routing_timestamp{$ip}),value='$routing{$ip}',message='$routing_uptime{$ip}'";
+
+      my $sql= "";
+      my $sth= $db->prepare(qq(select ip from hamnet_check
+               where $where));
+      $sth->execute;
+      if ($sth->fetchrow_array) {
+        $sql= "update hamnet_check $set where $where";
+      }
+      else {
+        $sql= "replace hamnet_check $set,since=FROM_UNIXTIME($routing_timestamp{$ip}),status='1',".
+              "ip='$ip',agent='$agent',service='$service'";
+      }
+      $okCount++;
+      #&log($agent, $sql);
+      #print $sql, "\n";
+      $db->do($sql);
+    }
+    else
+    {
+      $notokCount++;
+    }
+    $Count++;
+
+  }
+  print "Routing:  ",$Count,"\nok:", $okCount,  "\nnotok:", $notokCount,"\n";
 
 
 }

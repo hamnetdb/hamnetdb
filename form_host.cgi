@@ -19,11 +19,12 @@ $table_history= "${table}_hist";
 $requiredPermission= $suffix;
 
 ($name,$ip,$rawip,$mac,$aliases,$typ,$radioparam,$site,$no_ping,$monitor,
-  $comment,$rw_maint)= &loadFormData
-  ("name,ip,rawip,mac,aliases,typ,radioparam,site,no_ping,monitor,comment,rw_maint");
+  $routing,$comment,$rw_maint)= &loadFormData
+  ("name,ip,rawip,mac,aliases,typ,radioparam,site,no_ping,monitor,routing,comment,rw_maint");
 
 $no_ping+= 0;
 $monitor+= 0;
+$routing+= 0;
 
 # If possible, fetch maintainer-list from site since a host has no maintainers
 # Do it only if site is also locked, otherwise it would not have any effect
@@ -120,6 +121,7 @@ print qq(
 &checkBox("No ping check", "no_ping", 1, $no_ping);
 
 &checkBox("Monitor", "monitor", 1, $monitor);
+&checkBox("Routing", "routing", 1, $routing);
 print qq(
   </td>
   </tr>
@@ -281,6 +283,7 @@ sub checkValues {
           "site=".$db->quote($site).", ".
           "no_ping=".$db->quote($no_ping).", ".
           "monitor=".$db->quote($monitor).", ".
+          "routing=".$db->quote($routing).", ".
           "rw_maint=".$db->quote($rw_maint).", ".
           "rawip=".$db->quote($rawip).", ".
           "name=".$db->quote($name);

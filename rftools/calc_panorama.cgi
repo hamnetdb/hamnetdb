@@ -143,6 +143,7 @@ $path_web= $panorama_path_web;
   $desert_param= "";
   if ($desert > 0)
   {
+  #-D r g b   180 120 20 , 
     $desert_param= "-t 1 0 -u ";
   }
   else
@@ -171,16 +172,12 @@ $path_web= $panorama_path_web;
   }	  
   else
   {
-
     $cmd.= "-i $output_file.png -c $output_file.csv ";
 #    print("$cmd \n\n $pan_hash");
-
     $result= qx/$cmd/;
-
 
  #   print("\nr: $result\n");
     #check if saved visibility is equal with current parameters, including name
-
   }
 
 
@@ -188,8 +185,8 @@ $path_web= $panorama_path_web;
   {
 
     $cmd_image="cat $output_file.png";
-    #if (not $refer =~ m/hamnetdb\.net|localhost/ )
-    if (0)
+    #if (0)
+    if (not $refer =~ m/hamnetdb\.net|localhost/ )
     {
       $size_watermark= $size_y/6;
       $cmd_wartermark= " | convert png:- -gravity Center -pointsize $size_watermark -stroke none -fill 'rgba(180,180,180,0.3)' -annotate 0 'hamnetdb.net' png:- 2>>$path_errlog";

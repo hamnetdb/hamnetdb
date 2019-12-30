@@ -24,6 +24,7 @@ my $no_tunnel=   $query->param("no_tunnel")+0;
 my $no_radio=    $query->param("no_radio")+0;
 my $no_ism=      $query->param("no_ism")+0;
 my $radio=        $query->param("radio")+0;
+my $bgp=        $query->param("bgp")+0;
 my $geojson=     $query->param("geojson")+0;
 #print qq(Content-Type: text/plain\nExpires: 0 \n\n);
 # The result arrays which are rendered as JSON or GeoJSON
@@ -222,6 +223,44 @@ foreach $net (sort keys %all_hosts) {
           elsif($rssi>-99) {$style= 'hf6';} 
           else             {$style= 'hf7';} 
         }
+      }
+      if ($bgp) {
+        my $monitor_left;
+        my $sth= $db->prepare(qq(select 
+          ip
+          from hamnet_host
+          where 
+          routing=1 and rawip > $subnet_begin{$net} and 
+          rawip < $subnet_end{$net} and site='$sites[0]'
+        ));
+        $sth->execute;
+        while (@line= $sth->fetchrow_array) {
+          my $idx= 0;
+          $monitor_left= $line[$idx++];
+        }
+        #right monitored host -> rssi
+        my $monitor_right;
+        $sql=qq(select 
+          ip
+          from hamnet_host
+          where 
+          routing=1 and rawip > $subnet_begin{$net} and 
+          rawip < $subnet_end{$net} and site='$sites[1]'
+        );
+        my $sth= $db->prepare($sql);
+        $sth->execute;
+        while (@line= $sth->fetchrow_array) {
+          my $idx= 0;
+          $monitor_right= $line[$idx++];
+        }
+        my $rssi; 
+        my $rssi2; 
+        $rssi=bgpStatus($monitor_left,'routing');
+        $rssi2=bgpStatus($monitor_right,'routing');
+        next if ($rssi eq '-') && ($rssi2 eq '-');
+        if((length($rssi) >=1 ) && (length($rssi2) >=1 )) {
+          $style = "bgp";
+        }
       } 
       push(@allEdges, "$style;$net;$sites[0];$sites[1]");
     }
@@ -285,24 +324,25 @@ foreach my $callsign (@allCallsigns) {
 }
 # -------------------------------------------------------------------------
 # Prepare edges explicitely stored in the database
-my $sth= $db->prepare(qq(select left_site,right_site,hamnet_edge.typ
-  from hamnet_edge
-));
-$sth->execute;
-while (@line= $sth->fetchrow_array) {
-  my $idx= 0;
-  my $left_site= $line[$idx++];
-  my $right_site= $line[$idx++];
-  my $typ= $line[$idx++];
+if(!$bgp && !$radio) {
+  my $sth= $db->prepare(qq(select left_site,right_site,hamnet_edge.typ
+    from hamnet_edge
+  ));
+  $sth->execute;
+  while (@line= $sth->fetchrow_array) {
+    my $idx= 0;
+    my $left_site= $line[$idx++];
+    my $right_site= $line[$idx++];
+    my $typ= $line[$idx++];
 
-  if ($only_country) {
-    next if ($site_country{$left_site} ne $only_country &&
-             $site_country{$right_site} ne $only_country)
+    if ($only_country) {
+      next if ($site_country{$left_site} ne $only_country &&
+               $site_country{$right_site} ne $only_country)
+    }
+    next if (($no_tunnel && $typ=~/tunnel/i) || ($no_radio && $typ=~/radio/i) || ($no_ism && $typ=~/ISM/i) || ($radio));
+    push(@allEdges, "$typ;$left_site:$right_site;$left_site;$right_site");
   }
-  next if (($no_tunnel && $typ=~/tunnel/i) || ($no_radio && $typ=~/radio/i) || ($no_ism && $typ=~/ISM/i) || ($radio));
-  push(@allEdges, "$typ;$left_site:$right_site;$left_site;$right_site");
 }
-
 print qq(Content-Type: text/plain\nExpires: 0 \n\n);
 
 &json_obj();
