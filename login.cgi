@@ -149,13 +149,20 @@ if ($fullname) {
           qq(Location: $baseUri/?m=Login&errMsg=Cannot+store+session.\n\n);
     exit;
   }
+  if ($login=~/^x/i && $login!~/dg8ngn/i ){
+    print qq(Expires: 0\n).
+          qq(Status: 302 Moved\n).
+          qq(Set-Cookie: HAMNETDB_SESSION=; path=$cookiePath/;\n).
+          qq(Location: $baseUri/?m=Login&errMsg=Not+possible+due+to+maintanance.+Please+try+again+later\n\n);
+  }	  
+
   $db->do(qq(update hamnet_maintainer set
      last_login=now() where callsign='$login'));
 
   print qq(Expires: 0\n).
         qq(Status: 302 Moved\n).
-    qq(Set-Cookie: HAMNETDB_SESSION=$sessionToken; path=$cookiePath;$cookieExp\n).
-    qq(Location: $baseUri/?login=$login\n\n);
+        qq(Set-Cookie: HAMNETDB_SESSION=$sessionToken; path=$cookiePath;$cookieExp\n).
+        qq(Location: $baseUri/?login=$login\n\n);
 }
 else {
   print qq(Expires: 0\n).

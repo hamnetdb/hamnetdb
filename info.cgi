@@ -287,7 +287,7 @@ unless ($found) {
 
     my $sth= $db->prepare(qq(select 
       hamnet_subnet.radioparam,h0.ip,h1.ip,h0.radioparam,h1.radioparam,
-      h0.typ,h1.typ, hamnet_subnet.begin_ip, hamnet_subnet.end_ip
+      h0.typ,h1.typ, hamnet_subnet.begin_ip, hamnet_subnet.end_ip, hamnet_subnet.ip 
       from hamnet_subnet
       left join hamnet_host as h0 on h0.rawip between begin_ip and end_ip
       left join hamnet_host as h1 on h1.rawip between begin_ip and end_ip
@@ -305,6 +305,7 @@ unless ($found) {
       my $typ1= $line[$idx++];
       my $begin_ip= $line[$idx++];
       my $end_ip= $line[$idx++];
+      my $ip= $line[$idx++];
       $radioparam0=~s/,/<br>/;
       $radioparam1=~s/,/<br>/;
       $radioparam.= " - " if $radioparam && $dist;
@@ -352,7 +353,16 @@ unless ($found) {
       $rssi1= $rssi1." dBm" if length($rssi1) >2;
       $rssi2= $rssi2." dBm" if length($rssi2) >2;
       if (length($rssi1)>1 || length($rssi2)>1) {
-        $rssi= $rssi1." / ".$rssi2;
+        # check if client comes from hamnet
+	unless(checkMapSource()) {
+	  $rssi_host= "https://grafana.hamnetdb.net";
+	}
+	else {
+	  $rssi_host= "http://44.148.129.16";
+	}
+	$rssi= "<a href='".$rssi_host."/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
+	$ip."&kiosk=tv' target='_blank'>".$rssi1." / ".$rssi2."</a>";
+	# $rssi= $rssi1." / ".$rssi2;
       }
 
 

@@ -316,8 +316,8 @@ function init()
   );
 
 
-	if(source == 3)
-	{
+  if(source == 3)
+  {
     var mapnikLayer1 = L.tileLayer(
       mapnikUrl1,
       {
@@ -332,7 +332,7 @@ function init()
         maxZoom: satZoom
       }
     );
-	}
+  }
 	
   if(hoverpop == "true")
   {
@@ -390,36 +390,43 @@ function init()
           color = "#5dff00";//green
           weight = 6;
           opacity= 0.8;
+          zIndex= 10;
           break;
         case "hf2":
           color = "#a2ff00";//green-yellow
           weight = 6;
           opacity= 0.8;
+          zIndex= 10;
           break;
         case "hf3":
           color = "#f1ff00";//yellow
           weight = 6;
           opacity= 0.8;
+          zIndex= 10;
           break;
         case "hf4":
           color = "#ffde00";//bright-orange
           weight = 6;
           opacity= 0.8;
+          zIndex= 10;
           break;
         case "hf5":
           color = "#ffa700";//dark-orange
           weight = 6;
           opacity= 0.8;
+          zIndex= 10;
           break;
         case "hf6":
           color = "#ff000d";//red
           weight = 6;
           opacity= 0.8;
+          zIndex= 10;
           break;
         case "hf7":
           color = "#ff000d";//red
           weight = 6;
           opacity= 0.8;
+          zIndex= 10;
           break;
         default:
           color = "#808080";
@@ -529,8 +536,8 @@ function init()
   hamnetLayer.on('add', function (e) {
     hamnetLayer.bringToBack()
   });
-  nohamnetLayer.on('add', function (e) {
-    nohamnetLayer.bringToBack()
+  hamnetmonitorLayer.on('add', function (e) {
+    hamnetmonitorLayer.bringToFront()
   });
   tunnelLayer.on('add', function (e) {
     tunnelLayer.bringToBack()
@@ -539,6 +546,7 @@ function init()
 
 
   map.addLayer(hamnetLayer);
+  map.addLayer(hamnetmonitorLayer,true);
   //map.addLayer(nohamnetLayer);
   //map.addLayer(tunnelLayer);
   map.addLayer(mapnikLayer);

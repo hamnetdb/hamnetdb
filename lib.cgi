@@ -1532,6 +1532,7 @@ sub updateCallsign
 }
 sub checkMapSource
 {
+  $clientIP= $query->remote_host();
   if ($clientIP=~/^44\./) 
   {
     return 1;
@@ -1573,6 +1574,27 @@ sub anonymizeCallsign {
   return $res;
 }
 
+# ---------------------------------------------------------------------------
+# # Get Data from other host for APIs
+# # url
+sub get_api_data{
+  $url=shift;
+  
+  my $ua      = LWP::UserAgent->new(); 
+  $ua->timeout(120);
+  my $request = HTTP::Request->new(GET => $url);
+
+  my $response = $ua->request($request);
+  if ($response->is_success) {
+    my $message = $response->decoded_content;
+    #print "Received reply: $message\n";
+    return $message;
+  }
+  else {
+    print "HTTP POST error code: ", $response->code, "\n";
+    print "HTTP POST error message: ", $response->message, "\n";
+  }
+}
 
 $tldName{"af"}= "Afghanistan";
 $tldName{"al"}= "Albania";
