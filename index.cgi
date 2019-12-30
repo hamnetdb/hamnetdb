@@ -717,7 +717,14 @@ sub subnetShow {
       <h3>Broadcast: $end_ipa &nbsp;&nbsp;&nbsp; 
           Netmask: $mask &nbsp;&nbsp;&nbsp; 
           $adrnum IPs</h3>
-      $radioparam
+    );
+    if ($myPermissions=~/$t,/) {
+      print qq(<a href="javascript:hamnetdb.edit('monitoring','$ip');">test SNMP monitoring</a><br>);
+
+    }
+    
+    print qq(
+	  $radioparam
     );
     if ($comment) {
       print qq(<br>$comment<br>);
@@ -1008,8 +1015,16 @@ sub showLinkByIP {
     $rssi1= $rssi1." dBm" if length($rssi1) >2;
     $rssi2= $rssi2." dBm" if length($rssi2) >2;
     if (length($rssi1)>1 || length($rssi2)>1) {
-      $rssi= "<a href='https://grafana.hamnetdb.net/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
-        $ip."'>".$rssi1." / ".$rssi2."</a>";
+      my $rssi_host;
+      # check if client comes from hamnet
+      unless(checkMapSource()) {
+	$rssi_host= "https://grafana.hamnetdb.net";
+      }
+      else {
+      	$rssi_host= "http://44.148.129.16";
+      }
+      $rssi= "<a href='".$rssi_host."/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
+        $ip."&kiosk=tv' target='_blank'>".$rssi1." / ".$rssi2."</a>";
     }
     my $ed= "";
     $ed= &editIcon("subnet", $id, 1);

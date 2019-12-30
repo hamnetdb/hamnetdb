@@ -107,33 +107,37 @@ $path_web= $panorama_path_web;
   #europe
   if ($poi=~/hamnet/) 
   {
-    $poi_param.= "-J h -I $path_web/rftools/mk_w.png -P 255 0 0 240 $path_web/rftools/hamnet.txt "; 
+    $poi_param.= "-J h -I $path_web/rftools/mk_w.png $path_web/rftools/mk_w.png -P 255 0 0 240 $path_web/rftools/hamnet.txt "; 
   }
   if ($poi=~/sota/)
   {  
-    $poi_param.= "-J sota -I $path_web/rftools/mks_w.png -P 0 255 0 250 $path_web/rftools/sota.txt ";
+    $poi_param.= "-J sota -I $path_web/rftools/mks_w.png $path_web/rftools/mks_w.png -P 0 255 0 250 $path_web/rftools/sota.txt ";
   }
   if ($poi=~/wc/) 
   {
-    $poi_param.= "-J wc -I $path_web/rftools/mk_cam.png -P 255 255 255 200 $path_web/rftools/fotowebcam.txt ";
+    $poi_param.= "-J wc -I $path_web/rftools/mk_cam.png $path_web/rftools/mk_cam.png -P 255 255 255 200 $path_web/rftools/fotowebcam.txt ";
   }
   if ($poi=~/fone/) 
   {
-    $poi_param.= "-J f -I $path_web/rftools/mk_w.png -P 0 255 0 100 $path_web/rftools/fone.txt ";
+    $poi_param.= "-J f -I $path_web/rftools/mk_w.png $path_web/rftools/mk_w.png -P 0 255 0 100 $path_web/rftools/fone2019.txt ";
   }
   if ($poi=~/mt/) 
   {
-    $poi_param.= "-J MT -I $path_web/rftools/mkss_w.png -P 100 100 100 200 $path_web/rftools/alps.txt ";
-    $poi_param.= "-J MT -I $path_web/rftools/mkss_w.png -P 100 100 100 200 $path_web/rftools/MT.txt ";
+    $poi_param.= "-J MT -I $path_web/rftools/mkss_w.png $path_web/rftools/mkss_w.png -P 100 100 100 200 $path_web/rftools/alps.txt ";
+    $poi_param.= "-J MT -I $path_web/rftools/mkss_w.png $path_web/rftools/mkss_w.png -P 100 100 100 200 $path_web/rftools/MT.txt ";
   }
   if ($poi=~/small/)
   {  
-    $poi_param.= "-J s -I $path_web/rftools/mkxs_w.png -P 60 60 60 100 $path_web/rftools/AT.txt ";
+    $poi_param.= "-J s -I $path_web/rftools/mkxs_w.png $path_web/rftools/mkxs_w.png -P 60 60 60 100 $path_web/rftools/AT.txt ";
   }
   $sun_param= "";
   if ($sun_az > 0 && $sun_el > 0)
   {
     $sun_param= "-S $sun_az $sun_el";
+  }
+  else #todo 90degree to camera
+  {
+    $sun_param= "-S 180 15";
   }
   $snow_param= "";
   if ($snow1 > 0 && $snow2 > 0)
@@ -172,7 +176,7 @@ $path_web= $panorama_path_web;
   else
   {
 
-    $cmd.= "-i $output_file.png -c $output_file.csv ";
+    $cmd.= "-i $output_file.jpg -c $output_file.csv ";
 #    print("$cmd \n\n $pan_hash");
 
     $result= qx/$cmd/;
@@ -187,19 +191,19 @@ $path_web= $panorama_path_web;
   if ($0=~/calc_panorama_image/) 
   {
 
-    $cmd_image="cat $output_file.png";
+    $cmd_image="cat $output_file.jpg";
     #if (not $refer =~ m/hamnetdb\.net|localhost/ )
     if (0)
     {
       $size_watermark= $size_y/6;
-      $cmd_wartermark= " | convert png:- -gravity Center -pointsize $size_watermark -stroke none -fill 'rgba(180,180,180,0.3)' -annotate 0 'hamnetdb.net' png:- 2>>$path_errlog";
+      $cmd_wartermark= " | convert jpg:- -gravity Center -pointsize $size_watermark -stroke none -fill 'rgba(180,180,180,0.3)' -annotate 0 'hamnetdb.net' jpg:- 2>>$path_errlog";
       $cmd_image.= $cmd_wartermark;
     }
 					
     #print("Content-Type: text/html\nExpires: 0\n\n");
     #print($cmd_image);
 
-    print("Content-Type: image/png\n\n");
+    print("Content-Type: image/jpg\n\n");
     $result_image= qx/$cmd_image/;
     print qq($result_image);
   }

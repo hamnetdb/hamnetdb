@@ -46,6 +46,10 @@ $mustLoadFromDB= 0;
 if (!($func=~/asnewest|redisp|store|delete/) && $id) {
   $mustLoadFromDB= 1;
 }
+
+if ($table=~m/none/) {
+  $mustLoadFromDB= 0;
+}
 $func= "delete" if $func eq "delcmd"; # Löschen ohne vorheriges Submit
 
 # Einige Vordefinitionen, um den Code lesbarer zu machen und
@@ -103,7 +107,7 @@ sub beforeForm {
       $edited=  $line[$idx++];
     }
     else {
-      $inputStatus= "ERROR: Object not found in database";
+      $inputStatus= "ERROR: Object not found in database".$table;
     }
     if ($table_history) {
       $undoTxt= "";

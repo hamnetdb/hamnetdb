@@ -246,6 +246,12 @@ foreach $net (sort keys %nets) {
   if ($net=~/^(\d+)\.(\d+)\.(\d+)/) {
     $name= "$3.$2.$1.in-addr.arpa";
     $lastDigit= $3;
+    # HACK for germany network prefix migration:
+    # distinguish between old and new by adding an additional octet
+    my $twoDigits= "$2-$3";
+    if ($net=~/^44.14[89]/) {
+      $lastDigit= $twoDigits;
+    }
   }
   elsif ($net=~/^(\d+)\.(\d+)/) {
     $name= "$2.$1.in-addr.arpa";
