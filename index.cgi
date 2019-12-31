@@ -726,8 +726,7 @@ sub subnetShow {
           $adrnum IPs</h3>
     );
     if ($myPermissions=~/$t,/) {
-      print qq(<a href="javascript:hamnetdb.edit('monitoring','$ip');">test SNMP monitoring</a><br>);
-
+      print qq(<a href="javascript:hamnetdb.edit('monitoring','$ip&sys=rssi');">test SNMP monitoring</a><br>);
     }
     
     print qq(
@@ -791,14 +790,14 @@ sub hostShow {
     my $routing= $line[$idx++];
     my $editor= $line[$idx++];
     my $edited= $line[$idx++];
-  
+
     $comment= &escComment($comment);
 
     $aliases= "DNS Aliases: <b>$aliases</b><br>" if $aliases;
     $mac= "MAC on radio interface: <b>$mac</b><br>" if $mac;
     $radioparam= "Radio parameters: <b>$radioparam</b><br>" if $radioparam;
-	$monitor= "Link monitoring - <b>Enabled</b><br>" if $monitor;
-	$routing= "Routing monitoring - <b>Enabled</b><br>" if $routing;
+    $monitor_out= "Link monitoring - <b>Enabled</b><br>" if $monitor;
+    $routing_out= "Routing monitoring - <b>Enabled</b><br>" if $routing;
 
     print qq(<div class="infobox vgrad">);
     print qq(<h2>).&editIcon($t, $id, 1);
@@ -807,10 +806,15 @@ sub hostShow {
       $radioparam
       $aliases
       $mac
-      $monitor
-      $routing
+      $monitor_out
+      $routing_out
       
     );
+    if ($myPermissions=~/$t,/ && $routing) {
+      print qq(<a href="javascript:hamnetdb.edit('monitoring','$ip&sys=routing');">test Routing monitoring</a><br>);
+    }
+
+
     if ($comment) {
       print qq(<br>$comment<br>);
     }

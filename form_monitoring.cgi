@@ -37,154 +37,238 @@ my $left_call;
 my $left_monitor;
 my $right_call;
 my $right_monitor;
-my $url= "http://monitoring.hc-i.r1.ampr.org/api/v1/linktest";
+my $url= $monitoring_API;
 
 print qq(</table></form>);
 
 my $ip_test= $query->param("id");
+my $system= $query->param("sys");
 $ip_test =~ s/\/.*//; #cut off /29 or anything else
 
-
-$result_link= showLinkByIP($ip_test);
-$result_text_link= status2Text($result_link);
-unless ($result_link) {
-  $failed= 1;
-}
-print "<h3>Link:</h3><span class='checkstatus'>".$result_text_link."</span><br>\n";
-
-#print link info
-unless ($failed) {
-  print qq(<span class='checkstatus'>&nbsp;&nbsp;&nbsp;<b>Left Site:</b> $left_call
-    <b>Right Site:</b> $right_call </span><br> );
-
-}
-
-unless ($failed) {
-  $result_monitor= showLinkRSSIIP($ip_test);
-  print "<h3>Monitoring enabled:</h3>".$result_monitor."<br>\n";
-  
-}
-
-unless ($failed) {
-  print qq(<span class='checkstatus'>&nbsp;&nbsp;&nbsp;<b>Left IP:</b>$left_monitor  
-    <b>Right IP</b> $right_monitor</span><br>\n);
-  my $left_url_ping= $url."/ping/".$left_monitor."?EnableCaching=false&Timeout=0:0:5&Retries=2";
-  my $right_url_ping= $url."/ping/".$right_monitor."?EnableCaching=false&Timeout=0:0:5&Retries=2";
-  my $left_response_ping=  get_api_data($left_url_ping);
-  my $right_response_ping=  get_api_data($right_url_ping);
-
-  my $left_ok;
-  my $right_ok;
-  
-  my $decoded_json= decode_json($left_response_ping);
-  $left_ok= $decoded_json->{'status'};
-  
-  my $decoded_json= decode_json($right_response_ping);
-  $right_ok= $decoded_json->{'status'};
-  
-  print qq(<h3>Ping $left_monitor </h3><span class='checkstatus'>);
-  if ($left_ok eq "Success") {
-  	 print "ok"; 
+if ($system eq "routing") {
+  print "<h3>Router:</h3><span class='checkstatus'>".$ip_test."</span><br>\n";
+   
+  #if routing enabled
+  if (checkRoutingFlag($ip_test)) {
+    print "<h3>Monitoring - Routing:</h3>enabled<br>\n";     
   }
   else {
-  	$failed= 1;
-  	print "failed";
+    print "<h3>Monitoring - Routing:</h3>not enabled<br>\n";     
+    $failed=1;  
   }
-  print qq(</span><br><h3>Ping $right_monitor </h3><span class='checkstatus'>);
-  if ($right_ok eq "Success") {
-  	print "ok"; 
+  #if ping
+  unless ($failed) {
+   print qq(<h3>Ping:</h3>\n);
+    my $url_ping= $url."/linktest/ping/".$ip_test."?EnableCaching=false&Timeout=0:0:5&Retries=2";
+    my $response_ping=  get_api_data($url_ping);
+    my $ok;
+    my $decoded_json= decode_json($response_ping);
+    $ok= $decoded_json->{'status'};
+
+    if ($ok eq "Success") {
+       print "ok";
+    }
+    else {
+      $failed= 1;
+      print "failed";
+    }
+    print "</span><br>";
   }
-  else {
-  	$failed= 1;
-  	print "failed";
+  #if api 
+  unless ($failed) {
+    print qq(<h3>Features:</h3>\n);
+    my $url_function= $url."/linktest/info/".$ip_test."?EnableCaching=false&Timeout=0:0:5&Retries=2";
+    #print $url_function,"<br>";
+    my $response_function=  get_api_data($url_function);
+    my $ok, $error_msg;
+    my $feature_bgp = "not available";
+    my $feature_traceroute = "not available";
+    my $decoded_json= decode_json($response_function);
+    #$ok= $decoded_json->{'status'};
+    #$right_rssi= $decoded_json->{'details'}->[0]->{'rxLevel2at1'};
+    my @features = @{$decoded_json->{'supportedFeatures'};};
+    my @error_rssi = @{$decoded_json->{'errorDetails'};};
+    foreach my $f ( @error_rssi ) {
+      $error_msg= $error_msg.$f."<br>";
+      $failed= 1;
+    }
+    foreach my $f ( @features ) {
+       #print $f.'<br>';
+       if ($f eq "BgpPeers") {
+         $feature_bgp= "successfully tested";
+       }
+       if ($f eq "Traceroute") {
+	 $feature_traceroute= "successfully tested";       
+       }    
+    }			    
+    print "<b>BGP</b> ",$feature_bgp,"<br>";
+    print "<b>Traceroute</b> ",$feature_traceroute,"<br>";
+    if ($failed) {
+      print "<br>no active features could be found<br>\n";
+    }     
+
+    print "</span><br>";
   }
-  print "</span><br>";
-}
-
-unless ($failed) {
-  my $left_url_snmp= $url."/info/".$left_monitor."?EnableCaching=false&Timeout=0:0:3&Retries=2";
-  my $right_url_snmp= $url."/info/".$right_monitor."?EnableCaching=false&Timeout=0:0:3&Retries=2";
-  my $left_response_snmp=  get_api_data($left_url_snmp);
-  my $right_response_snmp=  get_api_data($right_url_snmp);
-
-  my $left_ok;
-  my $right_ok;
-
-  my $decoded_json_left= decode_json($left_response_snmp);
-  $left_ok= $decoded_json_left->{'model'};
-
-  my $decoded_json_right= decode_json($right_response_snmp);
-  $right_ok= $decoded_json_right->{'model'};
-
-  print qq(<h3>SNMP $left_monitor </h3><span class='checkstatus'>\n);
-  if (length($left_ok) > 3) {
-    print "ok";
+  #number bgp peers
+  unless ($failed) {
+    print qq(<h3>BGP-peers details</h3>\n);
+    my $url_function= $url."/bgp/peers/".$ip_test."?EnableCaching=false&Timeout=0:0:5&Retries=2";
+    #print $url_function;
+    my $response_function=  get_api_data($url_function);
+    my $peer_cnt, $error_msg, $prefix_cnt;
+    my $decoded_json= decode_json($response_function);
+    $ok= $decoded_json->{'status'};
+    my @peers = @{$decoded_json->{'bgpPeers'};};
+    my @error_rssi = @{$decoded_json->{'errorDetails'};};
+    foreach my $f (@peers) {
+      if ($f->{'peeringState'} eq "established" ) {
+	$prefix_cnt+= $f->{'prefixCount'};
+        $peer_cnt++;
+      }
+    }
+    print "<b>active direct BGP peers</b> ",$peer_cnt,"<br>";
+    print "<b>prefix count in total</b> ",$prefix_cnt,"<br>";
   }
-  else {
-        $failed= 1;
-        print "failed";
-  }
-  print qq(</span><br><h3>SNMP $right_monitor </h3><span class='checkstatus'>);
-  if (length($right_ok) > 3) {
-        print "ok";
-  }
-  else {
-        $failed= 1;
-        print "failed";
-  }
-  print "</span><br>";
-}
-
-
-
-unless ($failed) {
-  my $url_rssi= $url."/link/".$left_monitor."/".$right_monitor."?EnableCaching=false&Timeout=0:0:2&Retries=2";
-  my $response_rssi=  get_api_data($url_rssi);
-
-  print	"<h3>RSSI:</h3>\n";
-
-  my $left_rssi= 0;
-  my $right_rssi= 0;
-
-  my $decoded_json= decode_json($response_rssi);
-  $left_rssi= $decoded_json->{'details'}->[0]->{'rxLevel1at2'};
-  $right_rssi= $decoded_json->{'details'}->[0]->{'rxLevel2at1'};
-  my @error_rssi = @{$decoded_json->{'errorDetails'};};
-
-  my $error_msg= "";
-  foreach my $f ( @error_rssi ) {
-    $error_msg= $error_msg.$f."<br>";
+}	
+if ($system eq "rssi") {
+  $result_link= showLinkByIP($ip_test);
+  $result_text_link= status2Text($result_link);
+  unless ($result_link) {
     $failed= 1;
   }
-  $left_rssi+0;
-  $right_rssi+0;
+  print "<h3>Link:</h3><span class='checkstatus'>".$result_text_link."</span><br>\n";
 
-  print qq(<b>Left Site:</b> );
-  if ($left_rssi ne 0 ) {
-    print $left_rssi."dBm";
+#print link info
+  unless ($failed) {
+    print qq(<span class='checkstatus'>&nbsp;&nbsp;&nbsp;<b>Left Site:</b> $left_call
+      <b>Right Site:</b> $right_call </span><br> );
   }
-  else {
-  	$failed= 1;
-  	print "failed";
+
+  unless ($failed) {
+    $result_monitor= showLinkRSSIIP($ip_test);
+    print "<h3>Monitoring enabled:</h3>".$result_monitor."<br>\n";
   }
-  print "<br><b>Right Site:</b>";
-  if ($right_rssi ne 0 ) {
-    print $right_rssi."dBm";
+
+  unless ($failed) {
+    print qq(<span class='checkstatus'>&nbsp;&nbsp;&nbsp;<b>Left IP:</b>$left_monitor  
+      <b>Right IP</b> $right_monitor</span><br>\n);
+    my $left_url_ping= $url."/ping/".$left_monitor."?EnableCaching=false&Timeout=0:0:5&Retries=2";
+    my $right_url_ping= $url."/ping/".$right_monitor."?EnableCaching=false&Timeout=0:0:5&Retries=2";
+    my $left_response_ping=  get_api_data($left_url_ping);
+    my $right_response_ping=  get_api_data($right_url_ping);
+
+    my $left_ok;
+    my $right_ok;
+  
+    my $decoded_json= decode_json($left_response_ping);
+    $left_ok= $decoded_json->{'status'};
+  
+    my $decoded_json= decode_json($right_response_ping);
+    $right_ok= $decoded_json->{'status'};
+  
+    print qq(<h3>Ping $left_monitor </h3><span class='checkstatus'>);
+    if ($left_ok eq "Success") {
+      print "ok"; 
+    }
+    else {
+      $failed= 1;
+      print "failed";
+    }
+    print qq(</span><br><h3>Ping $right_monitor </h3><span class='checkstatus'>);
+    if ($right_ok eq "Success") {
+    print "ok"; 
+    }
+    else {
+      $failed= 1;
+      print "failed";
+    }
+    print "</span><br>";
   }
-  else {
-  	$failed= 1;
-  	print "failed";
+
+  unless ($failed) {
+    my $left_url_snmp= $url."/info/".$left_monitor."?EnableCaching=false&Timeout=0:0:3&Retries=2";
+    my $right_url_snmp= $url."/info/".$right_monitor."?EnableCaching=false&Timeout=0:0:3&Retries=2";
+    my $left_response_snmp=  get_api_data($left_url_snmp);
+    my $right_response_snmp=  get_api_data($right_url_snmp);
+
+    my $left_ok;
+    my $right_ok;
+
+    my $decoded_json_left= decode_json($left_response_snmp);
+    $left_ok= $decoded_json_left->{'model'};
+
+    my $decoded_json_right= decode_json($right_response_snmp);
+    $right_ok= $decoded_json_right->{'model'};
+
+    print qq(<h3>SNMP $left_monitor </h3><span class='checkstatus'>\n);
+    if (length($left_ok) > 3) {
+      print "ok";
+    }
+    else {
+      $failed= 1;
+      print "failed";
+    }
+    print qq(</span><br><h3>SNMP $right_monitor </h3><span class='checkstatus'>);
+    if (length($right_ok) > 3) {
+      print "ok";
+    }
+    else {
+      $failed= 1;
+      print "failed";
+    }
+    print "</span><br>";
   }
-  print "<br>";
-  if ($failed) {
-  	print qq(<b>Error Message:</b> $error_msg<br>failed);
-  }
-  else {
-  	print "ok";
-  }
+
+
+
+  unless ($failed) {
+    my $url_rssi= $url."/link/".$left_monitor."/".$right_monitor."?EnableCaching=false&Timeout=0:0:2&Retries=2";
+    my $response_rssi=  get_api_data($url_rssi);
+  
+    print	"<h3>RSSI:</h3>\n";
+
+    my $left_rssi= 0;
+    my $right_rssi= 0;
+
+    my $decoded_json= decode_json($response_rssi);
+    $left_rssi= $decoded_json->{'details'}->[0]->{'rxLevel1at2'};
+    $right_rssi= $decoded_json->{'details'}->[0]->{'rxLevel2at1'};
+    my @error_rssi = @{$decoded_json->{'errorDetails'};};
+  
+    my $error_msg= "";
+    foreach my $f ( @error_rssi ) {
+      $error_msg= $error_msg.$f."<br>";
+      $failed= 1;
+    }
+    $left_rssi+0;
+    $right_rssi+0;
+
+    print qq(<b>Left Site:</b> );
+    if ($left_rssi ne 0 ) {
+      print $left_rssi."dBm";
+    }
+    else {
+      $failed= 1;
+      print "failed";
+    }
+    print "<br><b>Right Site:</b>";
+    if ($right_rssi ne 0 ) {
+      print $right_rssi."dBm";
+    }
+    else {
+      $failed= 1;
+      print "failed";
+    }
+    print "<br>";
+    if ($failed) {
+      print qq(<b>Error Message:</b> $error_msg<br>failed);
+    }
+    else {
+      print "ok";
+    } 
  
+  }
 }
-
 #
 # {
 #   "address": "44.143.47.74",
@@ -376,4 +460,19 @@ sub showLinkRSSIIP {
   $failed= 1;	  
   return 0;
 }
+
+sub checkRoutingFlag {
+  my $ip= shift;
+  my $sql="select ip ".
+    "from hamnet_host ".
+    "where ip='$ip' and routing=1";
+  my $sth= $db->prepare($sql);
+  $sth->execute;
+  if (@line= $sth->fetchrow_array) {
+    my $idx= 0;
+    my $result= $line[$idx++];
+    return 1;
+  }
+  return 0;
+}  
 

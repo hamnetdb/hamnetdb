@@ -316,8 +316,8 @@ function init()
   );
 
 
-  if(source == 3)
-  {
+	if(source == 3)
+	{
     var mapnikLayer1 = L.tileLayer(
       mapnikUrl1,
       {
@@ -332,7 +332,7 @@ function init()
         maxZoom: satZoom
       }
     );
-  }
+	}
 	
   if(hoverpop == "true")
   {
@@ -390,43 +390,41 @@ function init()
           color = "#5dff00";//green
           weight = 6;
           opacity= 0.8;
-          zIndex= 10;
           break;
         case "hf2":
           color = "#a2ff00";//green-yellow
           weight = 6;
           opacity= 0.8;
-          zIndex= 10;
           break;
         case "hf3":
           color = "#f1ff00";//yellow
           weight = 6;
           opacity= 0.8;
-          zIndex= 10;
           break;
         case "hf4":
           color = "#ffde00";//bright-orange
           weight = 6;
           opacity= 0.8;
-          zIndex= 10;
           break;
         case "hf5":
           color = "#ffa700";//dark-orange
           weight = 6;
           opacity= 0.8;
-          zIndex= 10;
           break;
         case "hf6":
           color = "#ff000d";//red
           weight = 6;
           opacity= 0.8;
-          zIndex= 10;
           break;
         case "hf7":
           color = "#ff000d";//red
           weight = 6;
           opacity= 0.8;
-          zIndex= 10;
+          break;
+        case "bgp":
+          color = "#333333";//grey
+          weight = 1.5;
+          opacity= 1.0;
           break;
         default:
           color = "#808080";
@@ -531,23 +529,33 @@ function init()
   index=500;
   offset=3000;
   var hamnetmonitorLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&radio=1",settingshamnet);
+  var hamnetBGPLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&bgp=1",settingshamnet);
   var nohamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
   var tunnelLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
   hamnetLayer.on('add', function (e) {
     hamnetLayer.bringToBack()
+    hamnetmonitorLayer.bringToFront();
   });
-  hamnetmonitorLayer.on('add', function (e) {
-    hamnetmonitorLayer.bringToFront()
+  nohamnetLayer.on('add', function (e) {
+    nohamnetLayer.bringToBack()
+    hamnetmonitorLayer.bringToFront();
   });
   tunnelLayer.on('add', function (e) {
     tunnelLayer.bringToBack()
+    hamnetmonitorLayer.bringToFront();
   });
+  hamnetmonitorLayer.on('add', function (e) {
+    hamnetmonitorLayer.bringToFront();
+  });
+  hamnetBGPLayer.on('add', function (e) {
+    hamnetBGPLayer.bringToFront();
+  });
+  
 
 
 
   map.addLayer(hamnetLayer);
-  map.addLayer(hamnetmonitorLayer,true);
-  //map.addLayer(nohamnetLayer);
+  map.addLayer(hamnetmonitorLayer);
   //map.addLayer(tunnelLayer);
   map.addLayer(mapnikLayer);
 
@@ -616,6 +624,7 @@ function init()
   var overlayLayers = {
     'Hamnet': hamnetLayer,
     'Hamnet RSSI': hamnetmonitorLayer,
+    'Hamnet BGP': hamnetBGPLayer,
     'tunnel connections': tunnelLayer,
     'sites without Hamnet': nohamnetLayer,
   };

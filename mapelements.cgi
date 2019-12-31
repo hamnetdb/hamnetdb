@@ -224,35 +224,40 @@ foreach $net (sort keys %all_hosts) {
           else             {$style= 'hf7';} 
         }
       }
+      #print qq(Content-Type: text/plain\nExpires: 0 \n\n);
       if ($bgp) {
         my $monitor_left;
-        my $sth= $db->prepare(qq(select 
-          ip
-          from hamnet_host
-          where 
-          routing=1 and rawip > $subnet_begin{$net} and 
-          rawip < $subnet_end{$net} and site='$sites[0]'
-        ));
+	my $sth= $db->prepare(qq(select 
+	  host.ip
+	  from hamnet_host as host
+	  join hamnet_check as ck on ck.ip = host.ip
+	  where 
+	    ck.service = 'routing' and host.rawip > $subnet_begin{$net} and 
+	    host.rawip < $subnet_end{$net} and host.site='$sites[0]'
+	));
+
         $sth->execute;
-        while (@line= $sth->fetchrow_array) {
-          my $idx= 0;
-          $monitor_left= $line[$idx++];
+	while (@line= $sth->fetchrow_array) {
+	  my $idx= 0;
+	  $monitor_left= $line[$idx++];
+	  #	  print '++++', $line[0];
         }
         #right monitored host -> rssi
         my $monitor_right;
-        $sql=qq(select 
-          ip
-          from hamnet_host
+        $sql=qq(host.ip
+           from hamnet_host as host
+           join hamnet_check as ck on ck.ip = host.ip
           where 
-          routing=1 and rawip > $subnet_begin{$net} and 
-          rawip < $subnet_end{$net} and site='$sites[1]'
+           ck.service = 'routing'
+	   rawip > $subnet_begin{$net} and 
+           rawip < $subnet_end{$net} and site='$sites[1]'
         );
-        my $sth= $db->prepare($sql);
-        $sth->execute;
-        while (@line= $sth->fetchrow_array) {
-          my $idx= 0;
-          $monitor_right= $line[$idx++];
-        }
+	my $sth= $db->prepare($sql);
+	$sth->execute;
+	while (@line= $sth->fetchrow_array) {
+	  my $idx= 0;
+	  $monitor_right= $line[$idx++];
+	}
         my $rssi; 
         my $rssi2; 
         $rssi=bgpStatus($monitor_left,'routing');

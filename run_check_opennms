@@ -44,7 +44,8 @@ my $sth= $db->prepare(qq(select ip
 $sth->execute;
 while (@line= $sth->fetchrow_array) {
   push(@all_routing_ips, $line[0]);
-#  print $line[0], "\n";
+  $all_routing->{$line[0]}=1;
+  print $line[0], "....\n";
 }
 
 $i=0;
@@ -142,31 +143,25 @@ sub performCheckRouting{
   #  "unixtimestamp": 1577544159,
   #  "stamp": "2019-12-28T14:42:39+00:00"
   #},
-  my %routing= ();
-  my %routing_timestamp= ();
-  my %routing_uptime= ()
-  foreach my $entry (@decoded_json) {
-    if ($entry->{'peeringState'} eq 'established')
-    {
-      print $entry->{'peeringState'},$entry->{'remoteAddress'}, "\n\n";  	
-    	
-      $routing{$entry->{'remoteAddress'}}=$entry->{'prefixCount'};
-      $routing_timestamp{$entry->{'remoteAddress'}}=$entry->{'unixtimestamp'};
-      $routing_uptime->{'remoteAddress'}}=$entry->{'uptime'};
-    }
-  } 
-
-  #update database
   $service="routing";
   my $Count= 0;
   my $okCount= 0;
   my $notokCount= 0;
-
-  foreach $ip (@all_routing_ips) {
-  #  print $ip, " ", $rssi{$ip}," ",$rssi_timestamp{$ip},"\n";
-    if (defined($routing{$ip})) {
+          
+  my %routing= ();
+  my %routing_timestamp= ();
+  my %routing_uptime= ();
+  foreach my $entry (@decoded_json) {
+    if ($entry->{'peeringState'} eq 'established' && defined($all_routing->{$entry->{'localAddress'}} )) {
+      print $entry->{'peeringState'},$entry->{'localAddress'}, "\n\n";  	
+      my $ip= $entry->{'remoteAddress'};
+      $routing= $entry->{'prefixCount'};
+      $routing_timestamp= $entry->{'unixtimestamp'};
+      $routing_uptime= $entry->{'uptime'};
+      
+      #print $routing{$ip}, "--#\n";
       my $where= "ip='$ip' and agent='$agent' and service='$service' and status=1";
-      my $set=   "set ts=FROM_UNIXTIME($routing_timestamp{$ip}),value='$routing{$ip}',message='$routing_uptime{$ip}'";
+      my $set=   "set ts=FROM_UNIXTIME($routing_timestamp),value='$routing',message='$routing_uptime'";
 
       my $sql= "";
       my $sth= $db->prepare(qq(select ip from hamnet_check
@@ -176,7 +171,7 @@ sub performCheckRouting{
         $sql= "update hamnet_check $set where $where";
       }
       else {
-        $sql= "replace hamnet_check $set,since=FROM_UNIXTIME($routing_timestamp{$ip}),status='1',".
+        $sql= "replace hamnet_check $set,since=FROM_UNIXTIME($routing_timestamp),status='1',".
               "ip='$ip',agent='$agent',service='$service'";
       }
       $okCount++;
