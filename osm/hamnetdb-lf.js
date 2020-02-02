@@ -2696,7 +2696,7 @@ function traceTest() {
     }
   }
   if (traceStop && !stop) {
-    if (traceStop.length >4) {
+    if (traceStop.length >=4) {
       stop= "&stop="+traceStop;
     }
   }  
