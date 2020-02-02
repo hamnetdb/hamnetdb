@@ -103,6 +103,17 @@ h4 {
   display: block;
   color:#0078a8;
 }
+#tracesrtart, #tracestop, #traceerror {
+  visibility: hidden;
+}
+#traceLoading {
+  visibility: hidden;
+  display: none;
+}
+#traceDeleteAll {
+  display: none;
+  visibility: hidden;
+}
 .info-toolbar, .setting-toolbar, .rftools-toolbar
 {
   background: none repeat scroll 0 0 #fff;
