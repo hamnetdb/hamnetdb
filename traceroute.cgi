@@ -391,7 +391,7 @@ sub elementsOut {
         &json_var($row->{'site'}, "callsign");
         &json_var($row->{'action'}, "action");
         &json_var("site-trace", "style");
-        &json_var(100, "zIndex");
+        &json_var(0, "zIndex");
       &json_obj_end();
     &json_obj_end();
   }

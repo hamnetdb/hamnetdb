@@ -2668,7 +2668,7 @@ function traceSelectStop(call) {
     traceStopIP= null;
   }
   if (typeof call !== 'undefined') {
-    if (call.length >4 && !traceStopIP) {
+    if (call.length >=4 && !traceStopIP) {
       traceStop= call;
       stop= call;
 //place stop marker 
