@@ -2808,6 +2808,9 @@ function traceDeleteAll() {
   traceDeleteMarker();
   document.getElementById('traceDeleteAll').style.visibility="hidden";
   document.getElementById('traceDeleteAll').style.display="none";
+  traceMsg(1,"");
+  document.getElementById("tracestart").innerHTML= "";
+  document.getElementById("tracestop").innerHTML= "";
 }
 function traceShowDelete() {
   document.getElementById('traceDeleteAll').style.visibility="visible";
