@@ -246,7 +246,7 @@ function init()
     zoom: 7, 
     zoomControl:false,
     preferCanvas: true,
-    //renderer: L.canvas(),
+//    renderer: L.canvas(),
     contextmenu: true,
       contextmenuWidth: 160,
         contextmenuItems: [
@@ -345,7 +345,7 @@ function init()
   //var hamnetLayer = new L.KML(kmlUrl + "&no_tunnel=1&only_hamnet=1", {async: true, hover:hoverS});
   var settingshamnet = {
     style: function(feature) {
-      var color, weight, opacity;
+      var color, weight, opacity, dashArray=0 ;
       switch (feature.properties.style)
       {
         case "Tunnel":
@@ -426,12 +426,18 @@ function init()
           weight = 1.5;
           opacity= 1.0;
           break;
+       case "bgpbad":
+          color = "#333333";//grey
+          weight = 1.5;
+          opacity= 1.0;
+          dashArray = "6, 6";
+          break;
         default:
           color = "#808080";
           weight = 6;
           opacity= 0.5;
       }
-      return {color: color, weight:weight, opacity:opacity};//feature.properties.GPSUserColor};
+      return {color: color, weight:weight, opacity:opacity, dashArray:dashArray};//feature.properties.GPSUserColor};
     },
     pointToLayer: function(feature, latlng) {
       return L.marker(latlng, {
@@ -535,19 +541,24 @@ function init()
   hamnetLayer.on('add', function (e) {
     hamnetLayer.bringToBack()
     hamnetmonitorLayer.bringToFront();
+    hamnetBGPLayer.bringToFront();
   });
   nohamnetLayer.on('add', function (e) {
     nohamnetLayer.bringToBack()
     hamnetmonitorLayer.bringToFront();
+    hamnetBGPLayer.bringToFront();
   });
   tunnelLayer.on('add', function (e) {
     tunnelLayer.bringToBack()
     hamnetmonitorLayer.bringToFront();
+    hamnetBGPLayer.bringToFront();
   });
   hamnetmonitorLayer.on('add', function (e) {
     hamnetmonitorLayer.bringToFront();
+    hamnetBGPLayer.bringToFront();
   });
   hamnetBGPLayer.on('add', function (e) {
+    hamnetmonitorLayer.bringToFront();
     hamnetBGPLayer.bringToFront();
   });
   

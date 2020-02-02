@@ -12,6 +12,7 @@
 #
 push @INC,'.';
 use Fcntl qw(:flock);
+use Time::HiRes;
 do "lib.cgi" or die;
 
 # Supply these parameters if we want to limit the result
@@ -30,7 +31,7 @@ my $geojson=     $query->param("geojson")+0;
 # The result arrays which are rendered as JSON or GeoJSON
 my @allSites= ();
 my @allEdges= ();
-# allow only one instance "semaphor"
+# allow only one instance "semaphor" otherwise deadlock
 check_process(1);
 
 # Read realtime monitoring results for appropriate site-symbols
@@ -115,8 +116,10 @@ my $sth= $db->prepare(qq(select hamnet_host.ip,hamnet_subnet.ip,
   where hamnet_host.ip is not null and hamnet_subnet.typ like 'Backbone-%'
 ));
 #as_parent,
+#
 $sth->execute;
 while (@line= $sth->fetchrow_array) {
+#while (0) {
   my $idx= 0;
   my $host_ip= $line[$idx++];
   my $subnet_ip= $line[$idx++];
@@ -139,14 +142,33 @@ while (@line= $sth->fetchrow_array) {
 }
 
 foreach $net (sort keys %all_hosts) {
+#if (0) {
   for $typ ("Routing-Radio", "Routing-ISM", "Routing-Tunnel", "Routing-Ethernet") {
     if ($type_count{$net}{$typ} == 2) {
+
+#into sql?      	    
       my @sites= ();
       foreach $host (sort keys %{$all_hosts{$net}}) {
         if ($all_host_types{$host} eq $typ) {
-          push(@sites, $host_site{$host});
+           push(@sites, $host_site{$host});
         }
       }
+							    
+      #skip virtual hosts like HC
+      if ($site_no_check{$sites[0]} == 5 ) {
+        $virtual_peer{$sites[1]}= 1;
+        next;
+      }
+      if ($site_no_check{$sites[1]} == 5) {
+        $virtual_peer{$sites[0]}= 1;
+        next;
+      } 
+      	    
+      next if (($no_tunnel && $typ=~/tunnel/i) ||
+                ($no_tunnel && $typ=~/ethernet/i) ||
+                ($no_radio && $typ=~/radio/i) || 
+                ($no_ism&& $typ=~/ISM/i));
+
       if ($only_as) {
         next if ($site_as{$sites[0]} ne $only_as ||
                  $site_as{$sites[1]} ne $only_as)
@@ -156,65 +178,42 @@ foreach $net (sort keys %all_hosts) {
                  $site_country{$sites[1]} ne $only_country)
       } 
       
-      #skip virtual hosts
-      if ($site_no_check{$sites[0]} == 5 ) {
-        $virtual_peer{$sites[1]}= 1;
-        next;
-      }
-      if ($site_no_check{$sites[1]} == 5) {
-        $virtual_peer{$sites[0]}= 1;
-        next;
-      }
 
-      next if (($no_tunnel && $typ=~/tunnel/i) || 
-                ($no_tunnel && $typ=~/ethernet/i) || 
-                ($no_radio && $typ=~/radio/i) || 
-                ($no_ism&& $typ=~/ISM/i));
-
-      
-
-      #get rssi
+      #get RSSI
       my $style=$typ;
-      if ($radio) {
+      if ($radio && ( $typ=~/radio/i || $typ=~/ISM/i)) {
+        my $rssi= 0;      
         #get worst rssi
         #left monitored host -> rssi
         my $monitor_left;
         my $sth= $db->prepare(qq(select 
-          ip
-          from hamnet_host
-          where 
-          monitor=1 and rawip > $subnet_begin{$net} and 
-          rawip < $subnet_end{$net} and site='$sites[0]'
+          host.ip, ck.value
+          from hamnet_host as host
+          join hamnet_check as ck on ck.ip = host.ip
+	  where 
+            ck.service = 'rssi' and
+             ((host.rawip > $subnet_begin{$net} and
+               host.rawip < $subnet_end{$net} and host.site='$sites[0]')
+            OR
+               (host.rawip > $subnet_begin{$net} and
+               host.rawip < $subnet_end{$net} and host.site='$sites[1]'))
+            AND
+            unix_timestamp(ck.ts) > (unix_timestamp(NOW())-7200)
+          ORDER BY 
+	    ck.ts
+          LIMIT 2	  
         ));
         $sth->execute;
         while (@line= $sth->fetchrow_array) {
           my $idx= 0;
           $monitor_left= $line[$idx++];
+          $rssi_tmp= $line[$idx++];
+	  $rssi= $rssi_tmp if $rssi_tmp < $rssi; 
         }
-        #right monitored host -> rssi
-        my $monitor_right;
-        $sql=qq(select 
-          ip
-          from hamnet_host
-          where 
-          monitor=1 and rawip > $subnet_begin{$net} and 
-          rawip < $subnet_end{$net} and site='$sites[1]'
-        );
-        my $sth= $db->prepare($sql);
-        $sth->execute;
-        while (@line= $sth->fetchrow_array) {
-          my $idx= 0;
-          $monitor_right= $line[$idx++];
-        }
-        my $rssi; 
-        my $rssi2; 
-        $rssi=linkStatus($monitor_left,'rssi');
-        $rssi2=linkStatus($monitor_right,'rssi');
-        next if ((length($rssi) <2 ) && (length($rssi2) <2 ));
-        if((length($rssi) >1 ) && (length($rssi2) >1 )) {
+        next if ($rssi == 0);
+        if (length($rssi) >1 ) {
           $rssi = $rssi+0;
-          $rssi2 = $rssi2+0;
-          $rssi= $rssi2 if $rssi > $rssi2; #get worst side and apply style
+	  #$rssi= $rssi2 if $rssi > $rssi2; #get worst side and apply style
           if   ($rssi>-66) {$style= 'hf1';} 
           elsif($rssi>-71) {$style= 'hf2';} 
           elsif($rssi>-76) {$style= 'hf3';} 
@@ -225,54 +224,51 @@ foreach $net (sort keys %all_hosts) {
         }
       }
       #print qq(Content-Type: text/plain\nExpires: 0 \n\n);
-      if ($bgp) {
+      if ($bgp && ($typ=~/radio/i || $typ=~/ISM/i)) {
         my $monitor_left;
-	my $sth= $db->prepare(qq(select 
-	  host.ip
-	  from hamnet_host as host
-	  join hamnet_check as ck on ck.ip = host.ip
-	  where 
-	    ck.service = 'routing' and host.rawip > $subnet_begin{$net} and 
-	    host.rawip < $subnet_end{$net} and host.site='$sites[0]'
-	));
-
-        $sth->execute;
-	while (@line= $sth->fetchrow_array) {
-	  my $idx= 0;
-	  $monitor_left= $line[$idx++];
-	  #	  print '++++', $line[0];
-        }
-        #right monitored host -> rssi
-        my $monitor_right;
-        $sql=qq(host.ip
-           from hamnet_host as host
-           join hamnet_check as ck on ck.ip = host.ip
+	my $rssi= 0;
+        my $sth= $db->prepare(qq(select 
+          host.ip, ck.value
+          from hamnet_host as host
+          join hamnet_check as ck on ck.ip = host.ip
           where 
-           ck.service = 'routing'
-	   rawip > $subnet_begin{$net} and 
-           rawip < $subnet_end{$net} and site='$sites[1]'
-        );
-	my $sth= $db->prepare($sql);
-	$sth->execute;
-	while (@line= $sth->fetchrow_array) {
-	  my $idx= 0;
-	  $monitor_right= $line[$idx++];
-	}
-        my $rssi; 
-        my $rssi2; 
-        $rssi=bgpStatus($monitor_left,'routing');
-        $rssi2=bgpStatus($monitor_right,'routing');
-        next if ($rssi eq '-') && ($rssi2 eq '-');
-        if((length($rssi) >=1 ) && (length($rssi2) >=1 )) {
-          $style = "bgp";
+            ck.service = 'routing' and 
+            ((host.rawip > $subnet_begin{$net} and 
+             host.rawip < $subnet_end{$net} and host.site='$sites[0]')
+            OR
+	    (host.rawip > $subnet_begin{$net} and
+             host.rawip < $subnet_end{$net} and host.site='$sites[1]'))
+            AND
+              unix_timestamp(ck.ts) > (unix_timestamp(NOW())-7200)
+          ORDER BY
+            ck.ts
+          LIMIT 2	      
+        ));
+        $sth->execute;
+        while (@line= $sth->fetchrow_array) {
+          my $idx= 0;
+          $monitor_left= $line[$idx++];
+          $rssi= $line[$idx++];
+          #print '++++',$line[0],' ',$sites[0],'\n';
+        }
+	next if (!$rssi);
+        if (length($rssi) >=1) {
+          if ($rssi <= 400) {
+            $style = "bgpbad";
+	  }
+	  else {
+	    $style = "bgp";
+	  }
         }
       } 
       push(@allEdges, "$style;$net;$sites[0];$sites[1]");
     }
   }
 }
+# TIME only_as || only_country into SQL-query?
+# -------------------------------------------------------------------------
+# Prepare sites
 foreach my $callsign (@allCallsigns) { 
-#split here?
   if ($only_as) {
     next if ($site_as{$callsign} != $only_as)
   }
@@ -280,7 +276,10 @@ foreach my $callsign (@allCallsigns) {
     $site_country{$callsign}= $as_country{$site_as{$callsign}};
     next unless $site_country{$callsign} eq $only_country;
   }
-
+  next if ($site_no_check{$callsign} == 5); #hamcloud
+  my $hasHamnet= ($site_no_check{$callsign}<2 || $site_no_check{$callsign}==4)?1:0;
+  next if (($only_hamnet && !$hasHamnet) || ($no_hamnet && $hasHamnet));
+  
   my $zIndex= 10;
   my $siteAdd= "";
   $siteAdd= "-user" if $site_radioparam{$callsign};
@@ -311,16 +310,12 @@ foreach my $callsign (@allCallsigns) {
 
   my $zi= sprintf("%03d", $zIndex);
   my $useBounds= ($site_no_check{$callsign}==1)?0:1;
-  my $hasHamnet= ($site_no_check{$callsign}<2 || $site_no_check{$callsign}==4)?1:0;
   my $as= 0;
   if($only_as || $only_country) {
     $as= $site_as{$callsign};
   }
 
   #my $country= $as_country{$site_as{$callsign}};
-  next if (($only_hamnet && !$hasHamnet) || ($no_hamnet && $hasHamnet));
-
-  next if ($site_no_check{$callsign} == 5);
 
   push(@allSites, 
     "$zi;$callsign;$as;$site_lat{$callsign};$site_long{$callsign};$siteAdd;$useBounds;".
@@ -344,11 +339,16 @@ if(!$bgp && !$radio) {
       next if ($site_country{$left_site} ne $only_country &&
                $site_country{$right_site} ne $only_country)
     }
-    next if (($no_tunnel && $typ=~/tunnel/i) || ($no_radio && $typ=~/radio/i) || ($no_ism && $typ=~/ISM/i) || ($radio));
+    next if (($no_tunnel && $typ=~/tunnel/i) || ($no_radio &&
+             $typ=~/radio/i) || ($no_ism && $typ=~/ISM/i) || ($radio));
     push(@allEdges, "$typ;$left_site:$right_site;$left_site;$right_site");
   }
 }
-print qq(Content-Type: text/plain\nExpires: 0 \n\n);
+
+# -------------------------------------------------------------------------
+# Print all out (as JSON)
+#print qq(Content-Type: text/plain\nExpires: 0 \n\n);
+print qq(Content-Type: application/json filename=hamnetdb-map.json\n\n);
 
 &json_obj();
 &json_var("FeatureCollection","type")
@@ -379,7 +379,9 @@ foreach $edge (reverse sort @allEdges) {
   &json_obj_end;
 }
 
+# TIME 100-200ms
 foreach $site (sort @allSites) {
+#if (0) {
   my @f= split(/;/, $site);
   &json_obj();
     &json_var("Feature","type");
@@ -406,7 +408,8 @@ sub check_process {
   my $first= shift;
 
   unless ($first) {
-    sleep(1);
+    #sleep(1);
+    usleep(100000);
   }
   open our $file, '<', $0 or die $!;
   flock $file, LOCK_EX or check_process(0);

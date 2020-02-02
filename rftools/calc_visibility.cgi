@@ -34,6 +34,7 @@ my $border_down= $query->param("down")+0;
 my $border_right= $query->param("right")+0;
 my $tree= $query->param("tree")+0;
 
+my $error= 0;
 
 print("Content-Type: text/html\nExpires: 0\n\n");
 
@@ -166,9 +167,9 @@ unless ($list) {
 
     #catch errors
     my $len=length($result);
-    if ($len >= 1) {
+    if ($len >= 1 || $error) {
       open(my $fh, '>>', $path_errlog) or die "Could not open file";
-      print $fh "$cmd\n";
+      print $fh "failed $cmd\n";
       close $fh;
       print qq(Error creating visibility! $result :\( \n); 
     }

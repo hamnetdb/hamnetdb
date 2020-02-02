@@ -164,7 +164,7 @@ print qq(
             <tr><td><img src="site-red.png"/></td><td>No ping answer last 2 hours at hamcloud</td></tr>
             <tr><td><img src="site-grey.png"/></td><td>Site is documented to have no hamnet on site. </td></tr>
           </table>
-          <h4> Monitoring </h4>
+          <h4> RSSI-Monitoring </h4>
           <table>
             <tr><td bgcolor="#5dff00">&nbsp;</td><td>>=-65dBm<td></td></tr>
             <tr><td bgcolor="#a2ff00">&nbsp;</td><td>>=-70dBm<td></td></tr>
@@ -173,6 +173,9 @@ print qq(
             <tr><td bgcolor="#ffa700">&nbsp;</td><td>>=-85dBm<td></td></tr>
             <tr><td bgcolor="#ff000d">&nbsp;</td><td><=-86dBm<td></td></tr>        
           </table>
+	  <h4> BGP-Monitoring</h4>
+	  black lines indicates active bgp connections<br>
+	  dashed lines have an uptime less than 5 minutes.
           <h4> Coverage </h4>
           The receive signal power is based on a 16dBi, 60km maximum radius
 	        <table>

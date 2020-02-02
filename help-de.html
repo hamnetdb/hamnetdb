@@ -220,7 +220,10 @@ Die Verarbeitung von Hostnamen steht im Einklang mit den
 beschriebenen Empfehlungen.
 
 <h3>Eintrag von persönlichen Rufzeichen</h3>
-<p>Die IP-Koordination DL hat sich im Jahr 2019 mit dem Datenschutz beschäftigt und weist beim Eintrag von persönlichen Rufzeichen (insbesondere nicht dem eigenen Rufzeichen) auf ihre Veröffentlichung hin: <a href="https://www.de.ampr.org/ip-koordination/datenschutz">https://www.de.ampr.org/ip-koordination/datenschutz</a>
+<p>Die IP-Koordination DL hat sich im Jahr 2019 erneut mit dem 
+Datenschutz beschäftigt und weist beim Eintrag von persönlichen Rufzeichen 
+(insbesondere nicht dem eigenen Rufzeichen) auf ihre Veröffentlichung hin: 
+<a href="https://www.de.ampr.org/ip-koordination/datenschutz">https://www.de.ampr.org/ip-koordination/datenschutz</a>
 
 <h3>Mehrere Rufzeichen an einem Standort</h3>
 <p>Eine Site wird nach ihrem Rufzeichen benannt. Sollen mehrere Rufzeichen
@@ -238,11 +241,15 @@ vorhandene Rufzeichen im Kommentar der Site zu beschreiben.
 erreichbarkeit überprüft, sollte dies nicht erwünscht sein kann dies mit 
 "No ping check" deaktiviert werden.
 <p>
-Die Option "Monitor" bietet die Möglichkeit Linkstrecken welche mittels Transfernetzen realisiert sind zu überwachen, 
-somit ist dies nur für IP-Adressen sinnvoll, die direkt die Hardware der HF-Linkstrecken bedienen.<br> 
-Ein SNMP-Zugang mit Leserechten für die Community "public" muss auf dem Gerät eingerichtet sein.<br> 
-Die korrekt erfassten RSSI Werte werden bei den gelisteten Linkstrecken angezeigt, 
-in der Karte kann die Ebene "Hamnet RSSI" eingeblendet werden und zeigt eine farbliche abstufung der Werte. <br>
+Die Option "Monitor" bietet die Möglichkeit Linkstrecken welche mittels 
+Transfernetzen realisiert sind zu überwachen, 
+somit ist dies nur für IP-Adressen sinnvoll, die direkt die Hardware der 
+HF-Linkstrecken bedienen.<br> 
+Ein SNMP-Zugang mit Leserechten für die Community "public" muss auf dem 
+Gerät eingerichtet sein.<br> 
+Die korrekt erfassten RSSI Werte werden bei den gelisteten Linkstrecken 
+angezeigt, in der Karte kann die Ebene "Hamnet RSSI" eingeblendet 
+werden und zeigt eine farbliche abstufung der Werte. <br>
 Eine Legende kann rechts unter <b>"i"</b> gefunden werden.<br>
 Diese Option befindet sich noch in der frühen Erprobungsphase.<br>
 
@@ -265,7 +272,9 @@ verschoben werden. Mit einm Linksklick auf die Marker oder auf die Linie
  dazwischen kann das Profil betrachtet werden, darunter befinden sich 
  einige Einstellungsmöglichkeiten.<br>
 Die Option "treesize" blendet Bäume ein sofern diese in die Fresnelzone 
-reichen. Mangels Daten wird ein flächendeckender Wald angenommen. 
+reichen. Bäume werden an jenen Stellen angezeigt, bei denen in OpenStreetMap 
+Bewaldung o.ä. hinterlegt ist, selbiges gilt für Wasser (Blau) und 
+besiedelte Gebiete (rötlich). 
 Ab einer Höhe von 1000m wird die Baumgröße bis 2000m linear abgebaut 
 um die Baumgrenze abzubilden.<br>
 Um die position einer bestehenden Site zu verwenden kann mit Rechtsklick 
@@ -273,12 +282,15 @@ Um die position einer bestehenden Site zu verwenden kann mit Rechtsklick
 <br>
 Im Diagramm wird rechts oben die Freiraumdämpfung (free-space path loss) 
 angezeigt, sollten Bäume am unteren Rand der Fresnelzone zu mehr als 10% des 
-Radius in diese hineinrage wird der Wert gelb, bei hineinragender Felsen/Erde analog rot.
+Radius in diese hineinrage wird der Wert gelb, bei hineinragender
+Felsen/Erde analog rot. 
 Der Parameter "Refrac" dient zur korrektur der terrestrischen Refraktion.<br>
+Die Position der Maus im Link-Profil wird auf die Karte übertragen, 
+genauso wird die Position der Maus auf der Karte ins Diagramm übertragen. 
 <p>
 <h3>(RF)-Visibility</h3>
 <img src="demo_visibility.png" class="help-inline">
-Zur abschätzung ob ein Gebiet erreicht werden kann, dafür werden am 
+Zur Abschätzung ob ein Gebiet erreicht werden kann, wird am 
 rechten Rand der Karte die "RF-Tools" geöffnet und ein oder zwei Marker gesetzt.<br>
 Um die Position einer bestehenden Site zu übernehmen, <br>
 kann mit Rechtklick "snap FROM to SITE" bzw. "snap TO to SITE"
@@ -299,6 +311,9 @@ die Position der Maste wird jeweils durch ein "X"gekennzeichnet.<br>
 Wird ein Gebiet von beiden Positionen erreicht, wird dieser türkis markiert.<br>
 Die Markierungen werden nur bis zur Zoomstufe 14 angezeigt, 
 da darüber keine zusätzliche Information angezeigt würde.<br>
+Mit dem Haken "use tree information" wird die oben genannte Bauminformation 
+verwendet. Im Falle einer potentiellen Abschattung durch Bäume wird 
+dieser Bereich schraffiert (heller) dargestellt.<br>
 <br>
 <br>
 <p>
@@ -337,9 +352,12 @@ geöffnet ist wird von diesem der Permalink erstellt,
 ansonsten von der Angezeigten RF-Visibility.<br>
 Wird weder ein Link-profile noch eine RF-Visibility angezeigt,<br>
  wird von der aktuellen Kartenansicht ein Permalink erstellt.<br>
-Die Höhendaten für die Berechnung stammen von NASA (SRTM1), ESA bzw. EU (Copernicus), 
+Die Höhendaten für die Berechnung stammen von 
+NASA (SRTM1), ESA bzw. EU (Copernicus), 
 und DGM Österreich<br>
-Die Link-profile und RF-Visibility werden mit <a href="https://github.com/oe5hpm/dxlAPRS">Programmen</a> von OE5DXL berechnet.  
+Die Link-profile und RF-Visibility werden mit 
+<a href="https://github.com/oe5hpm/dxlAPRS">Programmen</a> 
+von OE5DXL berechnet.  
 
 
  
@@ -348,15 +366,13 @@ Die Link-profile und RF-Visibility werden mit <a href="https://github.com/oe5hpm
 <h2 id="antenna">Funkabdeckung</h2>
 <h3>Überblick</h3>
 Basierend auf den eingetragenen Werten, 
-berechnet die Software auf einem Server am Institut für Hochfrequenztechnik am RWTH Aachen 
-die Funkabdeckung und speichert diese als Karten-Layer (siehe Legende der Karte).<br>
+berechnet die HamnetDB die Funkabdeckung, die Zuordnung der Farben zur Feldstärke kann in der Legende der Karte abgelesen werden.<br>
 Um eine die gewünschte Abdeckung anzuzeigen,in der Karte den gewünschten Standort auswählen und 
 die Checkbox der jeweiligen Antenne unter "Coverage" auswählen.
 Wenn die Checkbox grau ist, gibt es keine Abdeckungs-Ebene. Beachte, 
-dass es einige Zeit (bis zu 2 Stunden) dauern kann bis eine Abdeckung verfügbar ist. 
+dass es einige Zeit idauern kann bis eine Abdeckung verfügbar ist, in der Regel dauert dies nur wenige Minuten. 
 Eine neue Abdeckung wird berechnet sobald Werte im Formular geändert werden.<br>
-Für die Berechnung stehen für folgende Länder Höhendaten zu verfügung:
-BeNeLux-Staaten, Deutschland, Frankreich, Italien, Kroatien, Österreich, Schweiz, Slowenien.
+Für die Berechnung stehen für Europa die Höchste Auflösung zu Verfügung, für die Restliche nördliche Hemisphäre die nächst bessere Auflösung (entspricht SRTM-3), für den ganzen Globus sind Legacy-Daten verfügbar.
 Wenn eine Abdeckung für eine Site außerhalb dieses Gebietes berechneterer werden möchte, bitte wende dich an <a href="hamnetdb.net/impressum">Flori, DL8MBT</a>
 </p>
 <p>

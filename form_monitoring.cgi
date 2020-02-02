@@ -84,11 +84,10 @@ if ($system eq "routing") {
     my $feature_bgp = "not available";
     my $feature_traceroute = "not available";
     my $decoded_json= decode_json($response_function);
-    #$ok= $decoded_json->{'status'};
-    #$right_rssi= $decoded_json->{'details'}->[0]->{'rxLevel2at1'};
+    my @error_routing= @{$decoded_json->{'errorDetails'};};
     my @features = @{$decoded_json->{'supportedFeatures'};};
-    my @error_rssi = @{$decoded_json->{'errorDetails'};};
-    foreach my $f ( @error_rssi ) {
+    my $error_msg= "";
+    foreach my $f (@error_routing ) {
       $error_msg= $error_msg.$f."<br>";
       $failed= 1;
     }
@@ -104,7 +103,8 @@ if ($system eq "routing") {
     print "<b>BGP</b> ",$feature_bgp,"<br>";
     print "<b>Traceroute</b> ",$feature_traceroute,"<br>";
     if ($failed) {
-      print "<br>no active features could be found<br>\n";
+
+      print "<br>no active features could be found<br>",$error_msg,"<br>\n";
     }     
 
     print "</span><br>";
@@ -112,7 +112,7 @@ if ($system eq "routing") {
   #number bgp peers
   unless ($failed) {
     print qq(<h3>BGP-peers details</h3>\n);
-    my $url_function= $url."/bgp/peers/".$ip_test."?EnableCaching=false&Timeout=0:0:5&Retries=2";
+    my $url_function= $url."/bgp/peers/".$ip_test."?EnableCaching=false&Timeout=0:0:5&Retries=2&AllowedApis=VendorSpecific";
     #print $url_function;
     my $response_function=  get_api_data($url_function);
     my $peer_cnt, $error_msg, $prefix_cnt;
@@ -152,8 +152,8 @@ if ($system eq "rssi") {
   unless ($failed) {
     print qq(<span class='checkstatus'>&nbsp;&nbsp;&nbsp;<b>Left IP:</b>$left_monitor  
       <b>Right IP</b> $right_monitor</span><br>\n);
-    my $left_url_ping= $url."/ping/".$left_monitor."?EnableCaching=false&Timeout=0:0:5&Retries=2";
-    my $right_url_ping= $url."/ping/".$right_monitor."?EnableCaching=false&Timeout=0:0:5&Retries=2";
+    my $left_url_ping= $url."/linktest/ping/".$left_monitor."?EnableCaching=false&Timeout=0:0:5&Retries=2";
+    my $right_url_ping= $url."/linktest/ping/".$right_monitor."?EnableCaching=false&Timeout=0:0:5&Retries=2";
     my $left_response_ping=  get_api_data($left_url_ping);
     my $right_response_ping=  get_api_data($right_url_ping);
 
@@ -184,10 +184,9 @@ if ($system eq "rssi") {
     }
     print "</span><br>";
   }
-
   unless ($failed) {
-    my $left_url_snmp= $url."/info/".$left_monitor."?EnableCaching=false&Timeout=0:0:3&Retries=2";
-    my $right_url_snmp= $url."/info/".$right_monitor."?EnableCaching=false&Timeout=0:0:3&Retries=2";
+    my $left_url_snmp= $url."/linktest/info/".$left_monitor."?EnableCaching=false&AllowedApis=Snmp&Timeout=0:0:3&Retries=2";
+    my $right_url_snmp= $url."/linktest/info/".$right_monitor."?EnableCaching=false&AllowedApis=Snmp&Timeout=0:0:3&Retries=2";
     my $left_response_snmp=  get_api_data($left_url_snmp);
     my $right_response_snmp=  get_api_data($right_url_snmp);
 
@@ -215,6 +214,7 @@ if ($system eq "rssi") {
     else {
       $failed= 1;
       print "failed";
+
     }
     print "</span><br>";
   }
@@ -222,7 +222,7 @@ if ($system eq "rssi") {
 
 
   unless ($failed) {
-    my $url_rssi= $url."/link/".$left_monitor."/".$right_monitor."?EnableCaching=false&Timeout=0:0:2&Retries=2";
+    my $url_rssi= $url."/linktest/link/".$left_monitor."/".$right_monitor."?EnableCaching=false&Timeout=0:0:2&Retries=2&AllowedApis=Snmp";
     my $response_rssi=  get_api_data($url_rssi);
   
     print	"<h3>RSSI:</h3>\n";

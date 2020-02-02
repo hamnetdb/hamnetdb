@@ -52,6 +52,7 @@ $i=0;
 foreach $agent (@monitorAgents) { 
   performCheckRSSI($monitorAgents[$i][0],$monitorAgents[$i][1]);
   performCheckRouting($routingAgents[$i][0],$routingAgents[$i][1]);
+  performCheckTraceroute($tracerouteAgents[$i][0],$tracerouteAgents[$i][1]);
   $i++;
 }
 exit;
@@ -156,12 +157,12 @@ sub performCheckRouting{
       print $entry->{'peeringState'},$entry->{'localAddress'}, "\n\n";  	
       my $ip= $entry->{'remoteAddress'};
       $routing= $entry->{'prefixCount'};
-      $routing_timestamp= $entry->{'unixtimestamp'};
-      $routing_uptime= $entry->{'uptime'};
+      $routing_timestamp= $entry->{'unixTimeStamp'};
+      $routing_uptime= $entry->{'uptimeSeconds'};
       
       #print $routing{$ip}, "--#\n";
       my $where= "ip='$ip' and agent='$agent' and service='$service' and status=1";
-      my $set=   "set ts=FROM_UNIXTIME($routing_timestamp),value='$routing',message='$routing_uptime'";
+      my $set=   "set ts=FROM_UNIXTIME($routing_timestamp),value='$routing_uptime',message='opennms'";
 
       my $sql= "";
       my $sth= $db->prepare(qq(select ip from hamnet_check
@@ -171,7 +172,7 @@ sub performCheckRouting{
         $sql= "update hamnet_check $set where $where";
       }
       else {
-        $sql= "replace hamnet_check $set,since=FROM_UNIXTIME($routing_timestamp),status='1',".
+        $sql= "replace hamnet_check $set,since=$routing_timestamp,status='1',".
               "ip='$ip',agent='$agent',service='$service'";
       }
       $okCount++;
@@ -190,6 +191,62 @@ sub performCheckRouting{
 
 
 }
+
+sub performCheckTraceroute{
+  my $agent= shift;
+  my $url= shift;
+
+  # fetch data and make it usable
+  $json_data= get_api_data($url);
+  my @decoded_json = @{decode_json($json_data)};
+  $service="traceroute";
+  my $Count= 0;
+  my $okCount= 0;
+  my $notokCount= 0;
+
+  my %routing= ();
+  my %routing_timestamp= ();
+  my %routing_uptime= ();
+  foreach my $entry (@decoded_json) {
+    #if ($entry->{'supportedFeatures'} eq 'established' && defined($all_routing->{$entry->{'localAddress'}} )) {
+    if (1) {
+      my $ip= $entry->{'address'};
+      #$routing= $entry->{'prefixCount'};
+      $traceroute_timestamp= $entry->{'unixTimeStamp'};
+
+      
+      print $ip, "trace--#\n";
+      my $where= "ip='$ip' and agent='$agent' and service='$service' and status=1";
+      my $set=   "set ts=FROM_UNIXTIME($traceroute_timestamp),value='1',message='opennms'";
+
+      my $sql= "";
+      my $sth= $db->prepare(qq(select ip from hamnet_check
+               where $where));
+      $sth->execute;
+      if ($sth->fetchrow_array) {
+        $sql= "update hamnet_check $set where $where";
+      }
+      else {
+        $sql= "replace hamnet_check $set,since=FROM_UNIXTIME($traceroute_timestamp),status='1',".
+              "ip='$ip',agent='$agent',service='$service'";
+      }
+      $okCount++;
+      #&log($agent, $sql);
+      #print $sql, "\n";
+      $db->do($sql);
+    }
+    else
+    { 
+      $notokCount++;
+    }
+    $Count++;
+
+  }
+  print "Routing:  ",$Count,"\nok:", $okCount,  "\nnotok:", $notokCount,"\n";
+
+
+}
+
 
 #sub get_api_data{
 #  $url=shift;
