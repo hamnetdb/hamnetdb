@@ -208,11 +208,45 @@ print qq(
         <div id="only_as"><form><label for="as">Fit map position to AS:</label>   
 );
             &asCombo(0, 1, 0, $only_as, "onchange='panelChange();'");
+print qq(
+        <div id="traceroute-menu"><form name="traceroute"><hr>
+          <h4>Traceroute</h4>
+);
+if ($myPermissions=~/$t,/) {
+  print qq(
+          <div id="traceOptions">
+            <a onclick="tracePlaceStart();" style="text-decoration:none; border-radius:2px;">
+            <span class="side-button side-draw-point" id="side-draw-add-point1"></span></a>
+            &nbsp;select start site from map<br>
+            <a onclick="tracePlaceStop();" style="text-decoration:none; border-radius:2px;">
+            <span class="side-button side-draw-point" id="side-draw-add-point1"></span></a>
+            &nbsp;select stop site from map<br>
+            OR enter stop IP-address <br>
+            <span id="traceIP"><input type="text" id='traceStopIP' value='' onchange='traceSelectStop()' onupdate='traceSelectStop()' onclick='traceSelectStop()' style='width:130px'><br></span>
+            (must be listed in HamnetDB)<br>
+            <input type='button' value='perform Traceroute' style='height:24px; width:' onclick='javascript:traceTest()'>
+            <a onclick="traceDeleteAll();" style="text-decoration:none; border-radius:2px;">
+              <span class="side-button side-draw-del" id="traceDeleteAll"></span></a>
+
+          </div>
+          <div id="traceLoading"><img src="hdb.gif" width="150px" style="opacity: 0.6;"></div>
+            <div id="tracestart"></div>
+            <div id="tracestop"></div>
+            <div id="traceerror"></div>
+            <span id="traceReturn"></span>
+
+        </form>
+
+    );
+}
+else {
+  print "You must me logged in to use the Traceroute feature!<br>\n";
+}
 
 print qq(          
-        </form></div>
+        <hr></div></form></div>
         <div id="extern-permalink"></div>
-        <br><a href="#" onclick="javascript:getFullscreen();">Fullscreen</a>
+        <a href="#" onclick="javascript:getFullscreen();">Fullscreen</a>
       </div>
       <div id="sidebar-rftools">
         <h3>RF-Tools</h3>

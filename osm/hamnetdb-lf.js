@@ -30,6 +30,7 @@ var SidebarSetting;
 var SidebarRftools;
 var hoverpop;
 var kmlUrl = "mapelements.cgi?geojson=1&rnd="+Math.random();
+var linestyle;
 
 var CoverUrl = "coverage/";
 var CoverageLayers = new Array();
@@ -90,7 +91,11 @@ var panoramaMetadata = new Array();
 
 var rect= null;
 
-
+var traceMarker;
+var traceLine;
+var traceStart;
+var traceStopIP= null;
+var traceStop;
 
 var elem;
 var testg;
@@ -102,8 +107,32 @@ window.addEventListener("load",function() {
 	}, 0);
 });
 
-//window.addEventListener("load", function(){ if(!window.pageYOffset){ hideAddressBar(); } } );
-//window.addEventListener("orientationchange", hideAddressBar );
+var settingsTrace = {
+    style: function(feature) {
+      return getLineStyle(feature)
+    },
+    pointToLayer: function(feature, latlng) {
+      return L.marker(latlng, {
+        icon: L.icon({
+          iconUrl: feature.properties.style+'.png',
+          iconSize: [19, 25],
+          iconAnchor: [10, 16],
+          popupAnchor: [0, 0]
+        }),
+        contextmenu: true,
+      });
+    },
+    onEachFeature: function (feature, layer) {
+      layer.on('click', function (e){
+        if (feature.properties.action == "tracestart") {
+          traceSelectStart(feature.properties.callsign)
+        }else if (feature.properties.action == "tracestop") {
+          traceSelectStop(feature.properties.callsign)
+        }
+        testg= feature;
+      });
+    }  
+  };
 
 function init()
 {  
@@ -212,7 +241,7 @@ function init()
   if (country && country.length==2) {
     kmlUrl+= "&only_country="+country;
   }
-  if(source == 3)//hamnet
+  if (source == 3)//hamnet
   {
     var mapnikUrl = 'http://osm.oe2xzr.ampr.at/osm/tiles/{z}/{x}/{y}.png';
     var mapnikUrl1 = 'http://karten.db0sda.ampr.org/osm/{z}/{x}/{y}.png';
@@ -316,7 +345,7 @@ function init()
   );
 
 
-	if(source == 3)
+	if (source == 3)
 	{
     var mapnikLayer1 = L.tileLayer(
       mapnikUrl1,
@@ -334,7 +363,7 @@ function init()
     );
 	}
 	
-  if(hoverpop == "true")
+  if (hoverpop == "true")
   {
     var hoverS = true;
   }
@@ -345,99 +374,7 @@ function init()
   //var hamnetLayer = new L.KML(kmlUrl + "&no_tunnel=1&only_hamnet=1", {async: true, hover:hoverS});
   var settingshamnet = {
     style: function(feature) {
-      var color, weight, opacity, dashArray=0 ;
-      switch (feature.properties.style)
-      {
-        case "Tunnel":
-          color = "#808080";
-          weight = 3.5;
-          opacity= 0.5; 
-          break;
-        case "Routing-Radio":
-          color = "#1d97ff";
-          weight = 6;
-          opacity= 0.5;
-          break;        
-        case "Routing-Tunnel":
-          color = "#808080";
-          weight = 3.5;
-          opacity= 0.5;
-          break;
-        case "Radio":
-          color = "#1d97ff";
-          weight = 6;
-          opacity= 0.5;
-          zIndex = 400;
-          break;
-        case "Routing-ISM":
-          color = "#ad00e1";
-          weight = 6;
-          opacity= 0.5;
-          zIndex = 400;
-          break;
-        case "Routing-Ethernet":
-          color = "#808080";
-          weight = 3.5;
-          opacity= 0.5;
-          break;
-        case "ISM":
-          color = "#ad00e1";//d800ff
-          weight = 6;
-          opacity= 0.5
-          zIndex = 400;
-          break;
-        case "hf1":
-          color = "#5dff00";//green
-          weight = 6;
-          opacity= 0.8;
-          break;
-        case "hf2":
-          color = "#a2ff00";//green-yellow
-          weight = 6;
-          opacity= 0.8;
-          break;
-        case "hf3":
-          color = "#f1ff00";//yellow
-          weight = 6;
-          opacity= 0.8;
-          break;
-        case "hf4":
-          color = "#ffde00";//bright-orange
-          weight = 6;
-          opacity= 0.8;
-          break;
-        case "hf5":
-          color = "#ffa700";//dark-orange
-          weight = 6;
-          opacity= 0.8;
-          break;
-        case "hf6":
-          color = "#ff000d";//red
-          weight = 6;
-          opacity= 0.8;
-          break;
-        case "hf7":
-          color = "#ff000d";//red
-          weight = 6;
-          opacity= 0.8;
-          break;
-        case "bgp":
-          color = "#333333";//grey
-          weight = 1.5;
-          opacity= 1.0;
-          break;
-       case "bgpbad":
-          color = "#333333";//grey
-          weight = 1.5;
-          opacity= 1.0;
-          dashArray = "6, 6";
-          break;
-        default:
-          color = "#808080";
-          weight = 6;
-          opacity= 0.5;
-      }
-      return {color: color, weight:weight, opacity:opacity, dashArray:dashArray};//feature.properties.GPSUserColor};
+      return getLineStyle(feature)
     },
     pointToLayer: function(feature, latlng) {
       return L.marker(latlng, {
@@ -499,7 +436,7 @@ function init()
       layer.on('popupopen', function (e) {
         getHttpRequest("info.cgi?q=" + feature.properties.callsign,"pop_"+feature.properties.callsign );
 	 
-        if( feature.geometry.type== "LineString")
+        if ( feature.geometry.type== "LineString")
         {   // TunnelLayer has no Coverage
       	  document.getElementById("ShowCover").outerHTML = "";
         }
@@ -507,7 +444,7 @@ function init()
         {	// set Checkbox grey if no Coverage Layer available in DB; 	 	
           getCoverage("mapcoverage.cgi?x="+feature.properties.callsign,1);
         }
-        if(feature.properties.callsign.match(':')) //link not site
+        if (feature.properties.callsign.match(':')) //link not site
         {
           document.getElementById("ShowCover").style.visibility = "hidden";
         }
@@ -518,7 +455,7 @@ function init()
         }
 	    
       });
-      if(hoverpop == "true")
+      if (hoverpop == "true")
       {
         layer.on('mouseover', function (e){
           layer.openPopup();
@@ -576,7 +513,7 @@ function init()
     source = 2;
   }
 
-  if(source <=1)
+  if (source <=1)
   {
     var roadMutant = L.gridLayer.googleMutant({
       maxZoom: 24,
@@ -610,7 +547,7 @@ function init()
       'Google Hybrid': hybridMutant
     };
   }
-  else if(source == 3)
+  else if (source == 3)
   {
     var baseLayers = {  
       'Mapnik': mapnikLayer,
@@ -676,9 +613,9 @@ function init()
   map.addControl(new L.Control.LSP());
 
   //if as is set over GET
-  if(as != 0)
+  if (as != 0)
     getAs(as); 
-  if(site != 0)
+  if (site != 0)
     getSite(site); 
 
   //Profile init
@@ -697,19 +634,19 @@ function init()
   }
   // if visibility is set
   if (rf_vis) {
-    if(rect_up != 0 && rect_right != 0 && rect_down != 0 && rect_right != 0) 
+    if (rect_up != 0 && rect_right != 0 && rect_down != 0 && rect_right != 0) 
     {
       rfUp = rect_up;
       rfLeft = rect_left;
       rfDown = rect_down;
       rfRight = rect_right;
     }
-    if((ma_lat!=0) && (ma_lon!=0))
+    if ((ma_lat!=0) && (ma_lon!=0))
     {
       ma = new L.LatLng(ma_lat, ma_lon);
       drawFrom(ma);
     }
-    if((mb_lat!=0) && (mb_lon!=0))
+    if ((mb_lat!=0) && (mb_lon!=0))
     {
       mb = new L.LatLng(mb_lat, mb_lon);
       drawTo(mb);
@@ -730,48 +667,48 @@ function init()
 
     rfPanUpdForm();
     rfPanUpd();
-    if(rfPoiInput.length > 2)
+    if (rfPoiInput.length > 2)
     {
-      if(rfPoiInput.includes('hamnet'))
+      if (rfPoiInput.includes('hamnet'))
         document.getElementById("rfPoiHamnet").checked = 1;
       else
         document.getElementById("rfPoiHamnet").checked = 0;
-      if(rfPoiInput.includes('wc'))
+      if (rfPoiInput.includes('wc'))
         document.getElementById("rfPoiFWC").checked = 1;
       else
         document.getElementById("rfPoiFWC").checked = 0;
-      if(rfPoiInput.includes('mt'))
+      if (rfPoiInput.includes('mt'))
         document.getElementById("rfPoiMT").checked = 1;
       else
         document.getElementById("rfPoiMT").checked = 0;
-      if(rfPoiInput.includes('small'))
+      if (rfPoiInput.includes('small'))
         document.getElementById("rfPoi").checked = 1;
       else 
         document.getElementById("rfPoi").checked = 0;
-      if(rfPoiInput.includes('sota'))
+      if (rfPoiInput.includes('sota'))
         document.getElementById("rfPoiSota").checked = 1;
       else 
         document.getElementById("rfPoiSota").checked = 0;
     }
 
     var sel;
-    if(rfRefractionPanorama == 0.0)
+    if (rfRefractionPanorama == 0.0)
       sel = 0;
-    else if(rfRefractionPanorama == 0.13)
+    else if (rfRefractionPanorama == 0.13)
       sel = 1;
-    else if(rfRefractionPanorama == 0.25)
+    else if (rfRefractionPanorama == 0.25)
       sel = 2;
     else 
       sel = 2;
     document.getElementById("rfRefractionPanorama").selectedIndex=sel;
     var selFont;
-    if(rfPanoramaFont == 0.0)
+    if (rfPanoramaFont == 0.0)
       selFont = 0;
-    else if(rfPanoramaFont == 1)
+    else if (rfPanoramaFont == 1)
       selFont = 1;
-    else if(rfPanoramaFont == 2)
+    else if (rfPanoramaFont == 2)
       selFont = 2;
-    else if(rfPanoramaFont == 3)
+    else if (rfPanoramaFont == 3)
       selFont = 3;
     else 
       selFont = 1;
@@ -782,6 +719,106 @@ function init()
   }
   rfLoadPreset();
   panoramaMsgInit();
+}
+function getLineStyle(feature) {
+  var color, weight, opacity, dashArray=0 ;
+  switch (feature.properties.style)
+  {
+    case "Tunnel":
+      color = "#808080";
+      weight = 3.5;
+      opacity= 0.5; 
+      break;
+    case "Routing-Radio":
+      color = "#1d97ff";
+      weight = 6;
+      opacity= 0.5;
+      break;        
+    case "Routing-Tunnel":
+      color = "#808080";
+      weight = 3.5;
+      opacity= 0.5;
+      break;
+    case "Radio":
+      color = "#1d97ff";
+      weight = 6;
+      opacity= 0.5;
+      zIndex = 400;
+      break;
+    case "Routing-ISM":
+      color = "#ad00e1";
+      weight = 6;
+      opacity= 0.5;
+      zIndex = 400;
+      break;
+    case "Routing-Ethernet":
+      color = "#808080";
+      weight = 3.5;
+      opacity= 0.5;
+      break;
+    case "ISM":
+      color = "#ad00e1";//d800ff
+      weight = 6;
+      opacity= 0.5
+      zIndex = 400;
+      break;
+    case "hf1":
+      color = "#5dff00";//green
+      weight = 6;
+      opacity= 0.8;
+      break;
+    case "hf2":
+      color = "#a2ff00";//green-yellow
+      weight = 6;
+      opacity= 0.8;
+      break;
+    case "hf3":
+      color = "#f1ff00";//yellow
+      weight = 6;
+      opacity= 0.8;
+      break;
+    case "hf4":
+      color = "#ffde00";//bright-orange
+      weight = 6;
+      opacity= 0.8;
+      break;
+    case "hf5":
+      color = "#ffa700";//dark-orange
+      weight = 6;
+      opacity= 0.8;
+      break;
+    case "hf6":
+      color = "#ff000d";//red
+      weight = 6;
+      opacity= 0.8;
+      break;
+    case "hf7":
+      color = "#ff000d";//red
+      weight = 6;
+      opacity= 0.8;
+      break;
+    case "bgp":
+      color = "#333333";//grey
+      weight = 1.5;
+      opacity= 1.0;
+      break;
+   case "bgpbad":
+      color = "#333333";//grey
+      weight = 1.5;
+      opacity= 1.0;
+      dashArray = "6, 6";
+      break;
+    case "trace":
+      color = "#ff0000";//grey
+      weight = 10.0;
+      opacity= 1.0;
+      break;  
+    default:
+      color = "#808080";
+      weight = 6;
+      opacity= 0.5;
+  }
+  return {color: color, weight:weight, opacity:opacity, dashArray:dashArray};//feature.properties.GPSUserColor};
 }
 function placeProfileFrom (e) {
   if (typeof e.latlng !== 'undefined') 
@@ -900,7 +937,7 @@ function profileProceed()
   document.getElementById('side-draw-del-point2').style.display="inline"
   document.getElementById('side-draw-del-point3').style.display="inline"
   if ((typeof profileMa !== 'undefined') &&(typeof profileMb !== 'undefined')) {
-    if((profileMa._icon != null) && (profileMb._icon != null))
+    if ((profileMa._icon != null) && (profileMb._icon != null))
     {
       deleteProfileLine();
       var pointList = [profileMa._latlng, profileMb._latlng];
@@ -940,7 +977,7 @@ function profileProceed()
 function deleteProfileLine() {
   if (typeof profileLine !== 'undefined')
   {
-   if(profileLine._map != null)
+   if (profileLine._map != null)
    {
      map.removeLayer(profileLine);
    }
@@ -952,7 +989,7 @@ function deleteProfileMa() {
     map.removeLayer(profileMa);
   }
   if (typeof profileMb !== 'undefined') {
-    if(profileMb._latlng != null) {
+    if (profileMb._latlng != null) {
       document.getElementById('rfTowerFromLine').style.color="#aaa";
     }
   }
@@ -968,7 +1005,7 @@ function deleteProfileMb() {
 }
 function deleteProfileMpos(){
   if (map.hasLayer(profileMpos)) {
-    if(profileMpos._latlng != null) {
+    if (profileMpos._latlng != null) {
       map.removeLayer(profileMpos);
     }
   }
@@ -993,7 +1030,7 @@ function profileDraw () {
   width = 650;
   height = 350;
   if ((typeof profileMa !== 'undefined') && (typeof profileMb !== 'undefined')) {
-    if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+    if ((profileMa._latlng != null) && (profileMb._latlng != null)) {
       if (typeof profilePopup !== 'undefined') { //catch open popup
         if (profilePopup._map !=null) {
           profileRedraw(width,height);
@@ -1191,7 +1228,7 @@ function profileProcessMetadata(event)
   img = document.getElementById("proifleimg");
   pos_x = event.offsetX?(event.offsetX):event.pageX-img.offsetLeft;
   pos_y = event.offsetY?(event.offsetY):event.pageY-img.offsetTop;
-  if(typeof profileMetadata[pos_x] !== 'undefined')
+  if (typeof profileMetadata[pos_x] !== 'undefined')
   {
     document.getElementById("profile-marker").style.visibility = "visible";
     document.getElementById("profile-marker").style.left = pos_x-1.5+"px";
@@ -1250,7 +1287,7 @@ function popupSetting()
 function rfPlacemarker()
 {
   var createnew= true;
-  if(typeof rect !== 'undefined') {
+  if (typeof rect !== 'undefined') {
     if (rect != null) {
       rect.disable();
       rfMarkRect(0);
@@ -1299,7 +1336,7 @@ function rfPlaceB(e)
   rfMarkPlace(0);
 }
 function rfMarkPlace(e) {
-  if(e)
+  if (e)
   {
     document.getElementById('side-draw-add-point1').style.backgroundColor="#bbb";
     document.getElementById('side-draw-add-point2').style.backgroundColor="#bbb";
@@ -1312,7 +1349,7 @@ function rfMarkPlace(e) {
   }
 }
 function rfMarkRect(e) {
-  if(e)
+  if (e)
   {
     document.getElementById('side-draw-add-rect').style.backgroundColor="#bbb";
   }
@@ -1323,7 +1360,7 @@ function rfMarkRect(e) {
 function rfOpenprofile()
 {
   if (map.hasLayer(profileMa) && map.hasLayer(profileMb)) {
-    if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+    if ((profileMa._latlng != null) && (profileMb._latlng != null)) {
       profileDraw();
     }
     else
@@ -1569,7 +1606,7 @@ function rfLoaded(result)
     document.getElementById("rf-result").innerHTML=content;
     return;
   }
-  if(!rfLocked && result[0].length > 1){
+  if (!rfLocked && result[0].length > 1){
     rfLocked=1;
 
     //if there is old visibility => delete
@@ -1603,7 +1640,7 @@ function rfLoaded(result)
     }
     rfTiles = L.tileLayer(parameter[0]+'/{z}/{x}/{y}.png');
     rfLayer = L.layerGroup([rfTiles]);
-    if(parameter[2] != 0 && parameter[3] != 0 ) {
+    if (parameter[2] != 0 && parameter[3] != 0 ) {
       rfMarkerA = L.marker([parameter[2], parameter[3]], {
         icon: L.icon({
             iconUrl: 'osm/images/cross-red.png',
@@ -1615,7 +1652,7 @@ function rfLoaded(result)
       });
       rfMarkerA.addTo(rfLayer)
     }
-    if(parameter[5] != 0 && parameter[6] != 0 ) {
+    if (parameter[5] != 0 && parameter[6] != 0 ) {
       rfMarkerB = L.marker([parameter[5], parameter[6]], {
         icon: L.icon({
             iconUrl: 'osm/images/cross-blue.png',
@@ -1632,7 +1669,7 @@ function rfLoaded(result)
       rfRect.removeFrom(map);
       map.removeLayer(rfRect); 
     }
-    if(rect_up != 0 &&rect_right != 0 && rect_down != 0 && rect_right != 0) {
+    if (rect_up != 0 &&rect_right != 0 && rect_down != 0 && rect_right != 0) {
       var bounds = [[rect_down,rect_left], [rect_up, rect_right]];
       rfRect = L.rectangle(bounds, {color:'#F00F',fill:false}).addTo(rfLayer);
       center_lat = (Number(rect_up)+Number(rect_down))/2;
@@ -1659,7 +1696,7 @@ function rfCreateUrl()
   var url = '';
 
   //if profile
-  if(map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(profilePopup)){
+  if (map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(profilePopup)){
     url = url + '&ma_lat=' + profileMa._latlng['lat'] + '&ma_lon=' + profileMa._latlng['lng'];
     url = url + '&mb_lat=' + profileMb._latlng['lat'] + '&mb_lon=' + profileMb._latlng['lng'];
     if (profileFrecuency != 5800) {
@@ -1697,7 +1734,7 @@ function rfCreateUrl()
     else
       rfVisTreeOut = 0; 
     url = url + '&rf_tree=' + rfVisTreeOut; 
-    if(map.hasLayer(rfRect)) //if rectangle exists
+    if (map.hasLayer(rfRect)) //if rectangle exists
     {
       url = url + '&rf_d=' + rfRect._bounds._southWest.lat;
       url = url + '&rf_l=' + rfRect._bounds._southWest.lng;
@@ -1705,21 +1742,21 @@ function rfCreateUrl()
       url = url + '&rf_r=' + rfRect._bounds._northEast.lng;
     }
   }
-  else if(map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(rfPanoramaPopup)){ //if panorama
+  else if (map.hasLayer(profileMa) && map.hasLayer(profileMb) && map.hasLayer(rfPanoramaPopup)){ //if panorama
     url = url + '&ma_lat=' + profileMa._latlng['lat'] + '&ma_lon=' + profileMa._latlng['lng'];
     url = url + '&mb_lat=' + profileMb._latlng['lat'] + '&mb_lon=' + profileMb._latlng['lng'];
     
     url = url + '&rf_p_ref=' + rfRefractionPanorama;
 
-    if(rfAngle != "50")
+    if (rfAngle != "50")
     {
       url = url + '&rf_ang=' + rfAngle;
     }
-    if(rfZoom != "1")
+    if (rfZoom != "1")
     {
       url = url + '&rf_z=' + rfZoom;
     }
-    if(rfElevation != "0")
+    if (rfElevation != "0")
     {
       url = url + '&rf_el=' + rfElevation;
     }
@@ -1760,7 +1797,7 @@ function rfPoint(lat,lon) //point with marker to map
 function rfOpenpanorama()
 {
   if (map.hasLayer(profileMa) && map.hasLayer(profileMb)) {
-    if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+    if ((profileMa._latlng != null) && (profileMb._latlng != null)) {
       panoramaDraw();
     }
     else
@@ -1774,7 +1811,7 @@ function panoramaDraw()
   width = 650;
   height = 350;
   if ((typeof profileMa !== 'undefined') && (typeof profileMb !== 'undefined')) {
-    if((profileMa._latlng != null) && (profileMb._latlng != null)) {
+    if ((profileMa._latlng != null) && (profileMb._latlng != null)) {
       if (typeof rfPanoramaPopup !== 'undefined') { //catch open popup
         if (rfPanoramaPopup._map !=null) {
           panoramaRedraw(width,height);
@@ -1846,7 +1883,7 @@ function panoramaRedraw()
 function rfPanoramaAdvanced() //toogle advanced menu
 {
   adv = document.getElementById("panoramaAdv").style.display;
-  if(adv == "block")
+  if (adv == "block")
   {
     document.getElementById("panoramaAdv").style.display = "none";
   }
@@ -1858,7 +1895,7 @@ function rfPanoramaAdvanced() //toogle advanced menu
 function panoramaGenLink(width,height)
 {
   if (map.hasLayer(profileMa) && map.hasLayer(profileMb)) {
-    if((profileMa._latlng == null) || (profileMb._latlng == null)) {
+    if ((profileMa._latlng == null) || (profileMb._latlng == null)) {
       alert("At least one marker missing!");
       return;
     }
@@ -1885,7 +1922,7 @@ function panoramaGenLink(width,height)
     poi+="small";
   rfPoiInput=poi; //also output to permalink
 
-  if(rfDesert)
+  if (rfDesert)
     rfDesertOut = 1;
   else 
     rfDesertOut = 0; 
@@ -1943,9 +1980,9 @@ function panoramaGotMetadata(meta_content)
     testg = result;
     pixelX = Number(line[0]);
     pixelY = Number(line[1]);
-    if(typeof panoramaMetadata[pixelX] === 'undefined')
+    if (typeof panoramaMetadata[pixelX] === 'undefined')
       panoramaMetadata[pixelX] = new Array();
-    if(typeof panoramaMetadata[pixelX][pixelY] !== 'undefined')
+    if (typeof panoramaMetadata[pixelX][pixelY] !== 'undefined')
     {
       if (typeof line[6] !== 'undefined' )
       {   
@@ -2102,7 +2139,7 @@ function panoramaProcessMetadata(event)
   //check region x, y,  
   pixel = checkArray(panoramaMetadata,pos_x,pos_y);
 
-  if(pixel.length > 0)
+  if (pixel.length > 0)
   {
     var link = "";
 
@@ -2110,7 +2147,7 @@ function panoramaProcessMetadata(event)
     {
      link = ""; 
     }
-    else if(panoramaMetadata[pixel[0][0]][pixel[0][1]].info.includes('Webcam'))//if POI==webcam
+    else if (panoramaMetadata[pixel[0][0]][pixel[0][1]].info.includes('Webcam'))//if POI==webcam
     {
       wc = panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(' ');
       link = "POI: <a href='"+panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(';')[1]+"' target='_blank'>"+panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(';')[0]+"</a>";  
@@ -2137,7 +2174,7 @@ function panoramaProcessMetadata(event)
     distance = getDistance(panoramaMetadata[pixel[0][0]][pixel[0][1]].lat,panoramaMetadata[pixel[0][0]][pixel[0][1]].lon,own_lat,own_lon);
     link = distance.toFixed(2)+"km "+hm+link; //+'x:'+pixel[0][0]+'y:'+pixel[0][1];
     //if BIG-panorama window
-    if(window.location.pathname.includes('panorama.cgi'))
+    if (window.location.pathname.includes('panorama.cgi'))
     {
       channel.postMessage({ cmd: 'point', lat: panoramaMetadata[pixel[0][0]][pixel[0][1]].lat, lon: panoramaMetadata[pixel[0][0]][pixel[0][1]].lon });
       document.getElementById('panorama-meta-big').innerHTML = link;
@@ -2216,7 +2253,7 @@ function getParameter(paramName)
   {
     var start = url.indexOf(paramName + "=");
     var bug = url.indexOf("#",start);
-    if(url.indexOf("&",start) >= 0)
+    if (url.indexOf("&",start) >= 0)
     {
       end = url.indexOf("&", start);
     }
@@ -2243,9 +2280,9 @@ function setGetParameter(paramName, paramValue, reload)
         var suffix = url.substring(url.indexOf(paramName)).substring(url.indexOf("=") + 1);
         suffix = url.substring(url.indexOf(paramName + "=") + paramName.length +1);
         
-        if(suffix.indexOf("&") >= 0)
+        if (suffix.indexOf("&") >= 0)
         {
-          if(suffix.indexOf("#") < suffix.indexOf("&") && suffix.indexOf("#") >= 0)
+          if (suffix.indexOf("#") < suffix.indexOf("&") && suffix.indexOf("#") >= 0)
           {
             suffix = "&" + suffix.substring(suffix.indexOf("#"));//from next #
           }
@@ -2265,7 +2302,7 @@ function setGetParameter(paramName, paramValue, reload)
       {
         url += "?" + paramName + "=" + paramValue;
       } //url without parameters with #asdasd
-      else if((url.indexOf("?") <0) && (url.indexOf("#") >= 0))
+      else if ((url.indexOf("?") <0) && (url.indexOf("#") >= 0))
       {
       var prefix = url.substring(0, url.indexOf("#"));
       var suffix = url.substring(url.indexOf("#"));
@@ -2279,7 +2316,7 @@ function setGetParameter(paramName, paramValue, reload)
       }
       
     }
-    if(reload == true)
+    if (reload == true)
       window.location.href = url;
     else
       window.history.pushState("", "HamnetDB Map", url);
@@ -2323,12 +2360,12 @@ function getSite(site)
       
       for(var i=0;i<jsondoc.features.length;i++)
       {
-        if(jsondoc.features[i].geometry.type== "Point")
+        if (jsondoc.features[i].geometry.type== "Point")
         {
           var call, lon, lat;
           call = jsondoc.features[i].properties.callsign;
           
-          if(call == site)
+          if (call == site)
           {
             line = jsondoc.features[i].geometry.coordinates;
             lon_f = line[0];  
@@ -2337,7 +2374,7 @@ function getSite(site)
           }
         }
       }
-      if(lon_f != 0 && lat_f != 0)//othervise error happend
+      if (lon_f != 0 && lat_f != 0)//othervise error happend
       {
         map.setView(new L.LatLng(parseFloat(lat_f),parseFloat(lon_f)),11);
       }
@@ -2389,7 +2426,7 @@ function getAs(as)
       //get maximum values of coordinate and calculate center
       for(var i=0;i<jsondoc.features.length;i++)
       {
-        if(jsondoc.features[i].geometry.type== "Point")
+        if (jsondoc.features[i].geometry.type== "Point")
         {
           var line, lon, lat;
           line = jsondoc.features[i].geometry.coordinates;
@@ -2402,7 +2439,7 @@ function getAs(as)
           if (lat > lat_max) lat_max = lat;
         }
       }
-      if(lon_min != 999 && lat_min != 999)//othervise error happend
+      if (lon_min != 999 && lat_min != 999)//othervise error happend
       {
         lon_f = (parseFloat(lon_min) + parseFloat(lon_max))/2.0;
         lat_f = (parseFloat(lat_min) + parseFloat(lat_max))/2.0;
@@ -2419,7 +2456,7 @@ function getAs(as)
 function panelChange ()
 {
   var as = document.getElementById("only_as").getElementsByTagName("select")[0].value;
-  if(as == "-All-")
+  if (as == "-All-")
   {
     as=0;
   }
@@ -2470,7 +2507,7 @@ function getCoverage(url, only_exist)
 
   xmlhttp.open("GET", url, true);
   
-  if(only_exist == "0"){
+  if (only_exist == "0"){
     xmlhttp.onreadystatechange = function(){
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //if OK
     {
@@ -2492,7 +2529,7 @@ function getCoverage(url, only_exist)
       //Add new coverage images to the coresponding layer; check for layers only necessary as 
       //long as box is always unchecked after closing popup
 
-      if(!GreenCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+jsondoc.Tag +"_green"]))
+      if (!GreenCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+jsondoc.Tag +"_green"]))
       {
         GreenCover.addLayer(image_green);
         CoverageLayers[jsondoc.Callsign+'_'+jsondoc.Tag + '_green'] =  GreenCover.getLayerId(image_green);
@@ -2512,7 +2549,7 @@ function getCoverage(url, only_exist)
         get_str = xmlhttp.responseText;
         //hubertus shouldn't c&p
 
-        if(get_str == "0"){
+        if (get_str == "0"){
           document.getElementsByName("Coverage")[0].disabled = true;
           document.getElementsByName("Coverage")[0].style.visibility = "hidden";   
         }
@@ -2529,7 +2566,7 @@ function getCoverage(url, only_exist)
             document.getElementsByName("Coverage")[0].outerHTML+=" "+tags[j]+"<br>";
             document.getElementsByName("Coverage")[0].name= jsondoc.Callsign+'_'+tags[j];
 	       
-            if(GreenCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+tags[j]+"_green"]))
+            if (GreenCover.hasLayer(CoverageLayers[jsondoc.Callsign +'_'+tags[j]+"_green"]))
             {
               document.getElementsByName(jsondoc.Callsign+'_'+tags[j])[0].checked = true;
             }
@@ -2540,14 +2577,12 @@ function getCoverage(url, only_exist)
   }
   xmlhttp.send(null);
 }
-
-
 function coverage(event)
 { 
 
   var callsign= event.target.name;
  
-  if(event.target.checked)
+  if (event.target.checked)
   {
     //Get Coverage Data (status, coordinates) from DB by callsign; add images to CoverageLayers
     getCoverage("mapcoverage.cgi?x="+callsign,0);
@@ -2584,4 +2619,228 @@ function getDistance(lat1,lon1,lat2,lon2) {
   lon2= lon2 * (pi/180);
 
   return Math.acos(Math.cos(lat1)*Math.cos(lon1)*Math.cos(lat2)*Math.cos(lon2) + Math.cos(lat1)*Math.sin(lon1)*Math.cos(lat2)*Math.sin(lon2) + Math.sin(lat1)*Math.sin(lat2)) * r;
+}
+function tracePlaceStart() {
+  traceDeleteMarker();
+  traceMarker = new L.GeoJSON.AJAX("traceroute.cgi?m=startele", settingsTrace);
+  map.addLayer(traceMarker);
+  traceMarker.on('add', function (e) {
+    traceMarker.addTo(map)
+  });
+  traceShowDelete()
+}
+function traceDeleteMarker() {
+  //delete if layer exists
+  if (typeof traceMarker !== 'undefined') {
+    if (traceMarker._map ) {
+      traceMarker.remove();
+    }
+  }
+//delete start + stop marker
+}
+function traceSelectStart(call) {
+  traceDeleteMarker();
+  element= document.getElementById("tracestart");
+  element.innerHTML= "Start: "+call;
+  element.style.visibility= "visible";
+  traceStart= call;
+//place start marker    
+}
+function tracePlaceStop() {
+  traceDeleteMarker();
+  traceMarker = new L.GeoJSON.AJAX("traceroute.cgi?m=stopele", settingsTrace);
+  map.addLayer(traceMarker);
+  traceMarker.on('add', function (e) {
+    traceMarker.addTo(map);
+  });
+  traceShowDelete()
+}
+function traceSelectStop(call) {
+  traceDeleteMarker();
+  var stop= "";
+
+  ip=document.getElementById("traceStopIP").value;
+  if (ip.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)) {
+    stop= ip;
+    traceStopIP= ip;
+  } 
+  else {
+    traceStopIP= null;
+  }
+  if (typeof call !== 'undefined') {
+    if (call.length >4 && !traceStopIP) {
+      traceStop= call;
+      stop= call;
+//place stop marker 
+    } 
+  }
+  else if (traceStop && !traceStopIP) {
+    stop= traceStop;
+  }
+  element= document.getElementById("tracestop");
+  element.innerHTML= "Stop: "+stop;
+  element.style.visibility= "visible";
+}
+function traceTest() {
+  //check start call
+  //check stop call/ip
+  //http-req traceroute.cgi
+  //traceRemove();
+  traceMsg(1,"");
+  
+  var stop= null;
+  var errorMsg= "";
+  if (traceStopIP) {
+    if (traceStopIP.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)) {
+      stop= "&stopIP="+traceStopIP;
+    }
+  }
+  if (traceStop && !stop) {
+    if (traceStop.length >4) {
+      stop= "&stop="+traceStop;
+    }
+  }  
+  if (!stop) {
+    errorMsg= "Stop site or IP undefined!";
+  }
+  if (traceStart.length < 4) {
+    errorMsg= "Start site undefined!";
+  }
+
+  if (errorMsg.length > 0) {
+    traceMsg(0,errorMsg);
+    return;
+  }
+  
+  traceMsg(1,"tracing...");
+  traceLoading();
+
+  url= "traceroute.cgi?m=chktrace&start="+traceStart+stop;
+  var xmlhttp = null;
+  // Mozilla
+  if (window.XMLHttpRequest) 
+  {
+    xmlhttp = new XMLHttpRequest();
+  }
+  // IE
+  else if (window.ActiveXObject) 
+  {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.open("GET", url, true);
+  xmlhttp.onreadystatechange = function(){
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //if OK
+    {
+      get_str = xmlhttp.responseText;
+      if (get_str.length > 1)
+      {
+        if (get_str == "ok") {
+          traceExec(stop);
+        }
+        else {
+          traceMsg(0,get_str)
+          traceFinished();
+        }
+      }
+    }
+  }  
+  xmlhttp.send(null);
+}
+function traceExec(stop) {
+//place start stop marker 
+
+  url= "traceroute.cgi?m=trace&start="+traceStart+stop;
+  var xmlhttp = null;
+  // Mozilla
+  if (window.XMLHttpRequest) 
+  {
+    xmlhttp = new XMLHttpRequest();
+  }
+  // IE
+  else if (window.ActiveXObject) 
+  {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.open("GET", url, true);
+  xmlhttp.onreadystatechange = function(){
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //if OK
+    {
+      get_str = xmlhttp.responseText;
+      if (get_str.charAt(1) != '{') {
+        msg_out= get_str.substr(0,get_str.indexOf('{')-1)
+        traceFinished();  
+        traceMsg(0,msg_out)
+        //cut off at first {
+      }
+      else {
+        tracePrint(get_str);
+      }
+    }
+  }  
+  xmlhttp.send(null);
+}
+function tracePrint(input) {
+  traceRemove();
+  //place geojson layer with input
+  var obj = JSON.parse(input);
+  //var obj2 = JSON.parse(input);
+  testg= obj
+  traceLine = new L.GeoJSON(obj, settingsTrace);
+  map.addLayer(traceLine);
+  traceLine.on('add', function (e) {
+    traceLine.addTo(map)
+  });
+  traceFinished();  
+  traceMsg(1,"Trace done!")
+  traceShowDelete();
+}
+function traceRemove(){
+  //check if layer exists delete  
+  //remove start_stop points
+  if (typeof traceLine !== 'undefined') {
+    if (traceLine._map ) {
+      traceLine.remove();
+    }
+  }
+}
+function traceDeleteAll() {
+  traceRemove();
+  traceDeleteMarker();
+  document.getElementById('traceDeleteAll').style.visibility="hidden";
+  document.getElementById('traceDeleteAll').style.display="none";
+}
+function traceShowDelete() {
+  document.getElementById('traceDeleteAll').style.visibility="visible";
+  document.getElementById('traceDeleteAll').style.display="inline";
+}
+function traceMsg(isOK,Msg) {
+  traceFinished();
+
+  element=document.getElementById("traceerror");
+  element.innerHTML=Msg;
+  if (Msg.length) {
+    element.style.visibility="visible";
+  } else {
+    element.style.visibility="hidden";
+  }
+  if (!isOK) {
+    element.style.color='red'
+    element.style.fontWeight='bold'  
+  }
+  else {
+    element.style.color='black'
+    element.style.fontWeight='none'  
+  }
+}
+function traceLoading() {
+  document.getElementById('traceLoading').style.visibility="visible";
+  document.getElementById('traceOptions').style.visibility="hidden";
+  document.getElementById("traceOptions").style.display = "none";   
+  document.getElementById("traceLoading").style.display = "inline";
+}
+function traceFinished() {
+  document.getElementById('traceLoading').style.visibility="hidden";
+  document.getElementById('traceOptions').style.visibility="visible";
+  document.getElementById("traceOptions").style.display = "inline";   
+  document.getElementById("traceLoading").style.display = "none";
 }
