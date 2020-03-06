@@ -809,9 +809,9 @@ function getLineStyle(feature) {
       dashArray = "6, 6";
       break;
     case "trace":
-      color = "#ff0000";//grey
-      weight = 10.0;
-      opacity= 1.0;
+      color = "#ff0000";//red
+      weight = 12.0;
+      opacity= 0.4;
       break;  
     default:
       color = "#808080";

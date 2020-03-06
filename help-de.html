@@ -27,7 +27,7 @@ mit entsprechenden Parametern.
 (im Idealfall ausserhalb des 13-cm-/6-cm-Amateurfunkbandes). 
 Keine automatisch arbeitenden Amateurfunkstellen. 
 Als Callsign bitte den verantwortlichen Funkamateur für einen Standort
-mit fortlaufender ID ab -101 angeben (z.B. dg8ngn-101, dg8ngn-102, usw.).
+mit fortlaufender ID ab -1 angeben (z.B. dg8ngn-1, dg8ngn-2, usw.).
 Alternativ kann auch direkt ein Rufzeichen angegeben werden, 
 wenn die Koordinaten zum Standort des Rufzeichens passen 
 (z.B. persönlicher Standort: dg8ngn, Standort der Clubstation: 
@@ -198,7 +198,8 @@ welcher Domain-Suffix hinter die Einträge gesetzt werden soll
 der Landes-Suffix, dient nur zur Erzeugung der Dateinamen
   (CGI-Parameter <b>country</b>=de)
 </ul><p>
-Verpflichtend ist es, im Hostnamen immer das Rufzeichen der Station vorkommen
+Verpflichtend ist es, im Hostnamen immer das Rufzeichen der Station 
+vorkommen
 zu lassen, um überregional eindeutige Namen zu erzeugen. Das erspart 
 in der Praxis die Eingabe vollqualifizierter Domainnamen. In der Regel
 sollen Hostnamen als &lt;dienst&gt;.rufzeichen angelegt werden.
@@ -223,7 +224,8 @@ beschriebenen Empfehlungen.
 <p>Die IP-Koordination DL hat sich im Jahr 2019 erneut mit dem 
 Datenschutz beschäftigt und weist beim Eintrag von persönlichen Rufzeichen 
 (insbesondere nicht dem eigenen Rufzeichen) auf ihre Veröffentlichung hin: 
-<a href="https://www.de.ampr.org/ip-koordination/datenschutz">https://www.de.ampr.org/ip-koordination/datenschutz</a>
+<a href="https://www.de.ampr.org/ip-koordination/datenschutz">
+	https://www.de.ampr.org/ip-koordination/datenschutz</a>
 
 <h3>Mehrere Rufzeichen an einem Standort</h3>
 <p>Eine Site wird nach ihrem Rufzeichen benannt. Sollen mehrere Rufzeichen
@@ -251,8 +253,25 @@ Die korrekt erfassten RSSI Werte werden bei den gelisteten Linkstrecken
 angezeigt, in der Karte kann die Ebene "Hamnet RSSI" eingeblendet 
 werden und zeigt eine farbliche abstufung der Werte. <br>
 Eine Legende kann rechts unter <b>"i"</b> gefunden werden.<br>
-Diese Option befindet sich noch in der frühen Erprobungsphase.<br>
-
+Für eine detailiertere Konfigurationshilfe kann 
+<a href="docu/HamnetDB_-_Monitoring_von_Linkstrecken.pdf" 
+	target="_blank">
+	hier ein PDF heruntergeladen werden</a>,
+in dem auch einige Sonderfälle bei der Konfiguration beschrieben sind.<br>
+<p>
+<h3 id="bgp">BGP Monitoring</h3>
+<p>
+Es können die BGP-Peerings über die HamnetDB gemonitored werden.
+Dazu sollte am Host des Routers der Haken "BGP" gesetzt werden. 
+In der Seite des Hosts gibt es danach einen Link 
+"test Routing monitoring" mit dem die Einstellungen getestet
+werden können, dieser erscheint aber nur wenn man in der
+HamnetDB angemeldet ist. Das Feature "BGP Monitoring" funktionert
+im Hintergrund über die Mikroik-API, somit kann es auch nur bei Mikrotik-
+Routern verwendet werden.<br>
+Eine ausführlichere Hilfe zur Konfiguration kann 
+<a href="docu/HamnetDB%20-%20BGP-Monitoring.pdf" target="_blank">
+	hier als PDF heruntergeladen werden</a>.
 <p>
 
 <h2 id="rftools">RF-Tools</h2>
