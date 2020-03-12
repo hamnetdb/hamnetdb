@@ -83,7 +83,7 @@ $path_web= $panorama_path_web;
   $poi_param= "";
   if ($poi=~/hamnet/) 
   {
-    $poi_param.= "-J h -I $path_web/rftools/mk_w.png $path_web/rftools/mk_w.png -P 255 0 0 240 $path_web/rftools/hamnet.txt "; 
+    $poi_param.= "-J h -I $path_web/rftools/mk_w.png $path_web/rftools/mk_w.png -O -P 255 0 0 240 $path_web/rftools/hamnet.txt "; 
   }
   if ($poi=~/sota/)
   {  
@@ -132,7 +132,7 @@ $path_web= $panorama_path_web;
 
   my $cmd= "nice -n 9 $path_prog -p $path_srtm -A $antenna_a ";
   $cmd.= "-a $lat_a $lon_a -b $lat_b $lon_b -z $zoom ";
-  $cmd.= "-e $elevation $font_cmd -g 2.3 -o 5 -C 3 ";
+  $cmd.= "-e $elevation $font_cmd -g 2.3 -o 5 -C 3 -l 0.1 5 ";
   $cmd.= "-x $size_x -y $size_y -w $angle $poi_param ";
   $cmd.= "-r $refraction $sun_param $desert_param $snow_param ";
   

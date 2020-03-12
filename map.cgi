@@ -332,7 +332,7 @@ print qq(
 	POI:<br>
 	<input type="checkbox" name="rfPoiHamnet" id="rfPoiHamnet" value="PoiHamnet" onchange='rfValUpd();' checked >Hamnet<br>
 	<input type="checkbox" name="rfPoiFWC" id="rfPoiFWC" value="PoiFWC" onchange='rfValUpd();' checked>Foto-Webcam<br>
-  <input type="checkbox" name="rfPoiMT" id="rfPoiMT" value="PoiMT" onchange='rfValUpd();' checked>Mountains<br>
+  <input type="checkbox" name="rfPoiMT" id="rfPoiMT" value="PoiMT" onchange='rfValUpd();' >Mountains<br>
 	<input type="checkbox" name="rfPoiSota" id="rfPoiSota" value="PoiSota" onchange='rfValUpd();' >SOTA<br>
 	<input type="checkbox" name="rfPoi" id="rfPoi" value="PoiSmall" onchange='rfValUpd();'>additional POI<br>
 
