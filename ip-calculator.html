@@ -13,260 +13,260 @@
 -->
 <html>
 <head>
-	<title>IP calculator</title>
+  <title>IP calculator</title>
 
-	
-	<script language="javascript" type="text/javascript">
-	  function init()
-	  {
-	    calcfromCIDR();
-	  }
-	  function calcfromNetmask()
-	  {
-	    var ip = document.getElementById('cip-netmask').value;
-	    if(checkIP(ip))
-	    {
-	      if(checkNetmask(ip))
-	      {
-	        cidr=calcCIDR(ip);
-	        hosts= calcHosts(cidr);
-	        calcfromIP();
-	        document.getElementById("cip-netmask-ret").innerHTML=""; 
-	      }
-	      else
-	      {
-	        document.getElementById("cip-netmask-ret").innerHTML="invalid Netmask"; 
-	      }
-	    }
-	    else
-	    {
-	      document.getElementById("cip-netmask-ret").innerHTML="invalid IP"; 
-	    }
-	  }
-	  function calcfromCIDR()
-	  {
-	    var cidr = document.getElementById('cip-cidr').value
-	    
-	    if(checkInt(cidr) && cidr > 0 && cidr <= 32)
-	    {
-	      hosts= calcHosts(cidr);
-	      calcNetmask(cidr);
-	      calcfromIP();
-	      document.getElementById("cip-cidr-ret").innerHTML=""; 
-	      document.getElementById("cip-netmask-ret").innerHTML="";
-	    }
-	    else if(cidr == "")
-	    {
-	      document.getElementById("cip-cidr-ret").innerHTML=""; 
-	    }
-	    else
-	    {
-	      document.getElementById("cip-cidr-ret").innerHTML="only numbers 1-32";
-	    }
-	  }
-	  function calcfromIP()
-	  {
-	    ip = document.getElementById("cip-ip").value;
-	    if(checkIP(ip))
-	    {
-	      document.getElementById("cip-ip").innerHTML="";
-	      cidr = document.getElementById("cip-cidr").value;
-	      calcHosts(cidr); //why that
-	      if(checkInt(cidr) && cidr > 0 && cidr <= 32)//the easiest way to check if everything is ok
-	      {
-	        netmask = document.getElementById("cip-netmask").value;
-	        sp_ip = splitIP(ip);
-	        sp_nm = splitIP(netmask);
-	        var netaddress = new Array();
-	        var broadcast = new Array();
-	        for(i=0;i<4;i++)
-	        {
-	          if(sp_nm[i] == 255)//part stays unchanged
-	          {
-	            netaddress[i]=sp_ip[i];
-	            broadcast[i]=sp_ip[i];
-	          }
-	          else if(sp_nm[i] == 0)
-	          {
-	            netaddress[i]=0;
-	            broadcast[i]=255;
-	          }
-	          else //lets calc
-	          {
-	            num=256-sp_nm[i];
-	            seg=Math.floor(sp_ip[i]/num);
-	            netaddress[i]=num*seg;
-	            broadcast[i]=num*(seg+1)-1;
-	          }
-	        }
+  
+  <script language="javascript" type="text/javascript">
+    function init()
+    {
+      calcfromCIDR();
+    }
+    function calcfromNetmask()
+    {
+      var ip = document.getElementById('cip-netmask').value;
+      if(checkIP(ip))
+      {
+        if(checkNetmask(ip))
+        {
+          cidr=calcCIDR(ip);
+          hosts= calcHosts(cidr);
+          calcfromIP();
+          document.getElementById("cip-netmask-ret").innerHTML=""; 
+        }
+        else
+        {
+          document.getElementById("cip-netmask-ret").innerHTML="invalid Netmask"; 
+        }
+      }
+      else
+      {
+        document.getElementById("cip-netmask-ret").innerHTML="invalid IP"; 
+      }
+    }
+    function calcfromCIDR()
+    {
+      var cidr = document.getElementById('cip-cidr').value
+      
+      if(checkInt(cidr) && cidr > 0 && cidr <= 32)
+      {
+        hosts= calcHosts(cidr);
+        calcNetmask(cidr);
+        calcfromIP();
+        document.getElementById("cip-cidr-ret").innerHTML=""; 
+        document.getElementById("cip-netmask-ret").innerHTML="";
+      }
+      else if(cidr == "")
+      {
+        document.getElementById("cip-cidr-ret").innerHTML=""; 
+      }
+      else
+      {
+        document.getElementById("cip-cidr-ret").innerHTML="only numbers 1-32";
+      }
+    }
+    function calcfromIP()
+    {
+      ip = document.getElementById("cip-ip").value;
+      if(checkIP(ip))
+      {
+        document.getElementById("cip-ip").innerHTML="";
+        cidr = document.getElementById("cip-cidr").value;
+        calcHosts(cidr); //why that
+        if(checkInt(cidr) && cidr > 0 && cidr <= 32)//the easiest way to check if everything is ok
+        {
+          netmask = document.getElementById("cip-netmask").value;
+          sp_ip = splitIP(ip);
+          sp_nm = splitIP(netmask);
+          var netaddress = new Array();
+          var broadcast = new Array();
+          for(i=0;i<4;i++)
+          {
+            if(sp_nm[i] == 255)//part stays unchanged
+            {
+              netaddress[i]=sp_ip[i];
+              broadcast[i]=sp_ip[i];
+            }
+            else if(sp_nm[i] == 0)
+            {
+              netaddress[i]=0;
+              broadcast[i]=255;
+            }
+            else //lets calc
+            {
+              num=256-sp_nm[i];
+              seg=Math.floor(sp_ip[i]/num);
+              netaddress[i]=num*seg;
+              broadcast[i]=num*(seg+1)-1;
+            }
+          }
           document.getElementById("cip-net").innerHTML= netaddress[0]+"."+netaddress[1]+"."+netaddress[2]+"."+netaddress[3];
           document.getElementById("cip-broadcast").innerHTML= broadcast[0]+"."+broadcast[1]+"."+broadcast[2]+"."+broadcast[3];
           document.getElementById("cip-ip-ret").innerHTML="";
-	      }
-	      else
-	      {
-	        document.getElementById("cip-ip-ret").innerHTML="invalid Netmask or CIDR";
-	      }
-	    }
-	    else
-	    {
-	      document.getElementById("cip-ip-ret").innerHTML="invalid IP";
-	    }
-	  }
-	  function checkInt(val)
-	  {
-	    var pattern =/^[0-9]+$/;
+        }
+        else
+        {
+          document.getElementById("cip-ip-ret").innerHTML="invalid Netmask or CIDR";
+        }
+      }
+      else
+      {
+        document.getElementById("cip-ip-ret").innerHTML="invalid IP";
+      }
+    }
+    function checkInt(val)
+    {
+      var pattern =/^[0-9]+$/;
       return pattern.test(val);  
-	  }
-	  function checkIP(ip)
-	  {
-	    var pattern =/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-	    return pattern.test(ip);
-	  }
-	  function checkNetmask(netmask)
-	  {
-	    ip=splitIP(netmask);
-	    for(i=0;i<4;i++)
-	    {
-	      if((i>0) && (ip[(i-1)] < 255) && (ip[(i-1)]> 0) && (ip[i] != 0))
-	      {
-	        return false
-	      }
-	      if(ip[i] < 255) //must be 255-2^x
-	      {
-	         if((ip[i]!=254) && (ip[i]!=252) && (ip[i]!=248) && (ip[i]!=240) && (ip[i]!=224) && (ip[i]!=192) && (ip[i]!=128) && (ip[i]!=0))
-	         {
-	           return false
-	         }
-	      }
-	    }
-	    return true
-	  }
-	  function splitIP(ip)
-	  {
-	    var splitted =new Array();
-	    
-	    for(var i=0;i<3;i++)
-	    {
-	      dotpos=ip.indexOf(".");
-	      splitted[i]=ip.substring(0,dotpos);
-	      ip=ip.substring(dotpos+1);
-	    }
-	    splitted[3]=ip;
-	    return splitted;
-	  }
-	  function calcNetmask(cidr)
-	  {
-	    if(cidr > 24)
-	    {
-	      dyn=255-(Math.pow(2,32-cidr)-1);
-	      netmask="255.255.255."+ dyn;
-	    }
-	    else if(cidr >16)
-	    {
-	      dyn=255-(Math.pow(2,24-cidr)-1);
-	      netmask="255.255."+ dyn+".0";
-	    }
+    }
+    function checkIP(ip)
+    {
+      var pattern =/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+      return pattern.test(ip);
+    }
+    function checkNetmask(netmask)
+    {
+      ip=splitIP(netmask);
+      for(i=0;i<4;i++)
+      {
+        if((i>0) && (ip[(i-1)] < 255) && (ip[(i-1)]> 0) && (ip[i] != 0))
+        {
+          return false
+        }
+        if(ip[i] < 255) //must be 255-2^x
+        {
+           if((ip[i]!=254) && (ip[i]!=252) && (ip[i]!=248) && (ip[i]!=240) && (ip[i]!=224) && (ip[i]!=192) && (ip[i]!=128) && (ip[i]!=0))
+           {
+             return false
+           }
+        }
+      }
+      return true
+    }
+    function splitIP(ip)
+    {
+      var splitted =new Array();
+      
+      for(var i=0;i<3;i++)
+      {
+        dotpos=ip.indexOf(".");
+        splitted[i]=ip.substring(0,dotpos);
+        ip=ip.substring(dotpos+1);
+      }
+      splitted[3]=ip;
+      return splitted;
+    }
+    function calcNetmask(cidr)
+    {
+      if(cidr > 24)
+      {
+        dyn=255-(Math.pow(2,32-cidr)-1);
+        netmask="255.255.255."+ dyn;
+      }
+      else if(cidr >16)
+      {
+        dyn=255-(Math.pow(2,24-cidr)-1);
+        netmask="255.255."+ dyn+".0";
+      }
       else if(cidr > 8)
       {
-	      dyn=255-(Math.pow(2,16-cidr)-1);
-	      netmask="255."+ dyn+".0.0";
+        dyn=255-(Math.pow(2,16-cidr)-1);
+        netmask="255."+ dyn+".0.0";
       }
       else
       {
         dyn=255-(Math.pow(2,8-cidr)-1);
-	      netmask= dyn+".0.0.0";
+        netmask= dyn+".0.0.0";
       }
       document.getElementById("cip-netmask").value=netmask;
-	    return netmask;
-	  }
-	  function calcHosts(cidr)
-	  {
-	    var hosts=  Math.pow(2,32-cidr) -2;
-	    if(hosts < 0){hosts=0}; 
-	    document.getElementById("cip-hosts").innerHTML=hosts; 
-	    return hosts;
-	  }
-	  function calcCIDR(netmask)
-	  {
-	    splitted = splitIP(netmask);
-	    for(i=0;i<4;i++)
-	    {
-	      if(splitted[i]!=255 || i==3)
-	      {
-	        dyn=8-Math.log(256-splitted[i])/Math.log(2); 
-	        cidr= (i)*8 + dyn;
-	        document.getElementById("cip-cidr").value=cidr;
-	        return cidr
-	      }
-	    }
-	  }
-	  function calcLatLon()
-	  {
-	    var locator = document.getElementById('locator').value;
-	    locator = locator.toUpperCase();
-	    var lat= (locator.charCodeAt(1)-65)*10 -90; //Char
-	    lat+= (locator.charCodeAt(3) -48); //number
-	    lat+=  (locator.charCodeAt(5)-65) /24; //char
-	    lat+= (locator.charCodeAt(7) -48) /(10*24); //number
-	    lat+=  ((locator.charCodeAt(9)-65) + 0.5) / (10*24) / 24; //char
-	    lat= parseInt(lat*100000)/100000;
-	    var lon= (locator.charCodeAt(0)-65) * 20 -180;//char
+      return netmask;
+    }
+    function calcHosts(cidr)
+    {
+      var hosts=  Math.pow(2,32-cidr) -2;
+      if(hosts < 0){hosts=0}; 
+      document.getElementById("cip-hosts").innerHTML=hosts; 
+      return hosts;
+    }
+    function calcCIDR(netmask)
+    {
+      splitted = splitIP(netmask);
+      for(i=0;i<4;i++)
+      {
+        if(splitted[i]!=255 || i==3)
+        {
+          dyn=8-Math.log(256-splitted[i])/Math.log(2); 
+          cidr= (i)*8 + dyn;
+          document.getElementById("cip-cidr").value=cidr;
+          return cidr
+        }
+      }
+    }
+    function calcLatLon()
+    {
+      var locator = document.getElementById('locator').value;
+      locator = locator.toUpperCase();
+      var lat= (locator.charCodeAt(1)-65)*10 -90; //Char
+      lat+= (locator.charCodeAt(3) -48); //number
+      lat+=  (locator.charCodeAt(5)-65) /24; //char
+      lat+= (locator.charCodeAt(7) -48) /(10*24); //number
+      lat+=  ((locator.charCodeAt(9)-65) + 0.5) / (10*24) / 24; //char
+      lat= parseInt(lat*100000)/100000;
+      var lon= (locator.charCodeAt(0)-65) * 20 -180;//char
       lon+= (locator.charCodeAt(2)-48) * 2; //number
       lon+= (locator.charCodeAt(4)-65)/12;//char
       lon+= (locator.charCodeAt(6)-48)/(120); //number
       lon+= ((locator.charCodeAt(8)-65) + 0.5) / 120 / 24;//char
       lon= parseInt(lon*100000)/100000;
-	    document.getElementById("locator-ret").innerHTML=lat+ " " +lon;
-	  }
-	  function calcLocator()
-	  {
-	    var locator = "";
+      document.getElementById("locator-ret").innerHTML=lat+ " " +lon;
+    }
+    function calcLocator()
+    {
+      var locator = "";
       lat=47.78689;
       lon=12.98875;
-			lat += 90;
-			lon += 180;
-			locator += String.fromCharCode(65 + Math.floor(lon / 20));
-			locator += String.fromCharCode(65 + Math.floor(lat / 10));
-			lon = lon % 20;
-			if (lon < 0) lon += 20;
-			lat = lat % 10;
-			if (lat < 0) lat += 10;
+      lat += 90;
+      lon += 180;
+      locator += String.fromCharCode(65 + Math.floor(lon / 20));
+      locator += String.fromCharCode(65 + Math.floor(lat / 10));
+      lon = lon % 20;
+      if (lon < 0) lon += 20;
+      lat = lat % 10;
+      if (lat < 0) lat += 10;
 
-			locator += String.fromCharCode(48 + Math.floor(lon / 2));
-			locator += String.fromCharCode(48 + Math.floor(lat / 1));
-			lon = lon % 2;
-			if (lon < 0) lon += 2;
-			lat = lat % 1;
-			if (lat < 0) lat += 1;
+      locator += String.fromCharCode(48 + Math.floor(lon / 2));
+      locator += String.fromCharCode(48 + Math.floor(lat / 1));
+      lon = lon % 2;
+      if (lon < 0) lon += 2;
+      lat = lat % 1;
+      if (lat < 0) lat += 1;
 
-			locator += String.fromCharCode(65 + Math.floor(lon * 12));
-			locator += String.fromCharCode(65 + Math.floor(lat * 24));
-			lon = lon % ( 1 / 12);
-			if (lon < 0) lon +=  1 / 12;
-			lat = lat % ( 1 / 24);
-			if (lat < 0) lat += 1 / 24;
+      locator += String.fromCharCode(65 + Math.floor(lon * 12));
+      locator += String.fromCharCode(65 + Math.floor(lat * 24));
+      lon = lon % ( 1 / 12);
+      if (lon < 0) lon +=  1 / 12;
+      lat = lat % ( 1 / 24);
+      if (lat < 0) lat += 1 / 24;
 
-			locator += String.fromCharCode(48 + Math.floor(lon * 120));
-			locator += String.fromCharCode(48 + Math.floor(lat * 240));
-			lon = lon % (1 / 120);
-			if (lon < 0) lon +=  1 / 120;
-			lat = lat %( 1 / 240);
-			if (lat < 0) lat += 1 / 240;
+      locator += String.fromCharCode(48 + Math.floor(lon * 120));
+      locator += String.fromCharCode(48 + Math.floor(lat * 240));
+      lon = lon % (1 / 120);
+      if (lon < 0) lon +=  1 / 120;
+      lat = lat %( 1 / 240);
+      if (lat < 0) lat += 1 / 240;
 
-			locator += String.fromCharCode(65 + Math.floor(lon * 120 * 24));
-			locator += String.fromCharCode(65 + Math.floor(lat * 240 * 24));
-			lon = lon % ( 1 / 120 / 24);
-			if (lon < 0) lon +=  1 / 120 / 24;
-			lat = lat % (1 / 240 / 24);
-			if (lat < 0) lat += 1 / 240 / 24;
+      locator += String.fromCharCode(65 + Math.floor(lon * 120 * 24));
+      locator += String.fromCharCode(65 + Math.floor(lat * 240 * 24));
+      lon = lon % ( 1 / 120 / 24);
+      if (lon < 0) lon +=  1 / 120 / 24;
+      lat = lat % (1 / 240 / 24);
+      if (lat < 0) lat += 1 / 240 / 24;
 
 
-			document.getElementById("locator-ret").innerHTML=locator;
-	  }
+      document.getElementById("locator-ret").innerHTML=locator;
+    }
 
-	</script>
-	<style>
+  </script>
+  <style>
       body {
         margin: 10px;
         padding: 0px;
@@ -289,24 +289,24 @@
     </style>
 </head>
 <body onload="init();">
-	<div id="ipcalc">
-	  <form>
-	  <b>IP-calculator</b>
-	  <br>
-	  <br>
-	  <table>
-	    <tr><td>IP:</td><td><input type="text" onkeyup="calcfromIP();" id="cip-ip" value="44.0.0.0"/></td><td><span class="cip-error" id="cip-ip-ret" ></span></td></tr>
-	    <tr><td>Net-Mask:</td><td><input type="text" onkeyup="calcfromNetmask();" id="cip-netmask"/></td><td><span class="cip-error" id="cip-netmask-ret"></span></td></tr>
-	    <tr><td>CIDR-Suffix:</td><td><input type="text"  onkeyup="calcfromCIDR();" id="cip-cidr" value="29"/></td><td><span class="cip-error" id="cip-cidr-ret" ></span></td></tr>
-	    <tr><td>Hosts:</td><td><span id="cip-hosts"></span></td></tr>
-	    <tr><td>Networkaddress:</td><td><span id="cip-net"></span></td></tr>
-	    <tr><td>Broadcast:</td><td><span id="cip-broadcast"></span></td></tr>
-	    
-	  </table>  </br>
-	    Networkaddress and Broadcastaddress are reseved, you can't use them.
-	  </form>
-	</div>
-	
+  <div id="ipcalc">
+    <form>
+    <b>IP-calculator</b>
+    <br>
+    <br>
+    <table>
+      <tr><td>IP:</td><td><input type="text" onkeyup="calcfromIP();" id="cip-ip" value="44.0.0.0"/></td><td><span class="cip-error" id="cip-ip-ret" ></span></td></tr>
+      <tr><td>Net-Mask:</td><td><input type="text" onkeyup="calcfromNetmask();" id="cip-netmask"/></td><td><span class="cip-error" id="cip-netmask-ret"></span></td></tr>
+      <tr><td>CIDR-Suffix:</td><td><input type="text"  onkeyup="calcfromCIDR();" id="cip-cidr" value="29"/></td><td><span class="cip-error" id="cip-cidr-ret" ></span></td></tr>
+      <tr><td>Hosts:</td><td><span id="cip-hosts"></span></td></tr>
+      <tr><td>Networkaddress:</td><td><span id="cip-net"></span></td></tr>
+      <tr><td>Broadcast:</td><td><span id="cip-broadcast"></span></td></tr>
+      
+    </table>  </br>
+      Networkaddress and Broadcastaddress are reseved, you can't use them.
+    </form>
+  </div>
+  
 </body>
 </html>
-	
+  

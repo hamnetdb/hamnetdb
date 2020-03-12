@@ -204,8 +204,7 @@ sub checkValues {
       my @dhcp_segments= split /-/, $dhcp_range;
       my @base_ip_segments= split /\./, $base_ip;
       $end_segment= 2**(32.0-$bits)-1;
-      if($dhcp_segments[0] < $base_ip_segments[3]+1 || $dhcp_segments[1] > ($base_ip_segments[3]+$end_segment))
-      {
+      if($dhcp_segments[0] < $base_ip_segments[3]+1 || $dhcp_segments[1] > ($base_ip_segments[3]+$end_segment)) {
         $inputStatus= "DHCP-range can't be bigger than subnet"
       }
     }

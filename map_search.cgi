@@ -33,26 +33,25 @@ print("Content-Type: application/json\n\n");
 
 my $sth= $db->prepare("select callsign, name, longitude, latitude from hamnet_site where name like $dbsearch or callsign like $dbsearch ORDER by callsign, name LIMIT 10");
 $sth->execute;
-while (@line= $sth->fetchrow_array) 
-{
+while (@line= $sth->fetchrow_array) {
   $callsign= $line[0];
   $name= $line[1];
   $lon= $line[2];
   $lat= $line[3];
 
-  my $teil = {'lon' => $lon.'', 'lat' => $lat.'', 'display_name' => $callsign.' | '.$name };
+  my $teil= {'lon' => $lon.'', 'lat' => $lat.'', 'display_name' => $callsign.' | '.$name };
   push(@sites, $teil);
 }
 
-my $json = JSON->new->utf8->pretty->encode(\@sites);
+my $json= JSON->new->utf8->pretty->encode(\@sites);
 my $nominatimResult= get_nominatim("https://nominatim.openstreetmap.org/search?format=json&q=$search");
-my @decoded_json = @{decode_json($nominatimResult)};
+my @decoded_json= @{decode_json($nominatimResult)};
 
 foreach my $entry (@decoded_json) { 
   push(@sites,$entry);
 }
 
-my $json = JSON->new->utf8->pretty->encode(\@sites);
+my $json= JSON->new->utf8->pretty->encode(\@sites);
 print "$json\n";
 
 
@@ -67,16 +66,16 @@ print "$json\n";
 # "icon":"https://nominatim.openstreetmap.org/images/mapicons/poi_boundary_administrative.p.20.png"}
 
 
-sub get_nominatim{
-  $url=shift;
+sub get_nominatim {
+  $url= shift;
  
-  my $ua      = LWP::UserAgent->new(); 
+  my $ua= LWP::UserAgent->new(); 
   $ua->timeout(120);
-  my $request = HTTP::Request->new(GET => $url);
+  my $request= HTTP::Request->new(GET => $url);
 
-  my $response = $ua->request($request);
+  my $response= $ua->request($request);
   if ($response->is_success) {
-    my $message = $response->decoded_content;
+    my $message= $response->decoded_content;
     #print "Received reply: $message\n";
     return $message;
   }
@@ -84,5 +83,4 @@ sub get_nominatim{
     print "HTTP POST error code: ", $response->code, "\n";
     print "HTTP POST error message: ", $response->message, "\n";
   }
-
 }

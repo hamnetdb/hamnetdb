@@ -58,7 +58,7 @@ foreach $agent (@monitorAgents) {
 exit;
 
 
-sub performCheckRSSI{
+sub performCheckRSSI {
   my $agent= shift;
   my $url= shift;
   
@@ -79,11 +79,10 @@ sub performCheckRSSI{
   my %rssi= ();
   my %rssi_timestamp= ();
   foreach my $entry (@decoded_json) { 
-      if ($entry->{'metric'} eq 'RSSI')
-      {
-        $rssi{$entry->{'foreignid'}}=$entry->{'value'};
-        $rssi_timestamp{$entry->{'foreignid'}}=$entry->{'unixtimestamp'};
-      }
+    if ($entry->{'metric'} eq 'RSSI') {
+      $rssi{$entry->{'foreignid'}}=$entry->{'value'};
+      $rssi_timestamp{$entry->{'foreignid'}}=$entry->{'unixtimestamp'};
+    }
   } 
 
   #update database
@@ -114,19 +113,15 @@ sub performCheckRSSI{
       #print $sql, "\n";
       $db->do($sql);
     }
-    else
-    {
+    else {
       $notokCount++;
     }
     $Count++;
-
   }
   print "RSSI:  ",$Count,"\nok:", $okCount,  "\nnotok:", $notokCount,"\n";
-
-
 }
 
-sub performCheckRouting{
+sub performCheckRouting {
   my $agent= shift;
   my $url= shift;
   
@@ -154,7 +149,7 @@ sub performCheckRouting{
   my %routing_uptime= ();
   foreach my $entry (@decoded_json) {
     if ($entry->{'peeringState'} eq 'established' && defined($all_routing->{$entry->{'localAddress'}} )) {
-      print $entry->{'peeringState'},$entry->{'localAddress'}, "\n\n";  	
+      print $entry->{'peeringState'},$entry->{'localAddress'}, "\n\n"; 
       my $ip= $entry->{'remoteAddress'};
       $routing= $entry->{'prefixCount'};
       $routing_timestamp= $entry->{'unixTimeStamp'};
@@ -180,8 +175,7 @@ sub performCheckRouting{
       #print $sql, "\n";
       $db->do($sql);
     }
-    else
-    {
+    else {
       $notokCount++;
     }
     $Count++;
@@ -192,7 +186,7 @@ sub performCheckRouting{
 
 }
 
-sub performCheckTraceroute{
+sub performCheckTraceroute {
   my $agent= shift;
   my $url= shift;
 
@@ -235,16 +229,12 @@ sub performCheckTraceroute{
       #print $sql, "\n";
       $db->do($sql);
     }
-    else
-    { 
+    else { 
       $notokCount++;
     }
     $Count++;
-
   }
   print "Routing:  ",$Count,"\nok:", $okCount,  "\nnotok:", $notokCount,"\n";
-
-
 }
 
 

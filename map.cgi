@@ -27,7 +27,6 @@ sub cleanLibs {
   else {
     die;
   } 
-
 }
 
 print("Content-Type: text/html\nExpires: 0\n\n");
@@ -43,7 +42,7 @@ if ($source == 0) {
 }
 
 my $hover= lc $query->param("hover");
-if($hover eq "true") {
+if ($hover eq "true") {
   $hoverchecked = "checked";
 } 
 
@@ -73,9 +72,9 @@ print qq(
 
      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
      <meta http-equiv="content-language" content="en" />
-	  <title>HamnetDB Map</title>
-	  <link rel="stylesheet" type="text/css" href="osm/leaflet.css" />
-	  <link rel="stylesheet" type="text/css" href="osm/style-lf.css" />
+    <title>HamnetDB Map</title>
+    <link rel="stylesheet" type="text/css" href="osm/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="osm/style-lf.css" />
     <script src="osm/leaflet.js"></script>
     
     <!--<script src="osm/GeoJSON.Style.js"></script>
@@ -105,26 +104,23 @@ if ($source eq 1) {
 #  print('<script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> <script src="osm/L.Google.js"></script>');
 }
 
-
 print qq(
      <script type="text/javascript" src="osm/leaflet.ajax.js"></script>
     <!--<script src="osm/spin.js"></script>
     <script src="osm/leaflet.spin.js"></script>-->
-
       
     <script src="osm/L.Control.MousePosition.js"></script>
     <script src="osm/L.Control.MiniMap.js"></script>
     <script src="osm/L.Control.Sidebar.js"></script>
-	  <script src="osm/L.Draw.js"></script>
+    <script src="osm/L.Draw.js"></script>
     <script src="osm/Permalink.js"></script>
     <script src="osm/Permalink.Marker.js"></script>
     <script src="osm/Permalink.Layer.js"></script>
     <script src="osm/Permalink.Overlay.js"></script>
-	  <script src="osm/L.Control.LSP.js"></script>
+    <script src="osm/L.Control.LSP.js"></script>
     <script src="osm/Leaflet.Geodesic.js"></script>
     <script src="osm/leaflet-search.js"></script>
     
-
     <script src="osm/leaflet.contextmenu.js"></script>
     <!--<script src="osm/leaflet.contextmenu.min.js"></script>-->
 
@@ -133,10 +129,8 @@ print qq(
 
     <script src="osm/hamnetdb-lf.js"></script>
 
-
-	 
-	</head>
-	<body onload="init()">
+  </head>
+  <body onload="init()">
       <div class="hidden">
         Hamnet map, showing Hamnet infrastructure 
         including  RF tools for planing
@@ -154,7 +148,7 @@ print qq(
       </div>
       <div id="info" style="display:none;">
       <div id="sidebar-info">
-	      <div id="legende">
+        <div id="legende">
           <h4>Legend</h4>
           <table>        
             <tr><td><img src="site.png"/></td><td>This is a site. No realtime checks were performed last 2 hours.</td></tr>
@@ -173,25 +167,25 @@ print qq(
             <tr><td bgcolor="#ffa700">&nbsp;</td><td>>=-85dBm<td></td></tr>
             <tr><td bgcolor="#ff000d">&nbsp;</td><td><=-86dBm<td></td></tr>        
           </table>
-	  <h4> BGP-Monitoring</h4>
-	  black lines indicates active bgp connections<br>
-	  dashed lines have an uptime less than 5 minutes.
+    <h4> BGP-Monitoring</h4>
+    black lines indicates active bgp connections<br>
+    dashed lines have an uptime less than 5 minutes.
           <h4> Coverage </h4>
           The receive signal power is based on a 16dBi, 60km maximum radius
-	        <table>
+          <table>
             <tr><td bgcolor="#59ed59">&nbsp;</td><td>Received power level better than -60 dBm.</td></tr> 
-	        	<tr><td bgcolor="#59db9b">&nbsp;</td><td>Received power level better than -65 dBm.</td></tr> 
-	        	<tr><td bgcolor="#59dbd9">&nbsp;</td><td>Received power level better than -70 dBm.</td></tr> 
-	        	<tr><td bgcolor="#81a9ff">&nbsp;</td><td>Received power level better than -75 dBm.</td></tr>   
-	        	<tr><td bgcolor="#a759ff">&nbsp;</td><td>Received power level better than -80 dBm.</td></tr>
-	        </table>
+            <tr><td bgcolor="#59db9b">&nbsp;</td><td>Received power level better than -65 dBm.</td></tr> 
+            <tr><td bgcolor="#59dbd9">&nbsp;</td><td>Received power level better than -70 dBm.</td></tr> 
+            <tr><td bgcolor="#81a9ff">&nbsp;</td><td>Received power level better than -75 dBm.</td></tr>   
+            <tr><td bgcolor="#a759ff">&nbsp;</td><td>Received power level better than -80 dBm.</td></tr>
+          </table>
         </div>
         <div id="info_by">HamnetDB by DL8MBT <br />Map by OE2LSP <br> 
-	  see  <a href="osm/copyright.html" target="_blank">Copyright</a>
-	</div>
+    see  <a href="osm/copyright.html" target="_blank">Copyright</a>
+  </div>
       </div>
       <div id="sidebar-setting">
-	    <h4>Map-Settings</h4>
+      <h4>Map-Settings</h4>
         <div id="source">
           <form name="mapsourceform">
             <label for="mapsource">Map-Source</label> 
@@ -305,43 +299,43 @@ print qq(
         <div id="rf-result"></div>
         <hr>
         
-	
-	<h4>(RF)-Panorama</h4>
-	<div>
+  
+  <h4>(RF)-Panorama</h4>
+  <div>
         <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
         <span class="side-button side-draw-point" id="side-draw-add-point3"></span></a>
         <a onclick="deleteProfileAll();" style="text-decoration:none; border-radius:2px;">
         <span class="side-button side-draw-del" id="side-draw-del-point3"></span></a>
         &nbsp;place marker "From" and "To"<br>"From" is position of camera <br>
-	"To" defines the direction and virtual horizon.<br>
-	<span id="rfTowerFromLbl">Tower size (m) <input type="text" id='rfTowerFromP' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
-	<span id="rfElevationt">Elevation &nbsp;<label id='rfElevationlbl' for='rfElevation'>0°</label> 
+  "To" defines the direction and virtual horizon.<br>
+  <span id="rfTowerFromLbl">Tower size (m) <input type="text" id='rfTowerFromP' value='10' onchange='rfValUpd()' style='width:20px'><br></span>
+  <span id="rfElevationt">Elevation &nbsp;<label id='rfElevationlbl' for='rfElevation'>0°</label> 
   <input type="range"id='rfElevation'  min="-20" max="20" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
-	<span id="rfAnglet">horizontal sight angle <label id='rfAngletlbl' for='rfAngle'>50°</label>
+  <span id="rfAnglet">horizontal sight angle <label id='rfAngletlbl' for='rfAngle'>50°</label>
   <input type="range" id='rfAngle' min="1" max="360" value="50" oninput='rfPanUpd();' onchange='rfPanUpd();'><br></span>
-	</div><a onclick="rfPanoramaAdvanced();"><span>advanced options</span></a><br><div id="panoramaAdv">
-	<span id="rfZoomt">vertical zoom &nbsp;<label id='rfZoomlbl' for='rfZoom'>1</label> 
+  </div><a onclick="rfPanoramaAdvanced();"><span>advanced options</span></a><br><div id="panoramaAdv">
+  <span id="rfZoomt">vertical zoom &nbsp;<label id='rfZoomlbl' for='rfZoom'>1</label> 
   <input type="range"id='rfZoom'  min="0.1" max="10" value="1" step="0.1"; oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
   Font size 
-	<select id="rfPanoramaFont" onchange='rfValUpd();'>
+  <select id="rfPanoramaFont" onchange='rfValUpd();'>
         <option value="0" >disabled</option>
-	      <option value="1" selected="selected">1</option>
-	      <option value="2" >2</option>
-	      <option value="3" >3</option>
-	</select><br>
-	POI:<br>
-	<input type="checkbox" name="rfPoiHamnet" id="rfPoiHamnet" value="PoiHamnet" onchange='rfValUpd();' checked >Hamnet<br>
-	<input type="checkbox" name="rfPoiFWC" id="rfPoiFWC" value="PoiFWC" onchange='rfValUpd();' checked>Foto-Webcam<br>
+        <option value="1" selected="selected">1</option>
+        <option value="2" >2</option>
+        <option value="3" >3</option>
+  </select><br>
+  POI:<br>
+  <input type="checkbox" name="rfPoiHamnet" id="rfPoiHamnet" value="PoiHamnet" onchange='rfValUpd();' checked >Hamnet<br>
+  <input type="checkbox" name="rfPoiFWC" id="rfPoiFWC" value="PoiFWC" onchange='rfValUpd();' checked>Foto-Webcam<br>
   <input type="checkbox" name="rfPoiMT" id="rfPoiMT" value="PoiMT" onchange='rfValUpd();' >Mountains<br>
-	<input type="checkbox" name="rfPoiSota" id="rfPoiSota" value="PoiSota" onchange='rfValUpd();' >SOTA<br>
-	<input type="checkbox" name="rfPoi" id="rfPoi" value="PoiSmall" onchange='rfValUpd();'>additional POI<br>
+  <input type="checkbox" name="rfPoiSota" id="rfPoiSota" value="PoiSota" onchange='rfValUpd();' >SOTA<br>
+  <input type="checkbox" name="rfPoi" id="rfPoi" value="PoiSmall" onchange='rfValUpd();'>additional POI<br>
 
-	<select id="rfRefractionPanorama" onchange='rfValUpd();'>
+  <select id="rfRefractionPanorama" onchange='rfValUpd();'>
     <option value="0.0" >vacuum</option>
     <option value="0.13" >optical visibility</option>
     <option value="0.25" selected="selected">RF-visibility</option>
   </select> (refraction)
-	<span id="rfSnow1s">snow line &nbsp;<label id='rfSnow1lbl' for='rfSnow1'>2500 m</label> 
+  <span id="rfSnow1s">snow line &nbsp;<label id='rfSnow1lbl' for='rfSnow1'>2500 m</label> 
   <input type="range" id='rfSnow1' min="0" max="3000" value="2500" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
   <span id="rfSnow2s">snow line distribution&nbsp;±<label id='rfSnow2lbl' for='rfSnow2'>500 m</label> 
   <input type="range" id='rfSnow2' min="0" max="2000" value="500" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
@@ -351,10 +345,10 @@ print qq(
   <input type="range" id='rfSunEl' min="0" max="90" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>       
   <input type="checkbox" name="rfDesert" id="rfDesert" value="rfDesert" onchange='rfValUpd();' >desert mode<br>
 
-	</div>
-	<input type='button' value='show panorama' style='height:24px;' onclick='javascript:rfOpenpanorama()'> 
-	<hr>
-	<br>
+  </div>
+  <input type='button' value='show panorama' style='height:24px;' onclick='javascript:rfOpenpanorama()'> 
+  <hr>
+  <br>
         <div id="extern-permalink-rf"></div>
         <h4>Hints:</h4>
         <ul><li>right click to site "snap to &lt;SITE&gt;" to use coordinates and tower size</li>
@@ -367,7 +361,7 @@ print qq(
       <div id="map">
 
       </div>
-	  <noscript><h1>Für diese Webseite benötigst du Javascript!</h1></noscript>
-	</body>
+    <noscript><h1>Für diese Webseite benötigst du Javascript!</h1></noscript>
+  </body>
 </html>         
 );

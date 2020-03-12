@@ -148,8 +148,7 @@ print qq(
 <script src="osm/leaflet.js"></script>
 );
 
-unless(checkMapSource())
-{
+unless(checkMapSource()) {
   print qq(
     <script src="osm/es6-promise.auto.js"></script><script>ES6Promise.polyfill();</script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA58LI1avl5xzd8mj9LLidnBVhRHGoaAsA" async defer></script> 
@@ -205,32 +204,25 @@ print qq(
 my $rows=0;
 my $lines= 0;
 my $counter=1;
-if($mustLoadFromDB){
+if ($mustLoadFromDB) {
   $accessh = $db->prepare("select tag,frequency,power,gain,cableloss,antennatype,azimuth,altitude from $hamnet_coverage where callsign='$callsign' and version='$version'");
   $accessh->execute();
   #necessary because number of lines unknown
-  if(($tag,$frequency,$power,$gain,$cableloss,$antennatype,$azimuth,$altitude) = $accessh->fetchrow_array())
-  {
+  if (($tag,$frequency,$power,$gain,$cableloss,$antennatype,$azimuth,$altitude) = $accessh->fetchrow_array()) {
     $lines=1;  
   }
 }
-else{
-  if($query->param("addAnt"))
-  {  
+else {
+  if ($query->param("addAnt")) {  
     $lines= $query->param("addAnt")-1;
   }
 }
 
 
-
-while($lines) 
-{
-
+while ($lines) {
   #Get access data (frequencies,power,gain,antennatype,closs,tag) from $hamnet_coverage or query
   $lines--; 
-  unless($mustLoadFromDB)
-  {
-
+  unless ($mustLoadFromDB) {
     $frequency=$query->param("frequency$counter");
     $azimuth=$query->param("azimuth$counter");
     $altitude=$query->param("altitude$counter");
@@ -239,9 +231,7 @@ while($lines)
     $power=$query->param("power$counter");
     $gain=$query->param("gain$counter");
     $cableloss=$query->param("cableloss$counter");
-
   }
-
   #For each user access there need to a different frequency (but might also be the same for every access point)
   $_freq="frequency$counter";
   $_tag="tag$counter";
@@ -252,7 +242,6 @@ while($lines)
   $_pow="power$counter";
   $_loss="cableloss$counter";
   $_gain="gain$counter";
-
 
   print qq(
   <tr id="plusUser$counter">
@@ -301,25 +290,15 @@ while($lines)
     </tr>
   );
   $counter++;
-  if($mustLoadFromDB)
-  {
-    if(($tag,$frequency,$power,$gain,$cableloss,$antennatype,$azimuth,$altitude) = $accessh->fetchrow_array())
-    {
+  if ($mustLoadFromDB) {
+    if (($tag,$frequency,$power,$gain,$cableloss,$antennatype,$azimuth,$altitude) = $accessh->fetchrow_array()) {
       $lines=1;  
     }
-    else
-    {
+    else {
       last;
     }
-    
   }
-#  if($counter==5)
-#  {
-#    last;
-#  }
-  
 }
-
 
 print qq(
   <tr id="plusUser$counter"></tr>
@@ -373,8 +352,7 @@ exit;
 
 # --------------------------------------------------------------------------
 # check and store values
-sub checkValues 
-{
+sub checkValues {
   
   $Cover = $query->param("Cover");
   $callsign= lc $callsign;
@@ -389,15 +367,13 @@ sub checkValues
 
   $latitude= &degmin2dec($latitude);
   $longitude= &degmin2dec($longitude);
-  if ($latitude<-180 || $latitude>180) 
-  {
+  if ($latitude<-180 || $latitude>180) {
     $inputStatus= "Latitude is out of range";
   }
   if ($longitude<-180 || $longitude>180) {
     $inputStatus= "Longitude is out of range";
   }
-  if (($longitude == 0 && $latitude == 0)|| $longitude eq "" || $latitude eq "")
-  {
+  if (($longitude == 0 && $latitude == 0)|| $longitude eq "" || $latitude eq "") {
     $inputStatus= "Longitude and Latitude can't be 0, or Locator too short."
   }
   
@@ -406,7 +382,6 @@ sub checkValues
   if ($callsign eq "") {
     if ($no_check!=3) {
       $inputStatus= "Callsign is missing (maybe use type 'without callsign')";
-
     }
     else {
       if ($id) {
@@ -444,9 +419,9 @@ sub checkValues
     &checkMaintainerRW(1, $maintainer);    
   }
 
-  if($Cover == 1){
+  if ($Cover == 1) {
     $hasCover = 1;
-    if($ischanged ==1){
+    if ($ischanged ==1) {
       #change in comment shall not envoke a new prediction...
       $newCover = 1;
     }
@@ -474,13 +449,11 @@ sub checkValues
           "hasCover=".$db->quote($hasCover);
 }
 
-sub deleteAccess
-{
+sub deleteAccess {
   $db->do("delete from hamnet_coverage where callsign='$callsign'");
 }
 
-sub addAccess
-{
+sub addAccess {
   $numAnt = $query->param("addAnt");
 
   my $vers_handle = $db->prepare("select version from hamnet_site where callsign='$callsign'");
@@ -490,8 +463,7 @@ sub addAccess
   #update not possible, no index to refer to
   $db->do("delete from hamnet_coverage where callsign='$callsign'");
   
-  for(my $k = 1; $k < $numAnt; $k++)
-  {
+  for(my $k = 1; $k < $numAnt; $k++) {
     my $fr=$query->param("frequency$k");
     my $azi=$query->param("azimuth$k");
     my $alt=$query->param("altitude$k");
@@ -511,180 +483,138 @@ sub addAccess
 }
 
 
-sub checkAntenna
-{
+sub checkAntenna {
   $numAnt = $query->param("addAnt"); #number of accesses
   $Cover = $query->param("Cover");
   @tags;
 
-  if($Cover == 1 && $numAnt == 1)
-  {
-    $inputStatus="Add at least one User Access/Antenna Configuration!";
+  if ($Cover == 1 && $numAnt == 1) {
+    $inputStatus= "Add at least one User Access/Antenna Configuration!";
   }
- 
- 
-  if(($no_check == 1 || $no_check == 2 || $no_check == 3) && ($Cover == 1 || $numAnt > 1 ))
-  {
-    $inputStatus="This site has no hamnet, so there can't be an antenne for an hamnet useraccess"; 
+  
+  if (($no_check == 1 || $no_check == 2 || $no_check == 3) && ($Cover == 1 || $numAnt > 1 )) {
+    $inputStatus= "This site has no hamnet, so there can't be an antenne for an hamnet useraccess"; 
   }
-  for(my $k = 1; $k<$numAnt; $k++)
-  {
+  for (my $k= 1; $k<$numAnt; $k++) {
     #*************************Antenna- label*************************
     
     my $t=$query->param("tag$k");
-    unless($inputStatus)
-    {
-      if($t =~ /:/)
-      {
-        $inputStatus="At least one antenna-Label seems to have incorrect format (No '_',':' or empty space allowed):  $t";
+    unless($inputStatus) {
+      if ($t =~ /:/) {
+        $inputStatus= "At least one antenna-Label seems to have incorrect format (No '_',':' or empty space allowed):  $t";
       }
-      if($t =~/_/)
-      {
-        $inputStatus="At least one antenna-Label seems to have incorrect format (No '_',':' or empty space allowed): $t";
+      if ($t =~/_/) {
+        $inputStatus= "At least one antenna-Label seems to have incorrect format (No '_',':' or empty space allowed): $t";
       }
-      if($t =~/ /)
-      {
-        $inputStatus="At least one antenna-Label seems to have incorrect format (No '_',':' or empty space allowed):  $t";
+      if ($t =~/ /) {
+        $inputStatus= "At least one antenna-Label seems to have incorrect format (No '_',':' or empty space allowed):  $t";
       }
-      unless($t)
-      {
-        $inputStatus="At least one antenna-Label seems to have incorrect format (No '_',':' or empty space allowed):  $t";
+      unless($t) {
+        $inputStatus= "At least one antenna-Label seems to have incorrect format (No '_',':' or empty space allowed):  $t";
       }
         #$inputStatus="dreck";
-        if ( grep { $_ eq $t} @tags )
-        {
-          $inputStatus="antenna-Label must be unique for this site!";
+        if ( grep { $_ eq $t} @tags ) {
+          $inputStatus= "antenna-Label must be unique for this site!";
         }  
-  
       push(@tags, $t);
-      
     }      
     #*************FREQUENCY********************************
 
     my $fr=$query->param("frequency$k");
 
-    unless($inputStatus)
-    {
-      if($fr =~/[^0-9]/)
-      {
-        $inputStatus="At least one invalid frequency: $fr";
+    unless($inputStatus) {
+      if ($fr =~/[^0-9]/) {
+        $inputStatus= "At least one invalid frequency: $fr";
       }
-      if($fr =~/:/)
-      {
-        $inputStatus="At least one invalid frequency: $fr";
+      if ($fr =~/:/) {
+        $inputStatus= "At least one invalid frequency: $fr";
       }
-      if($fr==0 || $fr eq "" || $fr eq " ")
-      {
-        $inputStatus="Enter all frequencies to determine Propagation.";
+      if ($fr==0 || $fr eq "" || $fr eq " ") {
+        $inputStatus= "Enter all frequencies to determine Propagation.";
       }
-      if($fr < 1000 || $fr > 10000)
-      {
-        $inputStatus="The Frequency $fr is out of range. See instructions. (VHF/UHF calcuation is impossible)"; 
+      if ($fr < 1000 || $fr > 10000) {
+        $inputStatus= "The Frequency $fr is out of range. See instructions. (VHF/UHF calcuation is impossible)"; 
       }
     }
 #******************AZIMUTH****************************
 
     my $azi=$query->param("azimuth$k");
 
-    unless($inputStatus)
-    {
-      if($azi < 0 || $azi > 360)
-      {
-        $inputStatus="At least One Azimuth angle is out of range. See instructions."; 
+    unless($inputStatus) {
+      if ($azi < 0 || $azi > 360) {
+        $inputStatus= "At least One Azimuth angle is out of range. See instructions."; 
       }
-      if($azi=~/[^0-9]/)
-      {
-        $inputStatus="At least one invalid azimuth angle: $azi";
+      if ($azi=~/[^0-9]/) {
+        $inputStatus= "At least one invalid azimuth angle: $azi";
       }
-      if($azi =~/:/)
-      {
-        $inputStatus="At least one invalid azimuth angle: $azi";
+      if ($azi =~/:/) {
+        $inputStatus= "At least one invalid azimuth angle: $azi";
       }
     }
 #*********************ELEVATION***************************
 
     my $alt=$query->param("altitude$k");
-    
-    unless($inputStatus)
-    {
-      if($alt < -270 || $alt > 90)
-      {
-        $inputStatus="At least one elevation angle is out of range. See Instructions."; 
+    unless($inputStatus) {
+      if ($alt < -270 || $alt > 90) {
+        $inputStatus= "At least one elevation angle is out of range. See Instructions."; 
       }
-      if($alt=~/[^0-9-]/)
-      {
-        $inputStatus="At least one invalid elevation angle: $alt";
+      if ($alt=~/[^0-9-]/) {
+        $inputStatus= "At least one invalid elevation angle: $alt";
       }
-      if($alt =~/:/)
-      {
-        $inputStatus="At least one invalid elevation angle: $alt";
+      if ($alt =~/:/) {
+        $inputStatus= "At least one invalid elevation angle: $alt";
       }
     }
 #***********************ANTENNATYPE***************************
 
     my $ant=$query->param("antennatype$k");
-    unless($inputStatus)
-    {
-      if($ant eq "")
-      {
-        $inputStatus="There is no antennatype defined";
+    unless($inputStatus) {
+      if ($ant eq "") {
+        $inputStatus= "There is no antennatype defined";
       }
     }
 #***************************POWER***********************
 
     my $p=$query->param("power$k");
-    unless($inputStatus)
-    { 
-      if($Cover == 1 && $p <= 0 )
-      {
-        $inputStatus="Enter only power values greater than 0 to determine Propagation.";
+    unless($inputStatus) { 
+      if ($Cover == 1 && $p <= 0 ) {
+        $inputStatus= "Enter only power values greater than 0 to determine Propagation.";
       }
-      if($p=~/[^0-9-]/)
-      {
-        $inputStatus="At least one invalid power value: $p";
+      if ($p=~/[^0-9-]/) {
+        $inputStatus= "At least one invalid power value: $p";
       }
-      if($p =~/:/)
-      {
-        $inputStatus="At least one invalid power value: $p";
+      if ($p =~/:/) {
+        $inputStatus= "At least one invalid power value: $p";
       }
     }
 #*************************GAIN************************
 
     my $g=$query->param("gain$k");
-    unless($inputStatus)
-    {
-      if($g < 0 || $g > 100)
-      {
-        $inputStatus="At least one Gain is out of range"; 
+    unless($inputStatus) {
+      if ($g < 0 || $g > 100) {
+        $inputStatus= "At least one Gain is out of range"; 
       }
-      if($g=~/[^0-9]/)
-      {
-        $inputStatus="At least one invalid gain value: $g";
+      if ($g=~/[^0-9]/) {
+        $inputStatus= "At least one invalid gain value: $g";
       }
-      if($g=~/:/)
-      {
-        $inputStatus="At least one invalid gain value: $g";
+      if ($g=~/:/) {
+        $inputStatus= "At least one invalid gain value: $g";
       }
     }
 #*************************CABLELOSS************************
 
     my $c=$query->param("cableloss$k");
-    unless($inputStatus)
-    {
-      if($c < 0 || $c > 100)
-      {
-        $inputStatus="At least one Cableloss out of range"; 
+    unless($inputStatus) {
+      if ($c < 0 || $c > 100) {
+        $inputStatus= "At least one Cableloss out of range"; 
       }
-      if($c=~/[^0-9]/)
-      {
-        $inputStatus="At least one invalid cableloss value: $c";
+      if ($c=~/[^0-9]/) {
+        $inputStatus= "At least one invalid cableloss value: $c";
       }
-      if($c =~/:/)
-      {
-        $inputStatus="At least one invalid cableloss value: $c";
+      if ($c =~/:/) {
+        $inputStatus= "At least one invalid cableloss value: $c";
       }
     }
 #*************************************************
   }
-  
 }

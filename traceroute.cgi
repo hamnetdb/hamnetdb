@@ -170,7 +170,7 @@ sub siteToStartIp {
 
 sub GetSiteForIP {
   my $ip_in= shift;
-  my $row = {};
+  my $row= {};
 
   $sql= qq(select h.site, s.longitude, s.latitude 
     from `hamnet_host` as h 
@@ -183,9 +183,9 @@ sub GetSiteForIP {
   $sth->execute;
   while (@line= $sth->fetchrow_array) {
     my $idx= 0;
-    $row->{'site'} = $line[$idx++];
-    $row->{'lon'} = $line[$idx++];
-    $row->{'lat'} = $line[$idx++];
+    $row->{'site'}= $line[$idx++];
+    $row->{'lon'}= $line[$idx++];
+    $row->{'lat'}= $line[$idx++];
     return $row;
   }
   return 0;
@@ -207,9 +207,9 @@ sub GetIpForSite {
   $sth->execute;
   while (@line= $sth->fetchrow_array) {
     my $idx= 0;
-    my $ip = $line[$idx++];
-    my $name = $line[$idx++];
-    my $aliases = $line[$idx++];
+    my $ip= $line[$idx++];
+    my $name= $line[$idx++];
+    my $aliases= $line[$idx++];
     if ($name eq "router.$site") {
       return $ip;
     }
@@ -233,7 +233,7 @@ sub GetIpForSite {
   $sth->execute;
   while (@line= $sth->fetchrow_array) {
     my $idx= 0;
-    $ip = $line[$idx++];
+    $ip= $line[$idx++];
     return $ip;
   }
   return 0;
@@ -254,7 +254,7 @@ sub chkstart {
 sub chkstopip {
   my $ip_chk= shift;
   my $ip;
-  $sql=qq(select ip, site
+  $sql= qq(select ip, site
         from hamnet_host  
         where 
           ip = '$ip_chk' 
@@ -263,7 +263,7 @@ sub chkstopip {
   $sth->execute;
   while (@line= $sth->fetchrow_array) {
     my $idx= 0;
-    $ip = $line[$idx++];
+    $ip= $line[$idx++];
     return 1;
   }
   return 0;
@@ -282,11 +282,11 @@ sub getStartSites {
   while (@line= $sth->fetchrow_array) {
     my $idx= 0;
     my $row;
-    $row->{'site'} = $line[$idx++];
-    $row->{'lon'} = $line[$idx++];
-    $row->{'lat'} = $line[$idx++];
-    $row->{'ip'} = $line[$idx++];
-    $row->{'action'} = "tracestart";
+    $row->{'site'}= $line[$idx++];
+    $row->{'lon'}= $line[$idx++];
+    $row->{'lat'}= $line[$idx++];
+    $row->{'ip'}= $line[$idx++];
+    $row->{'action'}= "tracestart";
     push @sites_out, $row;
   }
   return @sites_out;
@@ -306,11 +306,11 @@ sub getStopSites {
   while (@line= $sth->fetchrow_array) {
     my $idx= 0;
     my $row;
-    $row->{'site'} = $line[$idx++];
-    $row->{'lon'} = $line[$idx++];
-    $row->{'lat'} = $line[$idx++];
-    $row->{'ip'} = $line[$idx++];
-    $row->{'action'} = "tracestop";
+    $row->{'site'}= $line[$idx++];
+    $row->{'lon'}= $line[$idx++];
+    $row->{'lat'}= $line[$idx++];
+    $row->{'ip'}= $line[$idx++];
+    $row->{'action'}= "tracestop";
     push @sites_out, $row;
   }
   return @sites_out;
@@ -341,11 +341,11 @@ sub getStartSitesApi {
   my $response_startsites=  get_api_data($url_startsites);
   my @decoded_json= @{decode_json($response_startsites)};
   foreach my $entry (@decoded_json) { 
-    my $row = {};
+    my $row= {};
     #print $entry->{'address'},"\n";
     $IP= $entry->{'address'},"\n";
     
-    $sql=qq(select s.callsign, s.longitude, s.latitude, h.ip
+    $sql= qq(select s.callsign, s.longitude, s.latitude, h.ip
             from hamnet_site as s
             join hamnet_host as h 
               on h.site = s.callsign

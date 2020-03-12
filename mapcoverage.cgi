@@ -16,48 +16,40 @@ push @INC,'.';
 do "config.cgi" or die;
 do "lib.cgi" or die;
 
-my @input=(" "," ");
+my @input= (" "," ");
 
-my @input = split(/_/,$query->param("x"));
+my @input= split(/_/,$query->param("x"));
 
-my $site = $input[0];
+my $site= $input[0];
 
 my @coordinates= ();
 my $status;
-my @tags =();
+my @tags= ();
 
-$hamnet_coverage="hamnet_coverage";
+$hamnet_coverage= "hamnet_coverage";
 
 my $newCoverh=$db->prepare("select newCover,version from hamnet_site where callsign='$site'");
 $newCoverh->execute; 
-($newCover,$version)=$newCoverh->fetchrow_array;
+($newCover,$version)= $newCoverh->fetchrow_array;
 
-if($newCover ==1)
-{
- $hamnet_coverage="hamnet_coverage_hist";
- $version = $version - 1;
+if ($newCover ==1) {
+  $hamnet_coverage= "hamnet_coverage_hist";
+  $version= $version - 1;
 }
 
 
-if($input[1] eq "")
-{
-
+if ($input[1] eq "") {
   my $tagh= $db->prepare("SELECT tag FROM $hamnet_coverage WHERE Callsign='$site' and version='$version'");
   $tagh->execute();
 
-  while(my $tag = $tagh->fetchrow_array())
-  {
+  while (my $tag = $tagh->fetchrow_array()) {
     push(@tags,$tag);
   }
   $sth= $db->prepare("SELECT callsign,status,north,south,west,east FROM $hamnet_coverage WHERE Callsign = '$site' and status='ok'and version='$version'");
-
 }
-else
-{
-  @tags = $input[1];
-
+else {
+  @tags= $input[1];
   $sth= $db->prepare("SELECT Callsign,Status,North,South,West,East FROM $hamnet_coverage WHERE Callsign = '$site' AND Tag ='@tags' and status='ok' and version='$version'");
-
 }
 
 $sth->execute;
@@ -71,19 +63,15 @@ $coordinates[2] = $data[4];
 $coordinates[3] = $data[5];
 
 
-
 #Coverage for this Site not available in Database
-if($site eq "")
-{
+if ($site eq "") {
   print qq(Content-Type: text/plain\n\n);
   print qq(0);
 }
-else
-{
-#Parse JSON/GeoJSON File to Script
-
- print qq(Content-Type: text/plain\n\n);
- print qq({
+else {
+  #Parse JSON/GeoJSON File to Script
+  print qq(Content-Type: text/plain\n\n);
+  print qq({
     "North":$coordinates[0],
     "South": $coordinates[1], 
     "West":$coordinates[2], 

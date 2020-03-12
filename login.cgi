@@ -154,7 +154,7 @@ if ($fullname) {
           qq(Status: 302 Moved\n).
           qq(Set-Cookie: HAMNETDB_SESSION=; path=$cookiePath/;\n).
           qq(Location: $baseUri/?m=Login&errMsg=Not+possible+due+to+maintanance.+Please+try+again+later\n\n);
-  }	  
+  }
 
   $db->do(qq(update hamnet_maintainer set
      last_login=now() where callsign='$login'));

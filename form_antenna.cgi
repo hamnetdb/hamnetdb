@@ -66,8 +66,10 @@ print qq(
       <p>Choose an .ant file from your file system:<br>
         <br>
         <input name="antennafile" type="file" size="50" maxlength="100000" accept="text/*"><br> <br>
-        Antenna Description (e.g. omnidirectional, or model number): <input name="antennanameStore" type="text" size="30"><br>
-        <button id="storebut" type="button" onclick="doAntennaStore();">Add Antenna</button>
+        Antenna Description (e.g. omnidirectional, or model number): 
+          <input name="antennanameStore" type="text" size="30"><br>
+        <button id="storebut" type="button" onclick="doAntennaStore();">
+          Add Antenna</button>
       
         <br><br><br>
         <h2>Remove Antenna</h2>
@@ -136,53 +138,40 @@ sub checkValues {
   my $lenght= @text;
   my $wrongend= 0;
   my $error= 0;
-  if($name eq "" || $name eq " " || $name eq "  ")
-  {
+  if ($name eq "" || $name eq " " || $name eq "  ") {
     $inputStatus="Failed: Choose a name for the new antenna file.";
   }
-  elsif ($name =~/ / || $name =~/:/ || $name =~/\./ || $name =~ /;/)
-  {
+  elsif ($name =~/ / || $name =~/:/ || $name =~/\./ || $name =~ /;/) {
     $inputStatus="Failed: Invalid name. No ':', '.', ';' or empty space allowed.";
   }
-  elsif(length($name) > 20 )
-  {
+  elsif(length($name) > 20 ) {
     $inputStatus="Failed: Antenna name to long. Choose a shorter one (less than 20 characters).";
   }
-  unless ($inputStatus){
-    unless ($file)
-    { 
+  unless ($inputStatus) {
+    unless ($file) { 
       my $nameh=$db->prepare("select name from hamnet_antennafiles");
       $nameh->execute();
 
-      while($that=$nameh->fetchrow_array())
-      {
-        if($that eq $name)
-        {
+      while($that=$nameh->fetchrow_array()) {
+        if($that eq $name) {
           $inputStatus="Failed: Invalid name. Name already used.";
         }
       }
-      unless ($inputStatus)
-      {
+      unless ($inputStatus) {
         my $extension =  $raw_file;
         while ($extension =~ s/.*\.//) {}
-        if(!($extension eq "ant") )
-        {  
+        if (!($extension eq "ant")) {  
           $wrongend =1;
         } 
-        if($lenght != 720 || $wrongend ==1)
-        {
+        if($lenght != 720 || $wrongend ==1) {
           $inputStatus="Uploaded wrong Format: File need to have 720 numeric values seperated by new line or \" \"  extension needs to be .ant, Extension: $extension.";
         }
-        else
-        {
-          foreach(@text)
-          {
-            if(looks_like_number($_))
-            {
+        else {
+          foreach(@text) {
+            if(looks_like_number($_)) {
               $file = "$file $_";
             }
-            else
-            {
+            else {
               $inputStatus="Upload failed. A t least one not numeric value in file.";
             }
           }
@@ -197,14 +186,11 @@ sub checkValues {
           "valid=".$db->quote("1");
 }
 
-sub nametoid
-{
-  if($name eq "" || $name eq " " || $name eq "  ")
-  {
+sub nametoid {
+  if ($name eq "" || $name eq " " || $name eq "  ") {
     $inputStatus="No antenna selected!";
   }
-  unless($inputStatus)
-  {
+  unless($inputStatus) {
     my $sth3= $db->prepare("select id from hamnet_antennafiles where name = '$name'");
     $sth3->execute;
     my $antId =$sth3->fetchrow_array();
@@ -214,25 +200,19 @@ sub nametoid
 
 }
 
-sub reloadAntenna
-{
+sub reloadAntenna {
   #take old data and do normal store
-  if(length($name) > 20 )
-  {
+  if (length($name) > 20) {
     $inputStatus="Failed: Antenna name to long. Choose a shorter one (less than 20 characters).";
   }
-  unless ($inputStatus)
-  {
-    if($name eq "" || $name eq " " || $name eq "  ")
-    {
+  unless ($inputStatus) {
+    if($name eq "" || $name eq " " || $name eq "  ") {
       $inputStatus="Failed: Choose a name for the new antenna file.";
     }
-    if($name =~/ / || $name =~/:/ || $name =~/\./ || $name =~ /;/) 
-    {
+    if($name =~/ / || $name =~/:/ || $name =~/\./ || $name =~ /;/) {
       $inputStatus="Failed: Invalid name. No ':', '.', ';' or empty space allowed.";
     }
-    unless ($inputStatus)
-    {
+    unless ($inputStatus) {
       my $antH= $db->prepare("SELECT file from hamnet_antennafiles_hist where name='$antennatypeReload' order by id desc limit 0,1");
       $antH->execute();
       $file=$antH->fetchrow_array();

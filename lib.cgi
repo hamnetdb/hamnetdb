@@ -1453,57 +1453,54 @@ sub fatal {
   </body></html>);
   die($reason);
 }
-sub calcLocator
-{
+sub calcLocator {
   my $lon= $_[0];
   my $lat= $_[1];
   my $locator = "";
 
-  $lat += 90;
-  $lon += 180;
+  $lat+= 90;
+  $lon+= 180;
   $locator.= chr(65 + int($lon / 20));
   $locator.= chr(65 + int($lat / 10));
-  $lon = fmod($lon,20);
-  $lon += 20 if $lon < 0;
-  $lat = fmod($lat, 10);
-  $lat += 10 if $lat < 0;
+  $lon= fmod($lon,20);
+  $lon+= 20 if $lon < 0;
+  $lat= fmod($lat, 10);
+  $lat+= 10 if $lat < 0;
   
   $locator.= chr(48 + int($lon / 2));
   $locator.= chr(48 + int($lat / 1));
-  $lon = fmod($lon,2);
-  $lon += 2 if $lon < 0;
-  $lat = fmod($lat, 1);
-  $lat += 1 if $lat < 0;
+  $lon= fmod($lon,2);
+  $lon+= 2 if $lon < 0;
+  $lat= fmod($lat, 1);
+  $lat+= 1 if $lat < 0;
   
   $locator.= chr(65 + int($lon * 12));
   $locator.= chr(65 + int($lat * 24));
-  $lon = fmod($lon, ( 1.0 / 12.0));
-  $lon +=  1 / 12 if $lon < 0;
-  $lat = fmod($lat, ( 1.0 / 24.0));
-  $lat += 1 / 24 if $lat < 0;
+  $lon= fmod($lon, ( 1.0 / 12.0));
+  $lon+=  1 / 12 if $lon < 0;
+  $lat= fmod($lat, ( 1.0 / 24.0));
+  $lat+= 1 / 24 if $lat < 0;
   
   $locator.= chr(48 + int($lon * 120));
   $locator.= chr(48 + int($lat * 240));
-  $lon = fmod($lon, (1 / 120));
-  $lon +=  1 / 120 if $lon < 0;
-  $lat = fmod($lat,( 1 / 240));
-  $lat += 1 / 240 if $lat < 0;
+  $lon= fmod($lon, (1 / 120));
+  $lon+=  1 / 120 if $lon < 0;
+  $lat= fmod($lat,( 1 / 240));
+  $lat+= 1 / 240 if $lat < 0;
   
   $locator.= chr(65 + int($lon * 120 * 24));
   $locator.= chr(65 + int($lat * 240 * 24));
-  $lon = fmod($lon, ( 1 / 120 / 24));
-  $lon +=  1 / 120 / 24 if $lon < 0;
-  $lat = fmod($lat,(1 / 240 / 24));
-  $lat += 1 / 240 / 24 if $lat < 0;
-  if(($locator=~ /[A-Z0-9]/) &&  $locator !~ /JJ00AA00AA/ )#($lat>-180 && $lat<180 && $lon>-180 && $lon<180)) 
-  {
+  $lon= fmod($lon, ( 1 / 120 / 24));
+  $lon+=  1 / 120 / 24 if $lon < 0;
+  $lat= fmod($lat,(1 / 240 / 24));
+  $lat+= 1 / 240 / 24 if $lat < 0;
+  if(($locator=~ /[A-Z0-9]/) &&  $locator !~ /JJ00AA00AA/ ) { #($lat>-180 && $lat<180 && $lon>-180 && $lon<180)) 
     #return $lon
     return $locator;
   }
   return "";
 }
-sub updateCallsign
-{
+sub updateCallsign {
   #my $db = shift;
   my $oldcall= shift;
   my $newcall= shift;
@@ -1530,11 +1527,9 @@ sub updateCallsign
   $db->do("UPDATE hamnet_host_hist ".
                   "SET site='$newcall' WHERE site='$oldcall'"); 
 }
-sub checkMapSource
-{
+sub checkMapSource {
   $clientIP= $query->remote_host();
-  if ($clientIP=~/^44\./) 
-  {
+  if ($clientIP=~/^44\./) {
     return 1;
   }
   return 0;
@@ -1578,15 +1573,15 @@ sub anonymizeCallsign {
 # # Get Data from other host for APIs
 # # url
 sub get_api_data{
-  $url=shift;
+  $url= shift;
   
-  my $ua      = LWP::UserAgent->new(); 
+  my $ua= LWP::UserAgent->new(); 
   $ua->timeout(120);
-  my $request = HTTP::Request->new(GET => $url);
+  my $request= HTTP::Request->new(GET => $url);
 
-  my $response = $ua->request($request);
+  my $response= $ua->request($request);
   if ($response->is_success) {
-    my $message = $response->decoded_content;
+    my $message= $response->decoded_content;
     #print "Received reply: $message\n";
     return $message;
   }

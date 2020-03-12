@@ -191,31 +191,25 @@ sub beforeForm {
     function calcfromIP() //subnet calc
     {
       ip = document.getElementById("base_ip").value;
-      if(checkIP(ip))
-      {
+      if(checkIP(ip)) {
         cidr = document.getElementsByName("bits")[0].value;
         //calcHosts(cidr); //why that
-        if(checkInt(cidr) && cidr > 0 && cidr <= 32)//the easiest way to check if everything is ok
-        {
+        if(checkInt(cidr) && cidr > 0 && cidr <= 32) {//the easiest way to check if everything is ok
           netmask = calcNetmask(cidr);
           sp_ip = splitIP(ip);
           sp_nm = splitIP(netmask);
           var netaddress = new Array();
           var broadcast = new Array();
-          for(i=0;i<4;i++)
-          {
-            if(sp_nm[i] == 255)//part stays unchanged
-            {
+          for(i=0;i<4;i++) {
+            if(sp_nm[i] == 255) { //part stays unchanged
               netaddress[i]=sp_ip[i];
               broadcast[i]=sp_ip[i];
             }
-            else if(sp_nm[i] == 0)
-            {
+            else if(sp_nm[i] == 0) {
               netaddress[i]=0;
               broadcast[i]=255;
             }
-            else //lets calc
-            {
+            else { //lets calc
               num=256-sp_nm[i];
               seg=Math.floor(sp_ip[i]/num);
               netaddress[i]=num*seg;
@@ -226,39 +220,32 @@ sub beforeForm {
             netaddress[0]+"."+netaddress[1]+"."+netaddress[2]+"."+netaddress[3] + \
             "<br>Broadcast: "  + broadcast[0]+"."+broadcast[1]+"."+broadcast[2]+"."+broadcast[3];
           dhcp_fillup = document.getElementById("dhcp_fillup").checked;
-          if(dhcp_fillup && cidr >= 24 && cidr < 31)
-          {
+          if(dhcp_fillup && cidr >= 24 && cidr < 31) {
             var dhcp_start = netaddress[3]+1;
             var dhcp_stop = broadcast[3]-1;
             document.getElementsByName("dhcp_range")[0].value=dhcp_start + "-" + dhcp_stop;
           }
-          else if(dhcp_fillup && ( cidr==31 || cidr<=23))
-          {
+          else if(dhcp_fillup && ( cidr==31 || cidr<=23)) {
             document.getElementsByName("dhcp_range")[0].value="";
           }
         }
       }
-      else
-      {
+      else {
         document.getElementById("netaddr_limits").innerHTML="";
       }
     }
-    function checkIP(ip)
-    {
+    function checkIP(ip) {
       var pattern =/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/;
       return pattern.test(ip);
     }
-    function checkInt(val)
-    {
+    function checkInt(val) {
       var pattern =/^[0-9]+/;
       return pattern.test(val);  
     }
-    function splitIP(ip)
-    {
+    function splitIP(ip) {
       var splitted =new Array();
       
-      for(var i=0;i<3;i++)
-      {
+      for(var i=0;i<3;i++) {
         dotpos=ip.indexOf(".");
         splitted[i]=ip.substring(0,dotpos);
         ip=ip.substring(dotpos+1);
@@ -266,38 +253,31 @@ sub beforeForm {
       splitted[3]=ip;
       return splitted;
     }
-    function calcNetmask(cidr) //subnet calc
-    {
-      if(cidr > 24)
-      {
+    function calcNetmask(cidr) { //subnet calc
+      if(cidr > 24) {
         dyn=255-(Math.pow(2,32-cidr)-1);
         netmask="255.255.255."+ dyn;
       }
-      else if(cidr >16)
-      {
+      else if(cidr >16) {
         dyn=255-(Math.pow(2,24-cidr)-1);
         netmask="255.255."+ dyn+".0";
       }
-      else if(cidr > 8)
-      {
+      else if(cidr > 8) {
         dyn=255-(Math.pow(2,16-cidr)-1);
         netmask="255."+ dyn+".0.0";
       }
-      else
-      {
+      else {
         dyn=255-(Math.pow(2,8-cidr)-1);
         netmask= dyn+".0.0.0";
       }
       return netmask;
     }
-    function uncheckDHCP()
-    {
+    function uncheckDHCP() {
       changed();
       document.getElementById("dhcp_fillup").checked=false;
     }
     var locator_global="";
-    function degmin2dec(degmin)
-    {
+    function degmin2dec(degmin) {
       degmin = degmin.replace(/,/gi,".");
       degmin = degmin.replace(/ /g,"");
       res = degmin.match(/^([\\d\\.]+)°([\\d\\.]+)'([\\d\\.]*)/);     
@@ -306,38 +286,31 @@ sub beforeForm {
       }
       return degmin
     }
-    function calcCoordinates()
-    {
+    function calcCoordinates() {
       changed();
       var locator = document.getElementById('locator').value;
       locator = locator.toUpperCase();
-      if(locator == locator_global)//check if has changed
-      {
+      if(locator == locator_global) {//check if has changed
         return;
       }
-      else
-      {
+      else {
         locator_global=locator;
       }
-      if(/[A-R]{2}[0-9]{2}/i.test(locator))
-      {
+      if(/[A-R]{2}[0-9]{2}/i.test(locator)) {
       //  var lat= (locator.charCodeAt(1)-65)*10 -90; //Char
      //   var lon= (locator.charCodeAt(0)-65) * 20 -180;//char
       //  lat+= (locator.charCodeAt(3) -48); //number
       //  lon+= (locator.charCodeAt(2)-48) * 2; //number
       }
-      if(/[A-R]{2}[0-9]{2}[A-X]{2}/i.test(locator))
-      {
+      if(/[A-R]{2}[0-9]{2}[A-X]{2}/i.test(locator)) {
       //  lat+= (locator.charCodeAt(5)-65) /24; //char
      //   lon+= (locator.charCodeAt(4)-65)/12;//char
       }
-      if(/[A-R]{2}[0-9]{2}[A-X]{2}[0-9]{2}/i.test(locator))
-      {
+      if(/[A-R]{2}[0-9]{2}[A-X]{2}[0-9]{2}/i.test(locator)) {
       //  lat+= (locator.charCodeAt(7) -48) /(10*24); //number
       //  lon+= (locator.charCodeAt(6)-48)/(120); //number
       }
-      if(/[A-R]{2}[0-9]{2}[A-X]{2}[0-9]{2}[A-X]{2}/i.test(locator))
-      {
+      if(/[A-R]{2}[0-9]{2}[A-X]{2}[0-9]{2}[A-X]{2}/i.test(locator)) {
         var lat= (locator.charCodeAt(1)-65)*10 -90; //Char
         var lon= (locator.charCodeAt(0)-65) * 20 -180;//char
         lat+= (locator.charCodeAt(3) -48); //number
@@ -354,15 +327,12 @@ sub beforeForm {
       } 
       lat= parseInt(lat*100000)/100000;
       lon= parseInt(lon*100000)/100000;
-      if ((/[.]/.test(lat)) && typeof (/\./.test(lon)))
-      {
+      if ((/[.]/.test(lat)) && typeof (/\./.test(lon))) {
         document.getElementById("longitude").value=lon;
         document.getElementById("latitude").value=lat;
       }
-
     }
-    function calcLocatorjs()
-    {
+    function calcLocatorjs() {
       lon = document.getElementById("longitude").value;
       lat = document.getElementById("latitude").value;
       lon = degmin2dec(lon);
@@ -406,8 +376,7 @@ sub beforeForm {
       if (lon < 0) lon +=  1 / 120 / 24;
       lat = lat % (1 / 240 / 24);
       if (lat < 0) lat += 1 / 240 / 24;
-      if(/[A-Z0-9]{10}/.test(locator))
-      {
+      if(/[A-Z0-9]{10}/.test(locator)) {
         document.getElementById("locator").value=locator;
         locator_global = locator;
       }
@@ -586,16 +555,11 @@ sub storeEntry {
                               "where $idField='$id'");
             $sth1->execute();
             @line= $sth1->fetchrow_array;
-            if ($line[0] ne $callsign) #if callsign changed
-            {
+            if ($line[0] ne $callsign) { #if callsign changed
               updateCallsign($line[0],$callsign);
               my $newcall=$callsign;
               my $oldcall=$line[0];
-
-
-
             }
-          
           }
           unless ($db->do("update $table set $setCommand $where")) {
             $inputStatus= "ERROR: DB-Update failed";
@@ -678,7 +642,7 @@ sub deleteEntry {
           }
         }
       }
-      if($table eq "hamnet_site"){
+      if($table eq "hamnet_site") {
         unless($inputStatus){
           deleteAccess();
         }

@@ -354,15 +354,15 @@ unless ($found) {
       $rssi2= $rssi2." dBm" if length($rssi2) >2;
       if (length($rssi1)>1 || length($rssi2)>1) {
         # check if client comes from hamnet
-	unless(checkMapSource()) {
-	  $rssi_host= "https://grafana.hamnetdb.net";
-	}
-	else {
-	  $rssi_host= "http://44.148.129.16";
-	}
-	$rssi= "<a href='".$rssi_host."/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
-	$ip."&kiosk=tv' target='_blank'>".$rssi1." / ".$rssi2."</a>";
-	# $rssi= $rssi1." / ".$rssi2;
+  unless(checkMapSource()) {
+    $rssi_host= "https://grafana.hamnetdb.net";
+  }
+  else {
+    $rssi_host= "http://44.148.129.16";
+  }
+  $rssi= "<a href='".$rssi_host."/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
+  $ip."&kiosk=tv' target='_blank'>".$rssi1." / ".$rssi2."</a>";
+  # $rssi= $rssi1." / ".$rssi2;
       }
 
 

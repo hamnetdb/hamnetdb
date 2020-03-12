@@ -45,7 +45,7 @@ print qq(<!DOCTYPE html>
     </script>
 
     <title>HamnetDB Panorama</title>
-	 <link rel="stylesheet" type="text/css" href="osm/style-lf.css" />
+    <link rel="stylesheet" type="text/css" href="osm/style-lf.css" />
   </head>
   <body style="overflow-x: auto; min-width: 580px;" onresize="panoramaResize();" onload="panoramaBigInit();">
     <div id="panoarama-big-content">

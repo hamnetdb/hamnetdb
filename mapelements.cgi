@@ -146,14 +146,14 @@ foreach $net (sort keys %all_hosts) {
   for $typ ("Routing-Radio", "Routing-ISM", "Routing-Tunnel", "Routing-Ethernet") {
     if ($type_count{$net}{$typ} == 2) {
 
-#into sql?      	    
+#into sql?          
       my @sites= ();
       foreach $host (sort keys %{$all_hosts{$net}}) {
         if ($all_host_types{$host} eq $typ) {
            push(@sites, $host_site{$host});
         }
       }
-							    
+   
       #skip virtual hosts like HC
       if ($site_no_check{$sites[0]} == 5 ) {
         $virtual_peer{$sites[1]}= 1;
@@ -163,7 +163,7 @@ foreach $net (sort keys %all_hosts) {
         $virtual_peer{$sites[0]}= 1;
         next;
       } 
-      	    
+          
       next if (($no_tunnel && $typ=~/tunnel/i) ||
                 ($no_tunnel && $typ=~/ethernet/i) ||
                 ($no_radio && $typ=~/radio/i) || 
@@ -177,7 +177,6 @@ foreach $net (sort keys %all_hosts) {
         next if ($site_country{$sites[0]} ne $only_country &&
                  $site_country{$sites[1]} ne $only_country)
       } 
-      
 
       #get RSSI
       my $style=$typ;
@@ -190,7 +189,7 @@ foreach $net (sort keys %all_hosts) {
           host.ip, ck.value
           from hamnet_host as host
           join hamnet_check as ck on ck.ip = host.ip
-	  where 
+          where 
             ck.service = 'rssi' and
              ((host.rawip > $subnet_begin{$net} and
                host.rawip < $subnet_end{$net} and host.site='$sites[0]')
@@ -200,20 +199,20 @@ foreach $net (sort keys %all_hosts) {
             AND
             unix_timestamp(ck.ts) > (unix_timestamp(NOW())-7200)
           ORDER BY 
-	    ck.ts
-          LIMIT 2	  
+            ck.ts
+          LIMIT 2  
         ));
         $sth->execute;
         while (@line= $sth->fetchrow_array) {
           my $idx= 0;
           $monitor_left= $line[$idx++];
           $rssi_tmp= $line[$idx++];
-	  $rssi= $rssi_tmp if $rssi_tmp < $rssi; 
+    $rssi= $rssi_tmp if $rssi_tmp < $rssi; 
         }
         next if ($rssi == 0);
         if (length($rssi) >1 ) {
           $rssi = $rssi+0;
-	  #$rssi= $rssi2 if $rssi > $rssi2; #get worst side and apply style
+    #$rssi= $rssi2 if $rssi > $rssi2; #get worst side and apply style
           if   ($rssi>-66) {$style= 'hf1';} 
           elsif($rssi>-71) {$style= 'hf2';} 
           elsif($rssi>-76) {$style= 'hf3';} 
@@ -226,7 +225,7 @@ foreach $net (sort keys %all_hosts) {
       #print qq(Content-Type: text/plain\nExpires: 0 \n\n);
       if ($bgp && ($typ=~/radio/i || $typ=~/ISM/i)) {
         my $monitor_left;
-	my $rssi= 0;
+        my $rssi= 0;
         my $sth= $db->prepare(qq(select 
           host.ip, ck.value
           from hamnet_host as host
@@ -236,13 +235,13 @@ foreach $net (sort keys %all_hosts) {
             ((host.rawip > $subnet_begin{$net} and 
              host.rawip < $subnet_end{$net} and host.site='$sites[0]')
             OR
-	    (host.rawip > $subnet_begin{$net} and
-             host.rawip < $subnet_end{$net} and host.site='$sites[1]'))
+              (host.rawip > $subnet_begin{$net} and
+              host.rawip < $subnet_end{$net} and host.site='$sites[1]'))
             AND
               unix_timestamp(ck.ts) > (unix_timestamp(NOW())-7200)
           ORDER BY
             ck.ts
-          LIMIT 2	      
+          LIMIT 2      
         ));
         $sth->execute;
         while (@line= $sth->fetchrow_array) {
@@ -251,14 +250,14 @@ foreach $net (sort keys %all_hosts) {
           $rssi= $line[$idx++];
           #print '++++',$line[0],' ',$sites[0],'\n';
         }
-	next if (!$rssi);
-        if (length($rssi) >=1) {
-          if ($rssi <= 400) {
-            $style = "bgpbad";
-	  }
-	  else {
-	    $style = "bgp";
-	  }
+        next if (!$rssi);
+          if (length($rssi) >=1) {
+            if ($rssi <= 400) {
+              $style = "bgpbad";
+          } 
+          else {
+            $style = "bgp";
+          }
         }
       } 
       push(@allEdges, "$style;$net;$sites[0];$sites[1]");

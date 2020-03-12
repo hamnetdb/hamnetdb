@@ -19,36 +19,33 @@ do "config.cgi";
 
 do "lib.cgi";
 
-my $antenna = $query->param("name");
-my $func = $query->param("func");
+my $antenna= $query->param("name");
+my $func= $query->param("func");
 
 my $old= $query->param("old")+0;
 
-my $line = 'leer';
+my $line= 'leer';
 
-if($old==1){
-  $sth = $db->prepare("select file from hamnet_antennafiles_hist where name='$antenna'");
+if($old==1) {
+  $sth= $db->prepare("select file from hamnet_antennafiles_hist where name='$antenna'");
 }
-else{
-  $sth = $db->prepare("select file from hamnet_antennafiles where name='$antenna'");
+else {
+  $sth= $db->prepare("select file from hamnet_antennafiles where name='$antenna'");
 }
 $sth->execute();
 
-$line =$sth->fetchrow_array();
+$line= $sth->fetchrow_array();
 
 
-if($func eq "download")
-{
+if($func eq "download") {
   print("Content-Type:application/x-download\n");
   print("Content-Disposition: attachment; filename=$antenna.ant\n\n");
   print($line);
 } 
-else
-{
-  
+else {
   my ($js_azimuth_ant, $js_elevation_ant);
   $js_azimuth_ant .= $line ;
-  $js_azimuth_ant =~ s/\n/,/g;
+  $js_azimuth_ant=~ s/\n/,/g;
   
 print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
 <html>
@@ -108,14 +105,12 @@ print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
       minimum = Math.abs(minimum);
       var scale = 1/minimum;
       //dB scale
-      for(var i=1;i<(minimum/10>>0);i++)
-      {
+      for(var i=1;i<(minimum/10>>0);i++) {
         var scale_radius = (1 - scale * i *10)*radius;
         ant_azimuth.arc(center_x, center_y, scale_radius, 0, 2 * Math.PI, false);
       }  
       //for degree scale
-      for(var i=0;i<36;i++)
-      {
+      for(var i=0;i<36;i++) {
         ant_azimuth.moveTo(center_x,center_y);
         ant_azimuth.lineTo((radius*Math.cos((i*10-90)*Math.PI/180)) + center_x,(radius*Math.sin((i*10-90)*Math.PI/180)) +center_y,1,1);
       }
@@ -142,8 +137,7 @@ print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
 
       //startpoint of diagram   
       ant_azimuth.moveTo(center_x,center_y-(1- scale *Math.abs(antenna[0]))*radius);
-      for( var i=0; i <360; i++)
-      {
+      for( var i=0; i <360; i++) {
         factor=1- scale * Math.abs(antenna[i]); //some simple math
 
         ant_azimuth.lineTo((radius*Math.cos((i-90)*Math.PI/180))*factor + center_x,(radius*Math.sin((i-90)*Math.PI/180))*factor +center_y,1,1);
@@ -164,14 +158,12 @@ print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
       ant_elevation.strokeStyle='#c0c0c0';
       
       //dB scale
-      for(var i=1;i<(minimum/10>>0);i++)
-      {
+      for(var i=1;i<(minimum/10>>0);i++) {
         var scale_radius = (1 - scale * i *10)*radius;
         ant_elevation.arc(center_x, center_y, scale_radius, 0, 2 * Math.PI, false);
       }  
       //for degree scale
-      for(var i=0;i<36;i++)
-      {
+      for(var i=0;i<36;i++) {
         ant_elevation.moveTo(center_x,center_y);
         ant_elevation.lineTo((radius*Math.cos((i*10-90)*Math.PI/180)) + center_x,(radius*Math.sin((i*10-90)*Math.PI/180)) +center_y,1,1);
       }
@@ -198,11 +190,9 @@ print qq(Content-Type: text/html\nExpires: 0\n\n<!DOCTYPE html>
 
       //startpoint of diagram   
       ant_elevation.moveTo(center_x,center_y+(1- scale *Math.abs(antenna[360]))*radius);
-      for( var i=0; i<360; i++)
-      {
+      for( var i=0; i<360; i++) {
         factor=1- scale * Math.abs(antenna[i+360]); 
         ant_elevation.lineTo((radius*Math.cos((i-90)*Math.PI/180))*factor + center_x,((-1)*radius*Math.sin((i-90)*Math.PI/180))*factor +center_y,1,1);
-       
       }
       //endpoint of diagram
       ant_elevation.lineTo(center_x,center_y+(1- scale *Math.abs(antenna[360]))*radius);

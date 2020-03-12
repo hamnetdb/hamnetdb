@@ -14,9 +14,9 @@
 
 #//check login
 #check subnet
-	#2 sites
-	#je 1 monitoring host
-	#	=> get IPs
+  #2 sites
+  #je 1 monitoring host
+  # => get IPs
 #check ping
 #check monitoring
 
@@ -97,16 +97,14 @@ if ($system eq "routing") {
          $feature_bgp= "successfully tested";
        }
        if ($f eq "Traceroute") {
-	 $feature_traceroute= "successfully tested";       
+        $feature_traceroute= "successfully tested";       
        }    
-    }			    
+    }    
     print "<b>BGP</b> ",$feature_bgp,"<br>";
     print "<b>Traceroute</b> ",$feature_traceroute,"<br>";
     if ($failed) {
-
       print "<br>no active features could be found<br>",$error_msg,"<br>\n";
     }     
-
     print "</span><br>";
   }
   #number bgp peers
@@ -122,14 +120,14 @@ if ($system eq "routing") {
     my @error_rssi = @{$decoded_json->{'errorDetails'};};
     foreach my $f (@peers) {
       if ($f->{'peeringState'} eq "established" ) {
-	$prefix_cnt+= $f->{'prefixCount'};
+  $prefix_cnt+= $f->{'prefixCount'};
         $peer_cnt++;
       }
     }
     print "<b>active direct BGP peers</b> ",$peer_cnt,"<br>";
     print "<b>prefix count in total</b> ",$prefix_cnt,"<br>";
   }
-}	
+}
 if ($system eq "rssi") {
   $result_link= showLinkByIP($ip_test);
   $result_text_link= status2Text($result_link);
@@ -225,7 +223,7 @@ if ($system eq "rssi") {
     my $url_rssi= $url."/linktest/link/".$left_monitor."/".$right_monitor."?EnableCaching=false&Timeout=0:0:2&Retries=2&AllowedApis=Snmp";
     my $response_rssi=  get_api_data($url_rssi);
   
-    print	"<h3>RSSI:</h3>\n";
+    print "<h3>RSSI:</h3>\n";
 
     my $left_rssi= 0;
     my $right_rssi= 0;
@@ -298,19 +296,19 @@ if ($system eq "rssi") {
 #   "errorDetails": []
 # }
 #
-#errorDetails	
-#0	"HamnetSnmpException: Timeout talking to device '44.143.47.76' during applicability check\nCollected Errors:\nSnmpAbstraction.AlixDetectableDevice: SnmpException talking to device '44.143.47.76' during applicability check: Request has reached maximum retries.\nCollected Exceptions:\nRequest has reached maximum retries."
-# 1	"SnmpException: Request has reached maximum retries."
+#errorDetails
+# 0"HamnetSnmpException: Timeout talking to device '44.143.47.76' during applicability check\nCollected Errors:\nSnmpAbstraction.AlixDetectableDevice: SnmpException talking to device '44.143.47.76' during applicability check: Request has reached maximum retries.\nCollected Exceptions:\nRequest has reached maximum retries."
+# 1"SnmpException: Request has reached maximum retries."
 
 
 sub status2Text {
-	$param= shift;
-	if ($param) {
-		return "ok";
-	}
-	else {
-		return "failed";
-	}
+  $param= shift;
+  if ($param) {
+    return "ok";
+  } 
+  else {
+    return "failed";
+  }
 }
 
 sub showLinkByIP {
@@ -428,11 +426,11 @@ sub showLinkRSSIIP {
       $host_cnt++;
     }
     if (int(keys %host_site)!=2) {
-      $failed= 1;	  
+      $failed= 1;  
       return "Monitoring is not active on both sites!"
     }
     if ($host_cnt gt 2) {
-      $failed= 1;	  
+      $failed= 1;  
       return "Monitoring is active on more than one host at each site!"
     }
 
@@ -457,7 +455,7 @@ sub showLinkRSSIIP {
 
     return "ok";
   }
-  $failed= 1;	  
+  $failed= 1;
   return 0;
 }
 

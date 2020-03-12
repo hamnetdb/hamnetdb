@@ -634,10 +634,8 @@ sub siteShow {
     #preventing the table if there is no coverage
     my $first_cov = 1; 
     
-    while(($tag,$antennatype,$azimuth,$altitude,$frequency)=$sth2->fetchrow_array()) # (@line= $sth2->fetchrow_array) 
-    {
-      if($first_cov)
-      {
+    while (($tag,$antennatype,$azimuth,$altitude,$frequency)=$sth2->fetchrow_array()) { # (@line= $sth2->fetchrow_array) 
+      if ($first_cov) {
         $first_cov= 0;
         print qq(<p>Antenna-configuration:<table>);
       }
@@ -648,8 +646,7 @@ sub siteShow {
         <td></b> Frequency:</td> <td align="right"> <b>$frequency</b> </td> <td align="right">MHz</td></tr>
       );
     }
-    if($first_cov == 0)
-    {
+    if ($first_cov == 0) {
       print qq(</table></p>);
     }
     
@@ -730,7 +727,7 @@ sub subnetShow {
     }
     
     print qq(
-	  $radioparam
+    $radioparam
     );
     if ($comment) {
       print qq(<br>$comment<br>);
@@ -1036,10 +1033,10 @@ sub showLinkByIP {
       $rssi= $rssi1." / ".$rssi2;
       # check if client comes from hamnet
       unless(checkMapSource()) {
-	$rssi_host= "https://grafana.hamnetdb.net";
+  $rssi_host= "https://grafana.hamnetdb.net";
       }
       else {
-      	$rssi_host= "http://44.148.129.16";
+        $rssi_host= "http://44.148.129.16";
       }
       $rssi= "<a href='".$rssi_host."/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
         $ip."&kiosk=tv' target='_blank'>".$rssi1." / ".$rssi2."</a>";
@@ -1650,7 +1647,7 @@ sub maintainerList {
     #  "<a href='?q=$callsign'>$callsign</a></td>\n"; 
     $sort= $callsign if ($scrit eq "c");
     
-    if ($username)  {
+    if ($username) {
       $ret.= "<td valign=top>$fullname</td>\n"; 
       $sort= $fullname if ($scrit eq "n");
 
