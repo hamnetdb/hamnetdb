@@ -37,6 +37,8 @@ my $snow2= $query->param("snow2")+0;
 my $sun_az= $query->param("sun_az")+0;
 my $sun_el= $query->param("sun_el")+0;
 my $desert= $query->param("desert")+0;
+my $lsd= $query->param("lsd")+0;
+my $label= $query->param("label")+0;
 
 #print("Content-Type: text/html\nExpires: 0\n\n");
 
@@ -61,7 +63,7 @@ $path_web= $panorama_path_web;
   #max
   $refraction= 1 if $refraction>1;
   $antenna_a= 3000  if $antenna_b>3000;
-  $size_x= 6000 if $size_x>6000;
+  $size_x= 20000 if $size_x>20000;
   $size_y= 2160 if $size_y>2160;
   $font_size= 3 if $font_size>3;
   $elevation= 90 if $font_size>90;
@@ -107,7 +109,7 @@ $path_web= $panorama_path_web;
     $poi_param.= "-J s -I $path_web/rftools/mkxs_w.png $path_web/rftools/mkxs_w.png -P 60 60 60 100 $path_web/rftools/AT.txt ";
   }
   $sun_param= "";
-  if ($sun_az > 0 && $sun_el > 0)
+  if ($sun_az > 0 || $sun_el > 0)
   {
     $sun_param= "-S $sun_az $sun_el";
   }
@@ -123,19 +125,28 @@ $path_web= $panorama_path_web;
   $desert_param= "";
   if ($desert > 0)
   {
-    $desert_param= "-t 1 0 -u ";
+    $desert_param= "-t 1 0 -u 0 ";
   }
   else
   {
-    $desert_param= "-W 0.7 2 0 ";
+    $desert_param= "-W 0.7 2 0 -u 1 -t 30 8 -T 2500 1100 ";
+  }
+  $lsd_param= "";
+  if ($lsd > 0) {
+    $lsd_param= "-N 0 0 0 ";
+  }
+  $label_param= "";
+  if ($label > 0) {
+    $label_param= "-V";
   }
 
   my $cmd= "nice -n 9 $path_prog -p $path_srtm -A $antenna_a ";
   $cmd.= "-a $lat_a $lon_a -b $lat_b $lon_b -z $zoom ";
-  $cmd.= "-e $elevation $font_cmd -g 2.3 -o 5 -C 3 -l 0.1 5 ";
+  $cmd.= "-e $elevation $font_cmd -g 1 -o 5 -C 3 -l 0.1 2 -Z ";
   $cmd.= "-x $size_x -y $size_y -w $angle $poi_param ";
   $cmd.= "-r $refraction $sun_param $desert_param $snow_param ";
-  
+  $cmd.= "$lsd_param $label_param ";
+
   #high contrast -l 1.0 0.0 
 
 

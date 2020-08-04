@@ -84,6 +84,7 @@ var rfSnow2 = 500;
 var rfSunAz = 0; 
 var rfSunEL = 0;
 var rfDesert = 0;
+var rfLSD = 0;
 var rfVisTree = 1;
 
 var rfPanoramaPopup;
@@ -174,6 +175,7 @@ function init()
   rfSunAztmp = getParameter("rf_sun_az");
   rfSunEltmp = getParameter("rf_sun_el");
   rfDeserttmp = getParameter("rf_desert");
+  rfLSDtmp = getParameter("rf_lsd");
   rfVisTreetmp  = getParameter("rf_tree");
 
   if (rfTowerRxtmp != 0) {
@@ -236,6 +238,13 @@ function init()
   else {
     rfDesert = 1;
   }
+  if (rfLSDtmp == "0") {
+    rfLSD = 0;
+  }
+  else {
+    rfLSD = 1;
+  }
+
 
   var CoverUrl= "coverage/";
   if (country && country.length==2) {
@@ -1451,6 +1460,7 @@ function rfValUpd()
   rfSunEl = document.getElementById("rfSunEl").value;
   rfVisTree = document.getElementById("rfVisTree").checked;
   rfDesert = document.getElementById("rfDesert").checked;
+  rfLSD = document.getElementById("rfLSD").checked;
 
   profilePopupUpd();
 }
@@ -1774,6 +1784,11 @@ function rfCreateUrl()
     if (rfDesert) {
       url = url +"&rf_desert=1";
     }
+    if (rfLSD) {
+      url = url +"&rf_lsd=1";
+    }
+    url = url + "&rf_p_tow="+rfTowerFromP;
+	  
     url = url + "&rf_sun_az="+rfSunAz+"&rf_sun_El="+rfSunEl;
   }
   return url;
@@ -1926,10 +1941,14 @@ function panoramaGenLink(width,height)
     rfDesertOut = 1;
   else 
     rfDesertOut = 0; 
+  if (rfLSD)
+    rfLSDOut= 1;
+  else
+    rfLSDOut= 0;
   src = "?lon_a="+lon1+"&lat_a="+lat1+"&ant_a="+rfTowerFromP+"&poi="+poi+
         "&lon_b="+lon2+"&lat_b="+lat2+"&el="+rfElevation+"&angle="+rfAngle+"&z="+rfZoom+
         "&ref="+rfRefractionPanorama+"&font="+rfFontPanorama+
-        "&desert="+rfDesertOut+"&snow1="+rfSnow1+"&snow2="+rfSnow2+
+        "&desert="+rfDesertOut+"&lsd="+rfLSDOut+"&snow1="+rfSnow1+"&snow2="+rfSnow2+
         "&sun_az="+rfSunAz+"&sun_el="+rfSunEl+"&y="+height+"&x="+width;
   return src;
 } 
@@ -2009,6 +2028,7 @@ function rfPanUpdForm()
   document.getElementById("rfSnow1").value = rfSnow1;
   document.getElementById("rfSnow2").value = rfSnow2;
   document.getElementById("rfDesert").checked = rfDesert;
+  document.getElementById("rfLSD").checked = rfLSD;
 }
 function panoramaOpenBig()
 {

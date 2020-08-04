@@ -244,7 +244,7 @@ print qq(
       </div>
       <div id="sidebar-rftools">
         <h3>RF-Tools</h3>
-        An easy way to estimate <br> possilbe RF-links
+        An easy way to estimate <br> possible RF-links
         <hr>
         <h4>Link-Profile:</h4>
         <a onclick="rfPlacemarker();" style="text-decoration:none; border-radius:2px;">
@@ -256,7 +256,7 @@ print qq(
         <input type='button' value='show profile' style='height:24px;' onclick='javascript:rfOpenprofile()'> 
         <hr>
         <h4>(RF)-Visibility:</h4>
-        use exsisting visibility (faster)<br>
+        use existing visibility (faster)<br>
         );
 
         
@@ -344,6 +344,7 @@ print qq(
   <span id="rfSun2">sun elevation&nbsp;<label id='rfSunEllbl' for='rfSunEl'>0°</label> 
   <input type="range" id='rfSunEl' min="0" max="90" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>       
   <input type="checkbox" name="rfDesert" id="rfDesert" value="rfDesert" onchange='rfValUpd();' >desert mode<br>
+  <input type="checkbox" name="rfLSD" id="rfLSD" value="rfLSD" onchange='rfValUpd();' >LSD mode<br>
 
   </div>
   <input type='button' value='show panorama' style='height:24px;' onclick='javascript:rfOpenpanorama()'> 

@@ -361,7 +361,7 @@ unless ($found) {
     $rssi_host= "http://44.148.129.16";
   }
   $rssi= "<a href='".$rssi_host."/d/s3tmR0hWk/rssi-values?orgId=1&refresh=2m&var-SubnetProductive=".
-  $ip."&kiosk=tv' target='_blank'>".$rssi1." / ".$rssi2."</a>";
+  $ip."&kiosk=tv&from=now-2d&to=now' target='_blank'>".$rssi1." / ".$rssi2."</a>";
   # $rssi= $rssi1." / ".$rssi2;
       }
 

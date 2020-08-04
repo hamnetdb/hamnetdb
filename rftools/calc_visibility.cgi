@@ -178,7 +178,7 @@ unless ($list) {
       print($output_parameter);
       listAdd($output_parameter);
     }
-    #print qq($cmd);
+    print qq(\n $cmd);
   }
   else
   {

@@ -34,14 +34,14 @@ hamnetdb.info.show= function(newInfoObject) {
         hamnetdb.info.doHide();
         var scrollPos;
         if (typeof window.pageYOffset != 'undefined') {
-          scrollPos = window.pageYOffset;
+          scrollPos= window.pageYOffset;
         }
         else if (typeof document.compatMode != 'undefined' &&
              document.compatMode != 'BackCompat') {
-          scrollPos = document.documentElement.scrollTop;
+          scrollPos= document.documentElement.scrollTop;
         }
         else if (typeof document.body != 'undefined') {
-          scrollPos = document.body.scrollTop;
+          scrollPos= document.body.scrollTop;
         }
         if (hamnetdb.info.lastX > (jQuery(window).width()-350)) {
           jQuery("#infoPopup").css("left","auto");
@@ -181,13 +181,13 @@ hamnetdb.openMap= function(fullscreen,as,site,hamnet) {
 //---------------------------------------------------------------------------
 // Show antennapattern popup
 hamnetdb.antennaShow= function(number, old){
-  var oldparam = "";
-  var name = document.getElementsByName("antennatype"+number)[0].value;
-  var popup = document.getElementById('infoPopup');
+  var oldparam= "";
+  var name= document.getElementsByName("antennatype"+number)[0].value;
+  var popup= document.getElementById('infoPopup');
   //create iframe
   popup.innerHTML= "<iframe class='infopopContent' style='height:0; border:0; background-color:#fff; height:100%; ' src=''>You need Iframes to see this content!</iframe>"+popup.innerHTML;
   
-  var frm = popup.getElementsByTagName('iframe')[0];
+  var frm= popup.getElementsByTagName('iframe')[0];
   
   
   
@@ -199,14 +199,14 @@ hamnetdb.antennaShow= function(number, old){
   {
     if(old == 1)
     {
-      oldparam = "&old=1"
+      oldparam= "&old=1"
     }
-    popup.style.height = "370px";
-    popup.style.width = "575px"
-    frm.src = "antennapattern.cgi?name="+name+oldparam;
+    popup.style.height= "370px";
+    popup.style.width= "575px"
+    frm.src= "antennapattern.cgi?name="+name+oldparam;
     //popup.style.visibility = "visible";
-    frm.style.height = "370px";
-    frm.style.width = "575px";
+    frm.style.height= "370px";
+    frm.style.width= "575px";
     jQuery("#infoPopup").css("right","auto");
     jQuery("#infoPopup").css("left","112px");
     jQuery("#infoPopup").css("top", "150px");
@@ -217,10 +217,10 @@ hamnetdb.antennaShow= function(number, old){
 //---------------------------------------------------------------------------
 // Show position selection popup
 hamnetdb.positionShow= function(number, old){
-  var oldparam = "";
-  var lat_popup = document.getElementById("latitude").value;
-  var lon_popup = document.getElementById("longitude").value;
-  var popup = document.getElementById('infoPopup');
+  var oldparam= "";
+  var lat_popup= document.getElementById("latitude").value;
+  var lon_popup= document.getElementById("longitude").value;
+  var popup= document.getElementById('infoPopup');
   //create iframe
  
 
@@ -230,15 +230,15 @@ hamnetdb.positionShow= function(number, old){
     <div class='infopopContent' style=\"font-size:15px;  margin-top:10px;  display:block;\"> \
     <a href=\"javascript:hamnetdb.positionUse()\">use this position</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href=\"javascript:hamnetdb.infopopHide()\">Cancel</a></div><div id='map' class='infopopContent'></div>"+popup.innerHTML;
 
-  var frm = document.getElementById('map');
+  var frm= document.getElementById('map');
   
  
-  popup.style.height = "450px";
-  popup.style.width = "700px"
+  popup.style.height= "450px";
+  popup.style.width= "700px"
   //popup.style.visibility = "visible";
-  frm.style.marginTop = "10px";
-  frm.style.height = "100%";//"410px";
-  frm.style.width = "100%";
+  frm.style.marginTop= "10px";
+  frm.style.height= "100%";//"410px";
+  frm.style.width= "100%";
   jQuery("#infoPopup").css("right","auto");
   jQuery("#infoPopup").css("left","45px");
   jQuery("#infoPopup").css("top", "80px");
@@ -246,14 +246,14 @@ hamnetdb.positionShow= function(number, old){
   init(0,lat_popup,lon_popup);
 }
 hamnetdb.positionUse= function(){ 
-  var lat = document.getElementById("lat_to_store").innerHTML;
-  var lon = document.getElementById("lon_to_store").innerHTML;
-  var locator = document.getElementById("locator_to_store").innerHTML;
+  var lat= document.getElementById("lat_to_store").innerHTML;
+  var lon= document.getElementById("lon_to_store").innerHTML;
+  var locator= document.getElementById("locator_to_store").innerHTML;
   if(lat != "")
   {
-    document.getElementById("latitude").value =  lat;
-    document.getElementById("longitude").value = lon;
-    document.getElementById("locator").value = locator;
+    document.getElementById("latitude").value=  lat;
+    document.getElementById("longitude").value= lon;
+    document.getElementById("locator").value= locator;
     changed();
   }
 
@@ -263,10 +263,10 @@ hamnetdb.positionUse= function(){
 //inline popup for antennapattern
 hamnetdb.infopopHide= function(){
   
-  var popup = document.getElementById('infoPopup');
+  var popup= document.getElementById('infoPopup');
   jQuery("#infoPopup").fadeOut(300);
-  var frm =  popup.getElementsByClassName('infopopContent');
-  var length = frm.length;
+  var frm=  popup.getElementsByClassName('infopopContent');
+  var length= frm.length;
   for(i=length;i;i--)
   {
     frm[i-1].parentNode.removeChild(frm[i-1]);
@@ -282,21 +282,21 @@ hamnetdb.addUserAccess= function(number)
 
   if (number < 11)
   {
-    var freq = 0;
-    var az = 0;
-    var al = 0;
-    var tag = "";
-    var power = 0;
-    var gain = 0;
-    var loss = 0;
+    var freq= 0;
+    var az= 0;
+    var al= 0;
+    var tag= "";
+    var power= 0;
+    var gain= 0;
+    var loss= 0;
 
-    var next = number+1;
+    var next= number+1;
 
-    var antenna = document.getElementsByName("antenna_dummy")[0].outerHTML;
+    var antenna= document.getElementsByName("antenna_dummy")[0].outerHTML;
 
 
     //text for new line of UserAccess
-    var text="<td valign=\"top\" align=\"left\" nowrap width=\"90px\">&nbsp; &nbsp;  Tag:<br> \
+    var text= "<td valign=\"top\" align=\"left\" nowrap width=\"90px\">&nbsp; &nbsp;  Tag:<br> \
             <a id=\"delete"+number+"\" href=\"javascript:hamnetdb.removeUserAccess("+number+")\"><img src=\"delete.png\"> </a>\
             <input type=\"text\" name=\"tag"+number+"\" value =\""+tag+"\"style=\"width:50px;\"$chtrack>  \
       </td> <td valign =\"top\" align =\"left\"nowrap width=\"110px\"> \
@@ -339,10 +339,10 @@ hamnetdb.addUserAccess= function(number)
 
 // -------------------------------------------------------------------------
 //remove UserAccess-line to form_site
-hamnetdb.removeUserAccess = function(index){
+hamnetdb.removeUserAccess= function(index){
 
   var number= document.getElementsByName('addAnt')[0].value; //number of accesses
-  var tiefer = number -1;
+  var tiefer= number -1;
 
   //Alle Nummern kleiner als die zu löschende bleiben gleich, alle größeren werden um 1 reduziert.
   //Anzahl angezeigter Zugänge
@@ -352,18 +352,18 @@ hamnetdb.removeUserAccess = function(index){
     {
       document.getElementById('plusUser'+index).outerHTML="<tr id =\"plusUser"+index+"\"></tr>";
 
-      var hightPlus = index+1;
+      var hightPlus= index+1;
 
-      document.getElementById('menu').outerHTML = "<tr id =\"menu\" > <td colspan=2><a href=\"javascript:hamnetdb.addUserAccess(" + index +")\"> \
+      document.getElementById('menu').outerHTML= "<tr id =\"menu\" > <td colspan=2><a href=\"javascript:hamnetdb.addUserAccess(" + index +")\"> \
                                                    Add additional User Access/ Antenna Configuration </a><br></td></tr>";
 
-      document.getElementById('plusUser'+hightPlus).outerHTML="";
+      document.getElementById('plusUser'+hightPlus).outerHTML= "";
 
       document.getElementsByName("addAnt")[0].value--;
       changed();
     }
     else{
-      document.getElementById('plusUser'+index).outerHTML="";
+      document.getElementById('plusUser'+index).outerHTML= "";
 
       var i;
       for(i = index + 1; i < number; i++)
@@ -380,13 +380,13 @@ hamnetdb.removeUserAccess = function(index){
         document.getElementsByName("antennatype"+i)[0].setAttribute('name',"antennatype"+neue);
 
         document.getElementById('plusUser'+i).setAttribute ("id","plusUser"+neue);
-        document.getElementById('delete'+i).outerHTML = "<a id=\"delete"+neue+"\" href=\"javascript:hamnetdb.removeUserAccess("+neue+")\"> <img src=\"delete.png\"> </a>";
+        document.getElementById('delete'+i).outerHTML= "<a id=\"delete"+neue+"\" href=\"javascript:hamnetdb.removeUserAccess("+neue+")\"> <img src=\"delete.png\"> </a>";
 
-        document.getElementById('show'+i).outerHTML="<a id = \"show"+neue+"\" href=\"javascript:hamnetdb.antenna("+neue+",'0')\"><br \> Show selected Pattern </a></td>";
+        document.getElementById('show'+i).outerHTML= "<a id = \"show"+neue+"\" href=\"javascript:hamnetdb.antenna("+neue+",'0')\"><br \> Show selected Pattern </a></td>";
       }
-      document.getElementById('menu').outerHTML = "<tr id =\"menu\" > <td colspan=2><a href=\"javascript:hamnetdb.addUserAccess(" + (tiefer) +")\">\
+      document.getElementById('menu').outerHTML= "<tr id =\"menu\" > <td colspan=2><a href=\"javascript:hamnetdb.addUserAccess(" + (tiefer) +")\">\
                                                 Add additional User Access/ Antenna Configuration </a><br></td></tr>";
-      document.getElementById('plusUser'+i).outerHTML="<tr id =\"plusUser"+tiefer+"\"></tr>";
+      document.getElementById('plusUser'+i).outerHTML= "<tr id =\"plusUser"+tiefer+"\"></tr>";
       document.getElementsByName("addAnt")[0].value--;
     }
     changed();
@@ -395,20 +395,20 @@ hamnetdb.removeUserAccess = function(index){
 
 //ip-calculator
 hamnetdb.ipcalcShow= function(number, old){
-  var oldparam = "";
-  var popup = document.getElementById('infoPopup');
+  var oldparam= "";
+  var popup= document.getElementById('infoPopup');
   //create iframe
   popup.innerHTML= "<iframe  style='height:0; border:0; background-color:#fff; height:100%; ' src=''>You need Iframes to see this content!</iframe>"+popup.innerHTML;
   
-  popup.style.height = "260px";
-  popup.style.width = "550px"
+  popup.style.height= "260px";
+  popup.style.width= "550px"
   
-  var frm = popup.getElementsByTagName('iframe')[0];
+  var frm= popup.getElementsByTagName('iframe')[0];
   
-  frm.src = "ip-calculator.html";
+  frm.src= "ip-calculator.html";
   //popup.style.visibility = "visible";
-  frm.style.height = "260px";
-  frm.style.width = "550px";
+  frm.style.height= "260px";
+  frm.style.width= "550px";
   jQuery("#infoPopup").css("right","auto");
   jQuery("#infoPopup").css("left","112px");
   jQuery("#infoPopup").css("top", "250px");

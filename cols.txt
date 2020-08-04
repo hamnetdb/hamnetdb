@@ -1,5 +1,6 @@
 200 120 0   earth
 20 40 180   heaven
+53 70 210   heaven bottom
 290 80 0    fresnel kernel
 120 180 20  fresnel outside
 90 150 150  optical line of sight
@@ -16,3 +17,4 @@
 0 200 300   water
 150 120 50  wood
 400 50 20   urban
+
