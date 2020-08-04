@@ -274,7 +274,8 @@ if ($m eq "util") {
       <a href="csv.cgi?tab=site">site.csv</a> &nbsp;
       <a href="csv.cgi?tab=host">host.csv</a> &nbsp;
       <a href="csv.cgi?tab=subnet">subnet.csv</a> &nbsp;
-      <a href="csv.cgi?tab=edge">edge.csv</a> &nbsp;<br>
+      <a href="csv.cgi?tab=edge">edge.csv</a> &nbsp;
+      <a href="csv.cgi?tab=service">service.csv</a> &nbsp;<br>
       
       Download JSON: &nbsp; 
       <a href="csv.cgi?tab=as&json=1">as.json</a> &nbsp;
@@ -282,6 +283,7 @@ if ($m eq "util") {
       <a href="csv.cgi?tab=host&json=1">host.json</a> &nbsp;
       <a href="csv.cgi?tab=subnet&json=1">subnet.json</a> &nbsp;
       <a href="csv.cgi?tab=edge&json=1">edge.json</a> &nbsp;
+      <a href="csv.cgi?tab=service&json=1">service.json</a> &nbsp;
       </div>
     );
 
