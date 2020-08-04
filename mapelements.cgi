@@ -18,7 +18,8 @@ do "lib.cgi" or die;
 # Supply these parameters if we want to limit the result
 my $only_as=     $query->param("only_as")+0;
 my $only_hamnet= $query->param("only_hamnet")+0;
-my $only_country=$query->param("only_country");
+my $only_country= $query->param("only_country");
+my $only_radio= $query->param("only_radio");
 $only_country=~s/[^a-z]+//g;
 my $no_hamnet=   $query->param("no_hamnet")+0;
 my $no_tunnel=   $query->param("no_tunnel")+0;
@@ -180,7 +181,7 @@ foreach $net (sort keys %all_hosts) {
 
       #get RSSI
       my $style=$typ;
-      if ($radio && ( $typ=~/radio/i || $typ=~/ISM/i)) {
+      if (( $only_radio || $radio ) && ( $typ=~/radio/i || $typ=~/ISM/i)) {
         my $rssi= 0;      
         #get worst rssi
         #left monitored host -> rssi
@@ -207,12 +208,12 @@ foreach $net (sort keys %all_hosts) {
           my $idx= 0;
           $monitor_left= $line[$idx++];
           $rssi_tmp= $line[$idx++];
-    $rssi= $rssi_tmp if $rssi_tmp < $rssi; 
+          $rssi= $rssi_tmp if $rssi_tmp < $rssi; 
         }
-        next if ($rssi == 0);
+        next if ($rssi == 0 && $only_radio);
         if (length($rssi) >1 ) {
           $rssi = $rssi+0;
-    #$rssi= $rssi2 if $rssi > $rssi2; #get worst side and apply style
+          #$rssi= $rssi2 if $rssi > $rssi2; #get worst side and apply style
           if   ($rssi>-66) {$style= 'hf1';} 
           elsif($rssi>-71) {$style= 'hf2';} 
           elsif($rssi>-76) {$style= 'hf3';} 
@@ -248,7 +249,6 @@ foreach $net (sort keys %all_hosts) {
           my $idx= 0;
           $monitor_left= $line[$idx++];
           $rssi= $line[$idx++];
-          #print '++++',$line[0],' ',$sites[0],'\n';
         }
         next if (!$rssi);
           if (length($rssi) >=1) {
@@ -323,7 +323,7 @@ foreach my $callsign (@allCallsigns) {
 }
 # -------------------------------------------------------------------------
 # Prepare edges explicitely stored in the database
-if(!$bgp && !$radio) {
+if(!$bgp && !$only_radio) {
   my $sth= $db->prepare(qq(select left_site,right_site,hamnet_edge.typ
     from hamnet_edge
   ));
@@ -339,7 +339,7 @@ if(!$bgp && !$radio) {
                $site_country{$right_site} ne $only_country)
     }
     next if (($no_tunnel && $typ=~/tunnel/i) || ($no_radio &&
-             $typ=~/radio/i) || ($no_ism && $typ=~/ISM/i) || ($radio));
+             $typ=~/radio/i) || ($no_ism && $typ=~/ISM/i) || ($only_radio));
     push(@allEdges, "$typ;$left_site:$right_site;$left_site;$right_site");
   }
 }
