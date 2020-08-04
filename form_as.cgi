@@ -40,33 +40,33 @@ if ($func eq "delete") {
 &beforeForm($caption);
 
 print qq(
-  <tr>
-  <td valign="top" align="left" nowrap>AS-Number:<br>
-  <input type="text" name="as_num" value="$as_num" style='width:80px;' $chtrack>
-  <input type="hidden" name="as_num_orig" value="$as_num">
-  <br>$br10
-  </td>
-  <td valign="top" align="left" nowrap>Descriptive Name:<br>
-  <input type="text" name="name" value="$name" style='width:250px;' $chtrack>
-  </td>
-  <td valign="top" align="left" nowrap>Root AS:<br>
-  );
-  &asCombo(0,0,1,$as_root,"style='width:200px;overflow:hidden;'");
-print qq(
-  </td>
-  <td valign="top" align="left" nowrap>Country 
-  <a target='_blank' href='https://en.wikipedia.org/wiki/ISO_3166-1'>TLD</a><br>
-  <input type="text" name="country" value="$country" style='width:30px;' $chtrack>
-  <small>e.g. <b>at ch de</b></small>
-  </td>
-  </tr>
-  <tr>
-  <td valign="top" align="left" nowrap colspan=4>List of maintainers 
-  (callsigns, comma separated):<br>
-  <input type="text" name="maintainer" value="$maintainer" style="width:100%"$chtrack>
-  </td>
-  </tr>
-  <tr><td colspan=4>
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap>AS-Number:<br>
+    <input type="text" name="as_num" value="$as_num" style='width:80px;' $chtrack>
+    <input type="hidden" name="as_num_orig" value="$as_num">
+    <br>$br10
+    </div>
+    <div class="formn2" align="left" nowrap>Descriptive Name:<br>
+    <input type="text" name="name" value="$name" style='width:250px;' $chtrack>
+    </div>
+    <div class="formn3" align="left" nowrap>Root AS:<br>
+    );
+    &asCombo(0,0,1,$as_root,"style='width:200px;overflow:hidden;'");
+  print qq(
+    </div>
+    <div class="formn1" align="left" nowrap>Country 
+    <a target='_blank' href='https://en.wikipedia.org/wiki/ISO_3166-1'>TLD</a><br>
+    <input type="text" name="country" value="$country" style='width:30px;' $chtrack>
+    <small>e.g. <b>at ch de</b></small>
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap >List of maintainers 
+    (callsigns, comma separated):<br>
+    <input type="text" name="maintainer" value="$maintainer" style="width:100%"$chtrack>
+    </div>
+  </div>
+  <div class="formnline">
 );
 
 if (&inList($username, $maintainer) || ($mySysPerm && $maintainer)) {
@@ -75,21 +75,23 @@ if (&inList($username, $maintainer) || ($mySysPerm && $maintainer)) {
 }
 
 print qq(
-  </td></tr>
-  <tr><td colspan=4></td></tr>
-  <tr><td colspan=4>
-  Add records to DNS zone for this AS 
-  (No check! Be careful: Whole zone may become invalid on errors):<br>
-  <textarea name="dns_add" class="txt" $chtrack
-            style="width:100%; height:100px;">$dns_add</textarea>
-  </td></tr>
-  <tr><td colspan=4>
+  </div>
+  <div class="formnline">
+    <div class="formnfull">
+    Add records to DNS zone for this AS 
+    (No check! Be careful: Whole zone may become invalid on errors):<br>
+    <textarea name="dns_add" class="txt" $chtrack
+              style="width:100%; height:100px;">$dns_add</textarea>
+    </div>
+  </div>
+  <div class="formnline">
+
   Comment area:<br>
   <textarea name="comment" class="txt" $chtrack
             style="width:100%; height:170px;">$comment</textarea>
-  </td></tr>
+  </div>
 );
-&afterForm;
+&afterFormn;
 exit;
 
 

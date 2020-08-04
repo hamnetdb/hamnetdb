@@ -303,3 +303,27 @@ textarea {
 .help-inline {
   float: right;
 }
+.formn1, .formn2, .formn3, .formnsmall {
+  display: inline-block;
+}
+.formnhalf {
+  display: inline-block;
+  width: 50%;
+}
+.formnfull {
+  display: inline-block;
+  width: 100%;
+}
+.formnbutton, .formnR {
+  float: right;
+  display: inline-block;
+
+}
+.formnline {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.invisible {
+  display: none;
+  visibility: hidden;
+}

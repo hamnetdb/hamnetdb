@@ -23,9 +23,9 @@ $json= $query->param("json");
 $json+= 0;
 
 
-unless ($tab=~/^(site|host|subnet|as|edge)(|_hist)$/) {
+unless ($tab=~/^(site|host|subnet|as|edge|service)(|_hist)$/) {
   print qq(Content-Type: text/plain\n\n).
-        qq(Usage: csv.cgi?tab=[site|host|subnet|as]&json=[1]\n);
+        qq(Usage: csv.cgi?tab=[site|host|subnet|as|edge|service]&json=[1]\n);
   exit;
 }
 

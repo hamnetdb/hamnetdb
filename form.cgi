@@ -164,7 +164,7 @@ sub beforeForm {
     $inputStatus=~s/&/&amp;/g;
     $inputStatus=~s/</&lt;/g;
     $inputStatus=~s/>/&gt;/g;
-    $caption= "<font color='white'>$inputStatus</font>";
+    $caption= "<font color='red'>$inputStatus</font>";
   }
   else {
     $caption.= ":";
@@ -454,8 +454,7 @@ sub beforeForm {
   <a style="text-decoration:none; font-size:35px; color:#666; position:absolute; right:5px; top:0px; font-weight:400;" 
      href="javascript:hamnetdb.infopopHide();">x</a>
   </div>
-  <table cellspacing=0 cellpadding=4 border=0 width="100%"><tr>
-  <td colspan=$tableCols $capcol><h3 class='nomargin'>$caption</h3></td></tr>
+  <div if="formtop"><h3 class='nomargin'>$caption</h3></div>
   );
 }
 
@@ -494,6 +493,56 @@ sub afterForm {
     </td></tr></table>
   </td></tr></table>
 
+  <script language="JavaScript">
+    if ($ischanged) {
+      changed();
+    }
+    if ($isOldVersion) {
+      document.getElementById("subbut").disabled= 1;
+      if (document.getElementById("delebut")) {
+        document.getElementById("delebut").disabled= 1;
+      }
+    }
+  </script>
+  </form>
+  );
+}
+sub afterFormn {
+  my $deleteBut= "";
+  if ($id) {
+    if ($copyButton) {
+        $deleteBut.= qq(<button id="copybut" type="button" 
+                        onclick="doCopy()">Copy</button>
+                        &nbsp;&nbsp;&nbsp;);
+      if ($isOldVersion) {
+        $deleteBut.= qq(<button id="copyasnew" type="button" 
+                        onclick="doCopyAsNewest()">Revert to this version
+                        </button>
+                        &nbsp;&nbsp;&nbsp;);
+      }
+      else {
+        if ($deleteButton) {
+          $deleteBut.= qq(<button id="delebut" type="button" 
+                          onclick="doDelete()">Delete</button>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;);
+        }
+      }
+    }
+  }
+  print qq(
+  <div class="formnline">
+    <div class="formnsmall">
+      $lastChanged
+    </div>
+    <div class="formnbutton">
+      $deleteBut
+      <button id="subbut" type="button" 
+            onclick="doStore()">Store</button>&nbsp;
+      <button type="button" onclick="checkAbort()">Abort</button>
+    </div>
+    <br>&nbsp;
+  </div>
   <script language="JavaScript">
     if ($ischanged) {
       changed();
@@ -603,7 +652,14 @@ sub storeEntry {
             addAccess();
           }
         }
-      
+        #Add /Update Services
+        if ($table eq "hamnet_host") {
+          unless ($inputStatus) {
+            storeService();
+          }
+        }
+
+
         print("Status: 302\n");
         print("Location: ?func=close&id=$id\n\n");
 
@@ -643,8 +699,13 @@ sub deleteEntry {
         }
       }
       if($table eq "hamnet_site") {
-        unless($inputStatus){
+        unless($inputStatus) {
           deleteAccess();
+        }
+      }
+      elsif ($table eq "hamnet_host") {
+        unless ($inputStatus) {
+          deleteService();
         }
       }
       unless ($inputStatus) {

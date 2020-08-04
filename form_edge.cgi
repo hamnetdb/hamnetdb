@@ -27,16 +27,11 @@ $caption= "New $suffix" unless $id;
 &beforeForm($caption);
 
 print qq(
-  <tr>
-  <td valign="top" align="left">Left site:<br>
+  <div class="formnline">
+    <div class="formnhalf" align="left">Left site:<br>
       <b style="font-size: 20px">$left_site</b>
       <input type="hidden" name="left_site" value="$left_site">
-  </td>
-  <td valign="top" align="left">Right site:<br>
-      <b style="font-size: 20px">$right_site</b>
-      <input type="hidden" name="right_site" value="$right_site">
-  </td>
-  </tr>
+
 );
 
 my $sth= $db->prepare(qq(select site,name,ip
@@ -53,52 +48,54 @@ while (@line= $sth->fetchrow_array) {
   }
 }
 print qq(
-  <tr>
-  <td valign="top" align="left" nowrap>
-  Left radio host (if any):<br>
+    <br><br>
+    Left radio host (if any):<br>
 );
 &comboBox("", "left_host-300", $left_host, "-None-", @left_hosts);
 print qq(
-  </td>
-  <td valign="top" align="left" nowrap>
-  Right radio host (if any):<br>
+    </div>
+    <div class="formn2" align="left" nowrap>
+    Right site:<br>
+      <b style="font-size: 20px">$right_site</b>
+      <input type="hidden" name="right_site" value="$right_site">
+    <br><br> 
+    Right radio host (if any):<br>
 );
 &comboBox("", "right_host-300", $right_host, "-None-", @right_hosts);
 
 print qq(
-  </td>
-  </tr>
-  <tr>
-  <td valign="top" align="left" nowrap colspan="1">Topology type:<br>
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap>Topology type:<br>
 );
 
 &comboBox("", "typ", $typ, "Radio",  "Ethernet",  "Tunnel", "ISM");
 
 print qq(
-  <br>
-  </td>
-  </tr>
-
-  <tr>
-  <td valign="top" align="left" nowrap colspan=2>
-  <p>Radio config parameters 
-  (Common parameters for whole edge, maybe site-specific see host):<br>
-  <input type="text" name="radioparam" value="$radioparam" 
-         style="width:100%"$chtrack>
-  </td>
-  </tr>
-  <tr><td colspan=2>
-  <p>Comment area:<br>
-  <textarea name="comment" class="txt" $chtrack
+      <br>
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap style="width:98%;">
+      <p>Radio config parameters 
+        (Common parameters for whole edge, maybe site-specific see host):<br>
+        <input type="text" name="radioparam" value="$radioparam" 
+          style="width:100%"$chtrack>
+    </div>
+  </div>
+  <div class="formnline">
+      <p>Comment area:<br>
+      <textarea name="comment" class="txt" $chtrack
             style="width:100%; height:170px;">$comment</textarea>
-  </td></tr>
+  </div>
   <script>
   if ($id==0 && '$left_site' !='') {
     changed();
   }
   </script>
 );
-&afterForm;
+&afterFormn;
 exit;
 
 

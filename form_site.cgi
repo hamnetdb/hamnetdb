@@ -72,18 +72,17 @@ $mapHamnet=checkMapSource();
 
 
 print qq(
-
-  <tr>
-  <td valign="top" align="left" nowrap colspan=1>Callsign:<br>
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap colspan=1>Callsign:<br>
     <input type="text" name="callsign" value="$callsign" style="width:$width;"$chtrack>
    <br>
-  </td>
-  <td valign="top" align="left" nowrap colspan=1>Location Name:<br>
+  </div>
+  <div class="formn2" align="left" nowrap colspan=1>Location Name:<br>
     <input type="text" name="name" value="$name" style="width:$width;" $chtrack>
-  </td>
-  <td colspan=4 valign="top" align="left" nowrap>
-  Type of this site:
-  <br>
+  </div>
+  <div class="formn3" align="left" nowrap>
+    Type of this site:
+   <br>
 );
 if($mySysPerm || ($no_check == 5 && &checkMaintainerRW(1, $maintainer))) {
   &comboBox("", "no_check", $no_check, 
@@ -103,47 +102,45 @@ else {
           "3::Site without callsign (for planning)");
 }
 print qq(
-  </td>
-  </tr>
-  <tr>
-  <td valign="top" align="left" nowrap colspan=1>
-    Latitude (e.g. 48.0):<br>
-    <input type="text" name="latitude" value="$latitude" style="width:$width;"
-     $chtrack onkeyup="calcLocatorjs()" id="latitude">
-  </td>
-  <td valign="top" align="left" nowrap colspan=1>Longitude (e.g. 11.0):<br>
-    <input type="text" name="longitude" value="$longitude" style="width:$width;"
-      $chtrack onkeyup="calcLocatorjs()" id="longitude">
-  </td>
-  <td valign="top" align="left" nowrap colspan=1>or 10-digit Locator:<br>
-  <input type="text" name="locator" value="$locator" style="width:$width;"  
-    $chtrack onkeyup="calcCoordinates();" id="locator">
-  </td>
-  <td valign='top' style='padding-top: 8px;' colspan=1>
-    <a href="javascript:hamnetdb.positionShow($mapHamnet)"><img src="map.png" height="30px" width="30px" /></a>
-    <small style="display:inline-block">Hint: <br><a $mapHamnet 
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap colspan=1>
+      Latitude (e.g. 48.0):<br>
+      <input type="text" name="latitude" value="$latitude" style="width:$width;"
+       $chtrack onkeyup="calcLocatorjs()" id="latitude">
+    </div>
+    <div class="formn2 p" align="left" nowrap colspan=1>Longitude (e.g. 11.0):<br>
+      <input type="text" name="longitude" value="$longitude" style="width:$width;"
+        $chtrack onkeyup="calcLocatorjs()" id="longitude">
+    </div>
+    <div class="formn2" align="left" nowrap colspan=1>or 10-digit Locator:<br>
+      <input type="text" name="locator" value="$locator" style="width:$width;"  
+      $chtrack onkeyup="calcCoordinates();" id="locator">
+    </div>
+    <div class="formn3" style='padding-top: 8px;' colspan=1>
+      <a href="javascript:hamnetdb.positionShow($mapHamnet)"><img src="map.png" height="30px" width="30px" /></a>
+      <small style="display:inline-block">Hint: <br><a $mapHamnet 
       href="javascript:hamnetdb.positionShow($mapHamnet)">pick coordinates from map</a></small>
-  </td>
-</tr>
-<tr>
-<td valign="top" align="left" nowrap colspan=1>Meters above ground:<br>
-    <input type="text" name="elevation" value="$elevation" 
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap colspan=1>Meters above ground:<br>
+      <input type="text" name="elevation" value="$elevation" 
       $chtrack style="width:$width;">
-</td>
+    </div>
 
-);
-print qq(
-<td colspan=3><br>);
+    <div class="formn2"><br>);
 
 &checkBox("Prepare Coverage?", "Cover", $hasCover, $Cover);
 
 print qq(
-  <small>See main page
-    <a target="_blank" href="index.cgi?m=help#antenna">Help</a>
-    for infos on radio propagation.
-    </small>
-  </td></tr>
-</table>
+      <small>See main page
+      <a target="_blank" href="index.cgi?m=help#antenna">Help</a>
+      for infos on radio propagation.
+      </small>
+    </div>
+  </div>
 <div style='margin:10px;'></div>
 <script src="osm/leaflet.js"></script>
 );
@@ -174,11 +171,8 @@ print qq(
 
 
 print qq(
-<table width="100%">
-
-  <tr><td colspan=8> 
-  <h4>Hamnet User Access / Antenna Configuration </h4>
-  </td> 
+  <div class="formn1" style="width:98%;">
+    <h4>Hamnet User Access / Antenna Configuration </h4>
 );
 
 my $counter=0;
@@ -191,14 +185,14 @@ while (@line= $sth->fetchrow_array) {
 }
 
 print qq(
-  <td style="display:none">
+    <div style="display:none">
 );
 
 &comboBox("", "antenna_dummy", " ", "::-None-", @antenna);
 
 print qq(
-    </td>
-  </tr>
+    </div>
+
 );
 ############################################################################################################
 my $rows=0;
@@ -244,6 +238,7 @@ while ($lines) {
   $_gain="gain$counter";
 
   print qq(
+  </div><table>
   <tr id="plusUser$counter">
     <td valign="top" align="left" nowrap width="90px">
       &nbsp; &nbsp; Label:<br />
@@ -303,30 +298,29 @@ while ($lines) {
 print qq(
   <tr id="plusUser$counter"></tr>
   <tr id="menu"><td colspan=8>
-  <a href="javascript:hamnetdb.addUserAccess($counter)">
+  <div class="formnline">
+    <a href="javascript:hamnetdb.addUserAccess($counter)">
      Add additional User Access / Antenna Configuration</a>
-  </td>
-  </tr>
+  </div>
+  <div class="formnline">
+    <input type="hidden" name="addAnt" value="$counter">
+    <a href="javascript:hamnetdb.edit('antenna')">Upload/Remove Antenna Pattern</a>
+    <br><br>
+  </div>
+  <div class="formnline">
+    <div class="formn1" style="width:98%;">
+      Radio config parameters for user access (only for user information; leave empty without user access):<br>
+      <input type="text" name="radioparam" value="$radioparam" style="width:100%"$chtrack>
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn1" style="width:98%;">
 
-  <tr><td colspan=8>
-  <input type="hidden" name="addAnt" value="$counter">
-  <a href="javascript:hamnetdb.edit('antenna')">Upload/Remove Antenna Pattern</a>
-  </td>
-</tr>
-<tr><td>&nbsp;</td></tr>
-<tr>
-  <td  valign="top" align="left" nowrap colspan=8>
-  Radio config parameters for user access (only for user information; leave empty without user access):<br>
-  <input type="text" name="radioparam" value="$radioparam" style="width:100%"$chtrack>
-  </td>
-  </tr>
-  <tr>
-  <td valign="top" align="left" nowrap colspan=8>
       List of maintainers (callsigns, comma separated):<br>
-  <input type="text" name="maintainer" value="$maintainer" style="width:100%"$chtrack>
-  </td>
-  </tr>
-  <tr><td colspan=8>
+      <input type="text" name="maintainer" value="$maintainer" style="width:100%"$chtrack>
+    </div>
+  </div>
+  <div class="formnline">
 );
 
 
@@ -336,18 +330,15 @@ if (&inList($username, $maintainer) || ($maintainer && $mySysPerm)) {
 }
 
 print qq(
-  </td></tr>
-  <tr><td colspan=8>
-  <br>
-  </td>
-  </tr>
-  <tr><td colspan=8>
-  Comment area:<br>
-  <textarea name="comment" class="txt" $chtrack
+    <br>
+  </div>
+  <div class="formnline">
+    Comment area:<br>
+    <textarea name="comment" class="txt" $chtrack
             style="width:100%; height:55px;">$comment</textarea>
-  </td></tr></table><table width="100%">
+  </div>
 );
-&afterForm;
+&afterFormn;
 exit;
 
 # --------------------------------------------------------------------------

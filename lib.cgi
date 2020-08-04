@@ -416,6 +416,8 @@ sub htmlWinHead {
     window.close();
   }
   </script>
+  <script language="JavaScript" src="select2.min.js"></script>
+  <link href='select2.min.css' rel='stylesheet' type='text/css'>
   </head><body style="margin:0"><div class='popup'>
   );
 }
@@ -562,6 +564,55 @@ sub comboBox {
 }
 
 # -----------------------------------------------------------------------------
+# combo box
+sub comboBoxSearch {
+  my $phrase=  shift;
+  my $name=    shift;
+  my $default= shift;
+  my $onchange= "";
+  unless ($comboAdd=~/onchange=/i) {
+    $onchange= " onchange='changed()'";
+    if ($name=~/^(.*)\+$/) {      # Automatisch nachladen bei Änderung
+      $name= $1;
+      $onchange= " onchange='changed();document.main.submit()'";
+    }
+  }
+  my $width= "";
+  if ($name=~/^(.*)\-(\d*)$/) { # Keine Leerzeichen danach und feste Breite
+    $name= $1;
+    $width= qq(style="width:${2}px;");
+  }
+  my @items= @_;
+  my $selected= $query->param($name);
+  unless ($selected) {
+    $selected= $default;
+  }
+  if ($default=~/^(.*)\+$/) {
+    $selected= $1;
+  }
+  print("$phrase <select name=\"$name\"$onchange class=\"comboBoxSearch\" $comboAdd $width>\n");
+  foreach $item (@items) {
+    my $val= "";
+    if ($item=~/^(.*)::(.*)$/) {
+      $val= " value='$1'";
+      $item= $2;
+    }
+    my $sel= "";
+    $sel= " selected" if $item eq $selected || $val eq " value='$selected'";
+    print("<option$sel$val>$item\n");
+  }
+  print qq(</select>
+    <script language="JavaScript">
+      \$(document).ready(function(){
+        // Initialize select2
+        \$(".comboBoxSearch").select2();
+      }); 
+    </script>
+  );
+  return $selected;
+}
+
+# -----------------------------------------------------------------------------
 # multi select combo box
 sub comboBoxMulti {
   my $name=    shift;
@@ -590,6 +641,51 @@ sub comboBoxMulti {
     print("<option$sel>$item\n");
   }
   print("</select>\n");
+  return $selected;
+}
+
+# -----------------------------------------------------------------------------
+# multi select combo box
+sub comboBoxMultiSearch {
+  my $name=    shift;
+  my $default= shift;
+  my $width=   shift;
+  my $height=  shift;
+  my @items= @_;
+  my $selected= $default;
+  #my $selected= $query->param($name);
+  my $onchange= "";
+  $onchange= " onchange='changed()'";
+  if ($name=~/^(.*)\+$/) {      # Automatisch nachladen bei Änderung
+    $name= $1;
+    $onchange= " onchange='changed();document.main.submit()'";
+  }
+  unless ($selected) {
+    $selected= $default;
+  }
+  my %selval=();
+  foreach $val (split(/[,:]/, $selected)) {
+    $selval{$val}= 1;
+  }
+  if ($default) {
+    $class= "class=\"comboBoxMultiSearch\""
+  }
+  print("<select name=\"$name\" $onchange multiple $class ".
+    "style=\"width:$width; height:$height;\">\n");
+  foreach $item (@items) {
+    $sel= $selval{$item}?" selected":"";
+    print("<option$sel>$item\n");
+  }
+  print qq(</select>\n
+    <script language="JavaScript">
+      \$(document).ready(function(){
+        // Initialize select2
+        \$(".comboBoxMultiSearch").select2({
+          placeholder: "Add Tag"
+           });
+      }); 
+    </script>
+  );
   return $selected;
 }
 

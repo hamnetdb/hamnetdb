@@ -52,12 +52,12 @@ $caption= "New $suffix" unless $id;
 &beforeForm($caption);
 
 print qq(
-  <tr>
-  <td valign="top" align="left" nowrap>Base IP:<br>
-  <input type="text" name="base_ip" value="$base_ip" size=20$chtrack id="base_ip" onkeyup="calcfromIPchanged();"> / 
-  </td>
-  <td valign="top" align="left" nowrap>Address mask:<br>
-  <select name="bits" onchange="calcfromIPchanged();"  >
+  <div class="formnline">
+    <div class="formnhalf" align="left" nowrap>Base IP:<br>
+      <input type="text" name="base_ip" value="$base_ip" size=20$chtrack id="base_ip" onkeyup="calcfromIPchanged();"> / 
+    </div>
+    <div class="formn2" align="left" nowrap>Address mask:<br>
+    <select name="bits" onchange="calcfromIPchanged();"  >
 );
 
 my $netmask= 0xffffffff;
@@ -75,14 +75,18 @@ for ($power= 1; $power <= 16; $power++) {
 }
 
 print qq(
-  </select></td>
-  <td></td>
-  </tr>
-  <tr>
-    <td><small id="netaddr_limits"></small></td>
-    <td colspan="1"><a href="javascript:hamnetdb.ipcalcShow();">Show full IP-calculator</a></td></tr>
-  <tr>
-  <td valign="top" align="left" nowrap>Type of network:<br>
+      </select>
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formnhalf">
+      <small id="netaddr_limits"></small>
+    </div>
+    <div class="formn2">
+      <a href="javascript:hamnetdb.ipcalcShow();">Show full IP-calculator</a>
+    </div>
+  <div class="formnline">
+    <div class="formnhalf select_max_width" align="left" nowrap>Type of network:<br>
 );
 
 &comboBox("", "typ", $typ, "Backbone-Network", "Site-Network", 
@@ -92,32 +96,32 @@ print qq(
 $as_num= "" unless $as_num;
 
 print qq(
-  <td valign="top" align="left" nowrap>
-  User-access DHCP-range (last ip digit start-end or empty):<br>
-  <input type="text" name="dhcp_range" value="$dhcp_range" size=20 onchange="uncheckDHCP();">
-  fillup range<input type="checkbox" name="dhcp_fillup" id="dhcp_fillup" onchange="calcfromIPchanged();">
-  </td>
-  <td></td>
-  </tr>
-  <tr>
-  <td valign="top" align="left" nowrap>Parent AS:<br>
+    </div>
+    <div class="formn2" align="left" nowrap>
+      User-access DHCP-range (last ip digit start-end or empty):<br>
+      <input type="text" name="dhcp_range" value="$dhcp_range" size=20 onchange="uncheckDHCP();">
+      fillup range<input type="checkbox" name="dhcp_fillup" id="dhcp_fillup" onchange="calcfromIPchanged();">
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formnhalf" align="left" nowrap> Parent AS:<br>
   );
   $as_parent= &asCombo(0,0,1,$as_parent);
 print qq(
-  </td>
-  <td valign="top" align="left" nowrap>Own AS number (only useful for type 'Site-Network'):<br>
-  <input type="text" name="as_num" value="$as_num" size=10$chtrack>
-  </td>
-  <td></td>
-  </tr>
-  <tr>
-  <td valign="top" align="left" nowrap colspan=4>
-  <p>Radio config parameters 
-  (Only common parameters for whole subnet, for site-specific see host):<br>
-  <input type="text" name="radioparam" value="$radioparam" style="width:100%"$chtrack>
-  </td>
-  </tr>
-  <tr><td colspan=4>
+    </div>
+    <div class="formn2" align="left" nowrap>Own AS number (only useful for type 'Site-Network'):<br>
+      <input type="text" name="as_num" value="$as_num" size=10$chtrack>
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formnfull" align="left" style="max-width:98%;" >
+      <p>Radio config parameters 
+      (Only common parameters for whole subnet, for site-specific see host):<br>
+      <input type="text" name="radioparam" value="$radioparam" style="width:100%"$chtrack>
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn1">
 );
 
 if (&inList($username, $maintainer) || ($mySysPerm && $maintainer)) {
@@ -126,21 +130,23 @@ if (&inList($username, $maintainer) || ($mySysPerm && $maintainer)) {
 }
 
 print qq(
-  </td></tr>
-  <tr><td colspan=3>
-  <p>Comment area:<br>
-  <textarea name="comment" class="txt" $chtrack
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn11">
+      <p>Comment area:<br>
+      <textarea name="comment" class="txt" $chtrack
             style="width:100%; height:170px;">$comment</textarea>
-  </td></tr>
-  </table>
+    </div>
+  </div>
+
   <script language='JavaScript'>
     window.onload=function(e){
       calcfromIP();
     }
   </script>
-  <table cellspacing=0 cellpadding=4 border=0 width="100%">
 );
-&afterForm;
+&afterFormn;
 exit;
 
 

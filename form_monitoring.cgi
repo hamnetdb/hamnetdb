@@ -39,8 +39,6 @@ my $right_call;
 my $right_monitor;
 my $url= $monitoring_API;
 
-print qq(</table></form>);
-
 my $ip_test= $query->param("id");
 my $system= $query->param("sys");
 $ip_test =~ s/\/.*//; #cut off /29 or anything else

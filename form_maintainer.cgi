@@ -49,33 +49,34 @@ $caption= "New maintainer" unless $id;
 &beforeForm($caption);
 
 print qq(
-  <tr>
-  <td valign="top" align="left" nowrap>Callsign:<br>
-  <input type="text" name="callsign" value="$callsign" size=15$chtrack>
-  <br>$br10
-  </td>
-  <td valign="top" align="left" nowrap>Real name:<br>
-  <input type="text" name="fullname" value="$fullname" size=20$chtrack>
-  </td>
-  <td valign="top" align="left" nowrap>eMail:<br>
-  <input type="text" name="email" value="$email" size=20$chtrack>
-  </td>
-  <td valign="top" align="left" nowrap>
-  </td>
-  </tr>
-  <tr>
-  <td valign="top" align="left" nowrap colspan=4>New password (empty: no change):<br>
-  <input type="text" name="passwd" value="$passwd" size=15$chtrack>
-  &nbsp;&nbsp;
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap>Callsign:<br>
+      <input type="text" name="callsign" value="$callsign" size=15$chtrack>
+      <br>$br10
+    </div>
+    <div class="formn2" align="left" nowrap>Real name:<br>
+      <input type="text" name="fullname" value="$fullname" size=20$chtrack>
+    </div>
+    <div class="formn3" align="left" nowrap>eMail:<br>
+      <input type="text" name="email" value="$email" size=20$chtrack>
+    </div>
+  </div>
+  <div class="formnline">
+    <div class="formn1" align="left" nowrap>New password (empty: no change):<br>
+      <input type="text" name="passwd" value="$passwd" size=15$chtrack>
+      &nbsp;&nbsp;
+    </div>
+    <div class="formn2">
   );
 
 &checkBox("Generate new random password and notify user by email",
   "do_notify", $id?$do_notify:1);
 
 print qq(
-  </td>
-  </tr>
-  <tr><td colspan=4>
+    </div>
+  </div>
+  <div class="formnline"> 
+    <div class="formn1"> 
   <br>
   Permissions:
 );
@@ -94,17 +95,17 @@ print qq(
           "dp_accept", 0, $dp_accept);
 
 print qq(
-  </td>
-  </tr>
-  <tr><td colspan=4>
-  <br>
+    </div>
+  </div>
+  <div class="formnline">  
+  
   User role, e.g. 'Sysop &lt;callsign&gt;' or 'Maintainer ASxxxxx' or 
   any other helpful hint:<br>
   <textarea name="comment" class="txt" $chtrack
             style="width:100%; height:200px;">$comment</textarea>
-  </td></tr>
+  </div>
 );
-&afterForm;
+&afterFormn;
 exit;
 
 

@@ -61,7 +61,6 @@ while (@line= $sth2->fetchrow_array)
 print qq(
     <input type="hidden" name="name" value="">
 
-    </table>
       <h2>Upload Hamnet-Antenna</h2>
       <p>Choose an .ant file from your file system:<br>
         <br>

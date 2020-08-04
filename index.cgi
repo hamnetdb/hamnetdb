@@ -29,6 +29,7 @@ $hostWhere= "1";
 $siteWhere= "1";
 $subnetWhere= "1";
 $asWhere= "1";
+$serviceWhere= "1";
 $as= $query->param("as")+0;
 &prepareWhereAS($as);
 
@@ -61,6 +62,7 @@ print qq(
 );
 
 for $ml ("AS:as", "Sites:site", "Hosts:host", "Subnets:subnet",  
+         "Services:service",
          "Utilities:util", "Last changes:history", "Help:help", 
          "Login:login") {
   if ($ml=~/(.*):(.*)/) {
@@ -209,6 +211,11 @@ if ($m eq "host") {
       &asList("", "Surrounding AS");
     }
   }
+}
+if ($m eq "service") {
+  #unless (&serviceShow($search)) {
+    &serviceList($search);
+  #}
 }
 if ($m eq "history") {
   my $func= $query->param("func");
@@ -1237,7 +1244,10 @@ sub asShow {
   }
   return 0;
 }
-
+# ---------------------------------------------------------------------------
+sub showService {
+	#TODO
+}
 # ---------------------------------------------------------------------------
 sub siteList {
   my $search= shift;
@@ -1596,7 +1606,88 @@ sub hostList {
   &listHeaderEnd;
   &listOut($search, @list);
 }
+# ---------------------------------------------------------------------------
+sub serviceList {
+  my $search= shift;
+  my @list= ();
+  my @line= ();
+  my $t= "service";
+ # my $hw= $serviceWhere;
+ # $hw=~s/callsign/site/g;
+ # my %siteStatus= &hostsStatus($hw, 1);
+  
+  my $sth= $db->prepare(qq(
+    SELECT hamnet_${t}.id,hamnet_${t}.name,hamnet_${t}.dns,
+      hamnet_${t}.port,hamnet_${t}.parameters,hamnet_${t}.description, 
+      hamnet_${t}.tags, hamnet_host.ip as ip, hamnet_${t}.editor,
+      unix_timestamp(hamnet_${t}.edited) 
+    FROM hamnet_${t} 
+    LEFT JOIN hamnet_host ON hamnet_${t}.host_id = hamnet_host.id where $serviceWhere));
 
+  $sth->execute;
+  
+  while (@line= $sth->fetchrow_array) {
+    my $idx= 0;
+    my $id= $line[$idx++];
+    my $name= $line[$idx++];
+    my $dns= $line[$idx++];
+    my $port= $line[$idx++];
+    my $parameters= $line[$idx++];
+    my $description= $line[$idx++];
+    my $tags= $line[$idx++];
+    my $ip= $line[$idx++];
+    my $editor= $line[$idx++];
+    my $edited= $line[$idx++];
+
+    my $in= "";
+    #$in= " inactive" if $no_check>1 && $no_check<4;
+    
+    my $ret= qq(<tr id='tr_${t}_$id' class='listentry$in'>).
+             &editIcon($t, $id);
+    
+
+    $ret.= "<td valign=top>".&maxlen($name,$nameMax)."</td>\n"; 
+    $sort= $name if ($scrit eq "n");
+
+    $ret.= qq(<td valign=top><a class='ovinfo' ovinfo='$ip' 
+        href='?q=$ip'>$ip</a></td>);
+    $sort= $ip if ($scrit eq "i");
+    
+    $ret.= "<td valign=top>".&maxlen($dns,15)."</td>\n"; 
+    $sort= $dns if ($scrit eq "d");
+
+    $ret.= "<td valign=top>".&maxlen($port,5)."</td>\n"; 
+    $sort= $port if ($scrit eq "p");
+    
+    $ret.= "<td valign=top>".&maxlen($parameters,15)."</td>\n"; 
+    $sort= $parameters if ($scrit eq "v");
+
+    $ret.= "<td valign=top>".&maxlen($description,25)."</td>\n"; 
+    $sort= $description if ($scrit eq "k");
+
+    $ret.= "<td valign=top>".&maxlen($tags,20)."</td>\n"; 
+    $sort= $tags if ($scrit eq "t");
+
+    $ret.= "<td>".&timespan(time-$edited).
+           " <span class='ovinfo'>$editor</span></td>";
+    $sort= $edited if $scrit eq "z";
+
+    push(@list, $sort.":}".$ret."</tr>\n");
+  }
+
+  &listHeader;
+  &sortq("e", "") if &editIcon($t);
+  &sortq("n", "Name");
+  &sortq("i", "IP");
+  &sortq("d", "DNS");
+  &sortq("p", "Port");
+  &sortq("v", "Parameter");
+  &sortq("k", "Description");
+  &sortq("t", "Tags");
+  &sortq("zr", "Edited");
+  &listHeaderEnd;
+  &listOut($search, @list);
+}
 # ---------------------------------------------------------------------------
 sub maintainerList {
   my $search= shift;
