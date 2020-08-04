@@ -468,13 +468,18 @@ function init()
   };
   index=300;
   offset=-4000
+  var hamnetdefaultLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&radio=1",settingshamnet);
   var hamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1",settingshamnet);
   index=500;
   offset=3000;
-  var hamnetmonitorLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&radio=1",settingshamnet);
+  var hamnetmonitorLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&only_radio=1",settingshamnet);
   var hamnetBGPLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&bgp=1",settingshamnet);
   var nohamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
   var tunnelLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
+  hamnetdefaultLayer.on('add', function (e) {
+    hamnetLayer.bringToBack()
+    hamnetBGPLayer.bringToFront();
+  });
   hamnetLayer.on('add', function (e) {
     hamnetLayer.bringToBack()
     hamnetmonitorLayer.bringToFront();
@@ -502,8 +507,9 @@ function init()
 
 
 
-  map.addLayer(hamnetLayer);
-  map.addLayer(hamnetmonitorLayer);
+  map.addLayer(hamnetdefaultLayer);
+  //map.addLayer(hamnetLayer);
+  //map.addLayer(hamnetmonitorLayer);
   //map.addLayer(tunnelLayer);
   map.addLayer(mapnikLayer);
 
@@ -570,9 +576,10 @@ function init()
   }
   
   var overlayLayers = {
+    'Hamnet + RSSI': hamnetdefaultLayer,
     'Hamnet': hamnetLayer,
-    'Hamnet RSSI': hamnetmonitorLayer,
-    'Hamnet BGP': hamnetBGPLayer,
+    'Hamnet only RSSI': hamnetmonitorLayer,
+    'Hamnet only BGP': hamnetBGPLayer,
     'tunnel connections': tunnelLayer,
     'sites without Hamnet': nohamnetLayer,
   };
