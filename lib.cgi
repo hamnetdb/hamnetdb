@@ -68,6 +68,7 @@ $query=  new CGI;
 $search= $query->param("q");
 $search=~s/^\s+//;
 $search=~s/\s+$//;
+$search=~s/['"\<\>]//g;
 $searchIsIP=   0;
 $searchIsMAC=  0;
 $searchIsNet=  0;
