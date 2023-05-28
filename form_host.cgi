@@ -122,6 +122,23 @@ print qq(
 
 &checkBox("Monitor", "monitor", 1, $monitor);
 &checkBox("Routing", "routing", 1, $routing);
+
+#sponor begin
+$sponsor=0;
+if ($mySysPerm) { 
+  $sponsor=0;
+  $sponsor=$query->param("sponsor")+0;
+  if ($mustLoadFromDB) {
+    $accessh = $db->prepare("select value from hamnet_check where ip='$ip' and service='sponsor'");
+    $accessh->execute();
+    if (($value) = $accessh->fetchrow_array()) {
+      $sponsor=1;
+    }
+  }  
+  &checkBox("Sponsor ARDC", "sponsor", 1, $sponsor);
+}
+#sponsor end
+	
 print qq(
   </td>
   </tr>
@@ -274,6 +291,25 @@ sub checkValues {
     }
   }
   $rawip= &aton($ip);
+#sponsor begin
+  #if 0 del
+  #if 1 check if set, else insert
+  if ($mySysPerm) {
+    $sponsor=$query->param("sponsor")+0;
+    #$inputStatus="mon sponsor:$sponsor";
+    if ($sponsor) { 
+      $sponsor_isset=0;	  
+      $accessh = $db->do("insert into hamnet_check ".
+        "   (ip, agent, service, ts, since, status, value, message) ".
+        "select '$ip', 'hamnetdb', 'sponsor', now(), now(), 1, 1, 'ardc' ".
+        "where not exists ".
+        "  (select 1 from hamnet_check where ip = '$ip' and service = 'sponsor') ");
+    } 
+    else {
+      $accessh = $db->do("delete from hamnet_check where ip='$ip' and service='sponsor'");
+    }	  
+  }
+#sponsor end
   return  "comment=".$db->quote($comment).", ".
           "ip=".$db->quote($ip).", ".
           "typ=".$db->quote($typ).", ".

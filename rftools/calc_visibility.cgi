@@ -33,10 +33,11 @@ my $border_left= $query->param("left")+0;
 my $border_down= $query->param("down")+0;
 my $border_right= $query->param("right")+0;
 my $tree= $query->param("tree")+0;
+my $export= $query->param("e")+0;
 
 my $error= 0;
 
-print("Content-Type: text/html\nExpires: 0\n\n");
+#print("Content-Type: text/html\nExpires: 0\n\n");
 
 #print("test result___\n");
 # path ; label; lat1; lon1; tower1; lat2; lon2; tower2; towerRX; ref; tree; top; left; bottom; right;  
@@ -168,31 +169,44 @@ unless ($list) {
     #catch errors
     my $len=length($result);
     if ($len >= 1 || $error) {
+      print("Content-Type: text/html\nExpires: 0\n\n");
       open(my $fh, '>>', $path_errlog) or die "Could not open file";
       print $fh "failed $cmd\n";
       close $fh;
       print qq(Error creating visibility! $result :\( \n); 
     }
     else {
-      print qq(OK! $result new\n);
-      print($output_parameter);
-      listAdd($output_parameter);
+      if ($export) {
+        exportZip($output_parameter);   
+      } else {     
+        print("Content-Type: text/html\nExpires: 0\n\n");
+        print qq(OK! $result new\n);
+        print($output_parameter);
+        listAdd($output_parameter);
+      }
     }
-    print qq(\n $cmd);
+    #print qq(\n $cmd);
   }
   else
   {
     $output_parameter= listParameters($label);
     if (length($output_parameter) < 10) {
+      print("Content-Type: text/html\nExpires: 0\n\n");
       print qq(Error creating visibility! :\( \n); 
     }
     else {
-      print qq(OK! saved $result \n);
-      print($output_parameter);
+      if ($export) {
+        exportZip($output_parameter);   
+      } else {     
+        print("Content-Type: text/html\nExpires: 0\n\n");
+        print qq(OK! saved $result \n);
+        print($output_parameter);
+      }
     }
   }
 }
 else {
+  print("Content-Type: text/html\nExpires: 0\n\n");
   listLabels();
 }
 
@@ -333,4 +347,19 @@ sub listAdd {
   print $fh $text;
   close $fh;
   return $text;
+}
+sub exportZip {
+  my $param= shift;
+  
+  #extract path
+  #zip 
+  #push zip 
+  @param2 = split /;/, $param;
+  @folder = split /\//, $param2[0];
+  $out= 'visibility/'.$folder[-1];
+  $cmd="cd $out && zip -r - * ";
+  print("Content-Type:application/octet-stream; name = \"export.zipF\"\r\n");
+  print("Content-Disposition: attachment; filename = \"export.zip\"\r\n\n");
+  $result_zip= qx/$cmd/;
+  print qq($result_zip);
 }

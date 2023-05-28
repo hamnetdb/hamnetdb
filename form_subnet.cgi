@@ -250,7 +250,8 @@ sub checkValues {
       $inputStatus= "The network '$ip' exists already";
     }
     $begin_ip= &aton($base_ip);
-    $end_ip=   $begin_ip + (1<<(32-$bits));
+    
+    $end_ip= $begin_ip + (1<<(32-$bits));
   }
   
   

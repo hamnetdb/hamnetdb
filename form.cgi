@@ -107,7 +107,7 @@ sub beforeForm {
       $edited=  $line[$idx++];
     }
     else {
-      $inputStatus= "ERROR: Object not found in database".$table;
+      $inputStatus= "ERROR: Object not found in database ($table)";
     }
     if ($table_history) {
       $undoTxt= "";

@@ -11,6 +11,18 @@
 # - you must leave author and license conditions
 # -------------------------------------------------------------------------
 #
+# todo
+#  check if sun == date, else old sun
+#  if no sun given
+#    calc direction of panorama if not directly given
+#    make sun 90 deg to direction, if dir > 270 -90 else + 90
+#
+#  use direction if no 2nd point given
+#  add new parameters for shadow
+#
+#
+#
+#
 use lib qw(.);
 use Scalar::Util qw(looks_like_number);
 use List::Util qw( min max );
@@ -39,6 +51,10 @@ my $sun_el= $query->param("sun_el")+0;
 my $desert= $query->param("desert")+0;
 my $lsd= $query->param("lsd")+0;
 my $label= $query->param("label")+0;
+my $dir= $query->param("dir")+0;
+my $flat= $query->param("flat")+0;
+
+
 
 #print("Content-Type: text/html\nExpires: 0\n\n");
 
@@ -74,15 +90,19 @@ $path_web= $panorama_path_web;
 
   if ($font_size > 0) 
   {
-    $font_cmd= "-F $font_size";
+    $font_cmd= "-F $font_size,$font_size ";
   } 
   else 
   {
-    $font_cmd= "";
+    $font_cmd= " ";
   }	  
 
   #generate poi parameter
-  $poi_param= "";
+  $poi_param= " ";
+  if ($poi=~/wc/)
+  {
+    $poi_param.= "-J wc -I $path_web/rftools/mk_cam.png $path_web/rftools/mk_cam.png -P 255 255 255 200 $path_web/rftools/fotowebcam.txt ";
+  }
   if ($poi=~/hamnet/) 
   {
     $poi_param.= "-J h -I $path_web/rftools/mk_w.png $path_web/rftools/mk_w.png -O -P 255 0 0 240 $path_web/rftools/hamnet.txt "; 
@@ -90,10 +110,6 @@ $path_web= $panorama_path_web;
   if ($poi=~/sota/)
   {  
     $poi_param.= "-J sota -I $path_web/rftools/mks_w.png $path_web/rftools/mks_w.png -P 0 255 0 250 $path_web/rftools/sota.txt ";
-  }
-  if ($poi=~/wc/) 
-  {
-    $poi_param.= "-J wc -I $path_web/rftools/mk_cam.png $path_web/rftools/mk_cam.png -P 255 255 255 200 $path_web/rftools/fotowebcam.txt ";
   }
   if ($poi=~/fone/) 
   {
@@ -108,40 +124,62 @@ $path_web= $panorama_path_web;
   {  
     $poi_param.= "-J s -I $path_web/rftools/mkxs_w.png $path_web/rftools/mkxs_w.png -P 60 60 60 100 $path_web/rftools/AT.txt ";
   }
-  $sun_param= "";
+  my $dist=" ";
+  if ($lat_b != 0 || $lon_b != 0)
+  {
+    #calc dir, make cmd part for lat lon B 
+    $dir=bearing($lat_a, $lon_a, $lat_b, $lon_b);
+    $dist="-b $lat_b $lon_b ";
+  }	 
+  else
+  {
+    #make cmd based on dir
+    $dist="-d $dir 150"
+  }
+  $sun_param= " ";
   if ($sun_az > 0 || $sun_el > 0)
   {
     $sun_param= "-S $sun_az $sun_el";
   }
   else #todo 90degree to camera
   {
-    $sun_param= "-S 180 15";
+    #calc direction of camera
+    if ($dir > 190)
+    {
+      $sun_az=$dir-90;
+    }
+    else
+    {
+      $sun_az=$dir+90;
+    }    
+    $sun_param= "-S $sun_az 20";
   }
-  $snow_param= "";
+
+  $snow_param= " ";
   if ($snow1 > 0 && $snow2 > 0)
   {
     $snow_param= "-G $snow1 $snow2";
   }
-  $desert_param= "";
+  $desert_param= " ";
   if ($desert > 0)
   {
-    $desert_param= "-t 1 0 -u 0 ";
+    $desert_param= "-t 1 1 1 -u 0 -Z -W 0.7 2 0 ";
   }
   else
   {
-    $desert_param= "-W 0.7 2 0 -u 1 -t 30 8 -T 2500 1100 ";
+    $desert_param= "-W 0.7 2 0 -u 1 -t 30 8 8 -T 2500 1100 ";
   }
-  $lsd_param= "";
+  $lsd_param= " ";
   if ($lsd > 0) {
     $lsd_param= "-N 0 0 0 ";
   }
-  $label_param= "";
+  $label_param= " ";
   if ($label > 0) {
-    $label_param= "-V";
+    $label_param= "-V 1 ";
   }
 
   my $cmd= "nice -n 9 $path_prog -p $path_srtm -A $antenna_a ";
-  $cmd.= "-a $lat_a $lon_a -b $lat_b $lon_b -z $zoom ";
+  $cmd.= "-a $lat_a $lon_a $dist -z $zoom -j "; #-f $flat
   $cmd.= "-e $elevation $font_cmd -g 1 -o 5 -C 3 -l 0.1 2 -Z ";
   $cmd.= "-x $size_x -y $size_y -w $angle $poi_param ";
   $cmd.= "-r $refraction $sun_param $desert_param $snow_param ";
@@ -160,7 +198,7 @@ $path_web= $panorama_path_web;
   }	  
   else
   {
-    $cmd.= "-i $output_file.jpg -c $output_file.csv ";
+    $cmd.= "-i $output_file.png -c $output_file.csv ";
 #    print("$cmd \n\n $pan_hash");
     $result= qx/$cmd/;
  #   print("\nr: $result\n");
@@ -168,20 +206,20 @@ $path_web= $panorama_path_web;
   }
 
 
-  if ($0=~/calc_panorama_image/) 
+  if ($0=~/calc_panorama_image/ || $0=~/calc_panorama_shadow/ ) 
   {
-    $cmd_image="cat $output_file.jpg";
+    $cmd_image="cat $output_file.png";
     #if (0)
     if (not $refer =~ m/hamnetdb\.net|localhost/ )
     {
       $size_watermark= $size_y/6;
-      $cmd_wartermark= " | convert png:- -gravity Center -pointsize $size_watermark -stroke none -fill 'rgba(180,180,180,0.4)' -annotate 0 'hamnetdb.net' jpg:- 2>>$path_errlog";
+      $cmd_wartermark= " | convert png:- -gravity Center -pointsize $size_watermark -stroke none -fill 'rgba(180,180,180,0.4)' -annotate 0 'hamnetdb.net' png:- 2>>$path_errlog";
       $cmd_image.= $cmd_wartermark;
     }
     #print("Content-Type: text/html\nExpires: 0\n\n");
     #print($cmd_image);
 
-    print("Content-Type: image/jpg\n\n");
+    print("Content-Type: image/png\n\n");
     $result_image= qx/$cmd_image/;
     print qq($result_image);
   }

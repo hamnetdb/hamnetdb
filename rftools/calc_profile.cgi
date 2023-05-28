@@ -59,7 +59,7 @@ $font_size= 1  if $font_size<1;
 $size_x= 3840  if $size_x>3840;
 $size_y= 2160  if $size_y>2160;
 $frequency= 300000  if $frequency>300000;
-$antenna_a= 3000  if $antenna_b>3000;
+$antenna_a= 3000  if $antenna_a>3000;
 $antenna_b= 3000  if $antenna_b>3000;
 $wood= 100  if $wood>100;
 $font_size= 3  if $font_size>3;
@@ -84,8 +84,17 @@ else
   $output_mode= "-i";
 }
 
-
-$cmd= "$path_prog -b $lat_b $lon_b $name_b -a $lat_a $lon_a $name_a -p $path_srtm $output_mode /dev/stdout $globe_val 0.25 -f $frequency -A $antenna_a -B $antenna_b -x $size_x -y $size_y $wood -F $font_size -C $profile_path_color 2>>$path_errlog";
+$cmd= "";
+$img= 0;
+if ($lon_b != 0 && $lat_b != 0) {
+  $cmd= "$path_prog -b $lat_b $lon_b $name_b -a $lat_a $lon_a $name_a -p $path_srtm $output_mode /dev/stdout $globe_val 0.25 -f $frequency -A $antenna_a -B $antenna_b -x $size_x -y $size_y $wood -F $font_size -C $profile_path_color 2>>$path_errlog";
+  $img= 1;
+} 
+else
+{ 
+  $cmd= "$path_prog -a $lat_a $lon_a -p $path_srtm";
+  $mode= 1;
+}
 
 #-C $profile_path_color
 

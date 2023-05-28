@@ -13,6 +13,7 @@
 # -------------------------------------------------------------------------
 #
 push @INC,'.';
+use LWP::Simple;
 do "form.cgi" or die;
 
 $suffix= "site";
@@ -25,7 +26,7 @@ $width="140px";
 
 ($name,$callsign,$longitude,$latitude,$elevation,$no_check,
       $radioparam,$comment,$maintainer,$rw_maint,$newCover,$hasCover)= &loadFormData
-("name,callsign,longitude,latitude,elevation,no_check,radioparam,comment,maintainer,rw_maint,newCover,hasCover");
+("name,callsign,longitude,latitude,elevation,no_check,radioparam,comment,maintainer,rw_maint,newCover,hasCover,ground_asl");
 
 $newCover+= 0;
 $hasCover+= 0;
@@ -433,8 +434,8 @@ sub checkValues {
   $radioparam= &alignRadioparam($radioparam);
 
   &checkAntenna();
-
-
+  $ground_asl= getASL($longitude,$latitude);
+  
   return  "comment=".$db->quote($comment).", ".
           "callsign=".$db->quote($callsign).", ".
           "maintainer=".$db->quote($maintainer).", ".
@@ -445,10 +446,21 @@ sub checkValues {
           "rw_maint=".$db->quote($rw_maint).", ".
           "radioparam=".$db->quote($radioparam).", ".
           "name=".$db->quote($name).",".
+          "ground_asl=".$db->quote($ground_asl).",".
           "newCover=".$db->quote($newCover).",".
           "hasCover=".$db->quote($hasCover);
 }
 
+sub getASL {
+  my $lon= shift;
+  my $lat= shift;
+  if ($profile_path_program) { 
+    $p=get(qq($profile_path_local_api?lon_a=$lon&lat_a=$lat));
+  }else {
+    $p=get(qq(https://hamnetdb.net/rftools/calc_profile.cgi?lon_a=$lon&lat_a=$lat))
+  }
+  return $p+0;
+}
 sub deleteAccess {
   $db->do("delete from hamnet_coverage where callsign='$callsign'");
 }

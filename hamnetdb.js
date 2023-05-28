@@ -137,7 +137,7 @@ hamnetdb.edit= function(typ,id,fill) {
     fill= "";
   }
   var wname= typ+"_"+id;
-  var geo= "width=800,height=600";
+  var geo= "width=900,height=700";
   if (typ=='site') {
     geo= "width=900,height=700";
   }

@@ -271,10 +271,10 @@ function init()
     var opentopoURL = 'webcam/map/otm/{z}/{x}/{y}.png';
     //var opentopoURL = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
     var osmbwURL = 'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png';
-    var mapnikZoom = 18;
-    var landscapeZoom = 18;
-    var outdoorZoom = 18;
-    var cycleZoom = 18;
+    var mapnikZoom = 19;
+    var landscapeZoom = 19;
+    var outdoorZoom = 19;
+    var cycleZoom = 19;
     var opentopoZoom = 17;
   }
   
@@ -483,6 +483,7 @@ function init()
   offset=3000;
   var hamnetmonitorLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&only_radio=1",settingshamnet);
   var hamnetBGPLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&bgp=1",settingshamnet);
+  var hamnetSponsorLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&only_hamnet=1&sponsor=1",settingshamnet);
   var nohamnetLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_tunnel=1&no_radio=1&no_hamnet=1&no_ism=1", settingshamnet);
   var tunnelLayer = new L.GeoJSON.AJAX(kmlUrl + "&no_radio=1&only_hamnet=1&no_hamnet=1&no_ism=1", settingshamnet);
   hamnetdefaultLayer.on('add', function (e) {
@@ -512,7 +513,10 @@ function init()
     hamnetmonitorLayer.bringToFront();
     hamnetBGPLayer.bringToFront();
   });
-  
+  hamnetSponsorLayer.on('add', function (e) {
+    hamnetmonitorLayer.bringToFront();
+    hamnetSponsorLayer.bringToFront();
+  });
 
 
 
@@ -589,6 +593,7 @@ function init()
     'Hamnet': hamnetLayer,
     'Hamnet only RSSI': hamnetmonitorLayer,
     'Hamnet only BGP': hamnetBGPLayer,
+    'Hamnet sponsored': hamnetSponsorLayer,
     'tunnel connections': tunnelLayer,
     'sites without Hamnet': nohamnetLayer,
   };
@@ -813,12 +818,17 @@ function getLineStyle(feature) {
       weight = 6;
       opacity= 0.8;
       break;
+    case "sponsor":
+      color = "#000000";//grey
+      weight = 6;
+      opacity= 1.0;
+      break;
     case "bgp":
       color = "#333333";//grey
       weight = 1.5;
       opacity= 1.0;
       break;
-   case "bgpbad":
+    case "bgpbad":
       color = "#333333";//grey
       weight = 1.5;
       opacity= 1.0;
@@ -2177,6 +2187,8 @@ function panoramaProcessMetadata(event)
     else if (panoramaMetadata[pixel[0][0]][pixel[0][1]].info.includes('Webcam'))//if POI==webcam
     {
       wc = panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(' ');
+      a= pixel[0][0]
+      b= pixel[0][1]
       link = "POI: <a href='"+panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(';')[1]+"' target='_blank'>"+panoramaMetadata[pixel[0][0]][pixel[0][1]].info.split(';')[0]+"</a>";  
       if (event.type == 'dblclick')
       {

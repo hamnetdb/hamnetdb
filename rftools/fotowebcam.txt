@@ -1,317 +1,393 @@
-fotowebcam,"Bardolino Webcam;https://www.foto-webcam.eu/webcam/bardolino/",,45.542968,10.725714,
-fotowebcam,"Malcesine Webcam;https://www.foto-webcam.eu/webcam/malcesine/",,45.744855,10.800445,
-fotowebcam,"Wernberg - Duel Webcam;https://www.foto-webcam.eu/webcam/duel/",,46.60787,13.947765,
-fotowebcam,"Schulterkogel Webcam;https://www.foto-webcam.eu/webcam/schulterkogel/",,46.93127,14.762633,
-fotowebcam,"Turrach Ost Webcam;https://www.foto-webcam.eu/webcam/turrach-ost/",,46.921064,13.860498,
-fotowebcam,"Turrach West Webcam;https://www.foto-webcam.eu/webcam/turrach-west/",,46.921556,13.889706,
-fotowebcam,"Falkert Heidialm Webcam;https://www.foto-webcam.eu/webcam/falkert/",,46.867848,13.832825,
-fotowebcam,"Falkert Nord Webcam;https://www.foto-webcam.eu/webcam/falkert-nord/",,46.867848,13.832825,
-fotowebcam,"Heidi-Hotel Webcam;https://www.foto-webcam.eu/webcam/heidi-hotel/",,46.861309,13.829691,
-fotowebcam,"BKK - Strohsack Webcam;https://www.foto-webcam.eu/webcam/strohsack/",,46.790409,13.800447,
-fotowebcam,"BKK - Scharte Webcam;https://www.foto-webcam.eu/webcam/rosennockabfahrt/",,46.847149,13.738741,
-fotowebcam,"BKK - Kaiserburg Webcam;https://www.foto-webcam.eu/webcam/kaiserburg/",,46.786094,13.818127,
-fotowebcam,"BKK - Country Trail Webcam;https://www.foto-webcam.eu/webcam/countrytrail/",,46.78337,13.826816,
-fotowebcam,"BKK - Maibrunn Berg Webcam;https://www.foto-webcam.eu/webcam/maibrunn/",,46.789666,13.793786,
-fotowebcam,"Kirchheimerhof Webcam;https://www.foto-webcam.eu/webcam/kirchheimerhof/",,46.81649,13.784527,
-fotowebcam,"BKK - Aktiv Park Webcam;https://www.foto-webcam.eu/webcam/brunnach/",,46.856838,13.750324,
-fotowebcam,"BKK - Brunnach Sued Webcam;https://www.foto-webcam.eu/webcam/brunnach-sued/",,46.856838,13.750324,
-fotowebcam,"BKK - Sonnleitenlift Webcam;https://www.foto-webcam.eu/webcam/sonnleitenlift/",,46.844938,13.763769,
-fotowebcam,"BKK - Spitzeck Webcam;https://www.foto-webcam.eu/webcam/spitzeck/",,46.849685,13.749365,
-fotowebcam,"BKK - Wiesernock Webcam;https://www.foto-webcam.eu/webcam/wiesernock/",,46.829511,13.745009,
-fotowebcam,"BKK - Panoramalift Webcam;https://www.foto-webcam.eu/webcam/nockalm/",,46.828107,13.742373,
-fotowebcam,"BKK - Nockalm Webcam;https://www.foto-webcam.eu/webcam/nockalm-berg/",,46.828107,13.742373,
-fotowebcam,"BKK - Thermenschuss Webcam;https://www.foto-webcam.eu/webcam/kaiserburg-tal/",,46.813377,13.799184,
-fotowebcam,"BKK - Roemerbad Webcam;https://www.foto-webcam.eu/webcam/thermenschuss/",,46.808375,13.799116,
-fotowebcam,"BKK - Golfplatz Webcam;https://www.foto-webcam.eu/webcam/golfbkk/",,46.812408,13.844276,
-fotowebcam,"BKK - Golfplatz Ost Webcam;https://www.foto-webcam.eu/webcam/golfplatzbkk/",,46.814714,13.843902,
-fotowebcam,"BKK - Bachlift Webcam;https://www.foto-webcam.eu/webcam/bachlift/",,46.812459,13.783802,
-fotowebcam,"Millstaettersee Webcam;https://www.foto-webcam.eu/webcam/millstaettersee/",,46.777715,13.673126,
-fotowebcam,"Dobratsch Webcam;https://www.foto-webcam.eu/webcam/dobratsch/",,46.60355,13.67034,
-fotowebcam,"Obervellach Webcam;https://www.foto-webcam.eu/webcam/obervellach/",,46.948143,13.168184,
-fotowebcam,"Raggaschlucht Webcam;https://www.foto-webcam.eu/webcam/raggaschlucht/",,46.924241,13.140799,
-fotowebcam,"Flattach Webcam;https://www.foto-webcam.eu/webcam/flattach/",,46.936398,13.077082,
-fotowebcam,"Rangersdorf Webcam;https://www.foto-webcam.eu/webcam/rangersdorf/",,46.851116,12.928944,
-fotowebcam,"Ederplan Webcam;https://www.foto-webcam.eu/webcam/ederplan/",,46.824917,12.897797,
-fotowebcam,"Winklern Webcam;https://www.foto-webcam.eu/webcam/winklern/",,46.872885,12.86306,
-fotowebcam,"Moertschach Webcam;https://www.foto-webcam.eu/webcam/lorenzalm/",,46.896542,12.915701,
-fotowebcam,"Moertschachberg Webcam;https://www.foto-webcam.eu/webcam/moertschach/",,46.923418,12.921735,
-fotowebcam,"Astental Ost Webcam;https://www.foto-webcam.eu/webcam/sadnighaus/",,46.954847,12.961083,
-fotowebcam,"Astental West Webcam;https://www.foto-webcam.eu/webcam/burgstalleralm/",,46.962005,12.98232,
-fotowebcam,"Heiligenblut Webcam;https://www.foto-webcam.eu/webcam/heiligenblut/",,47.021,12.8773,
-fotowebcam,"Wallackhaus Sued Webcam;https://www.foto-webcam.eu/webcam/wallackhaus/",,47.072917,12.839589,
-fotowebcam,"Wallackhaus Nord Webcam;https://www.foto-webcam.eu/webcam/wallackhaus-nord/",,47.069218,12.838868,
-fotowebcam,"Freiwandeck Webcam;https://www.foto-webcam.eu/webcam/freiwandeck/",,47.078201,12.756396,
-fotowebcam,"Glockner Berglauf Webcam;https://www.foto-webcam.eu/webcam/grossglocknerberglauf/",,47.074557,12.752036,
-fotowebcam,"Adlersruhe Webcam;https://www.foto-webcam.eu/webcam/adlersruhe/",,47.069958,12.701578,
-fotowebcam,"Adlersruhe Sued Webcam;https://www.foto-webcam.eu/webcam/adlersruhe-sued/",,47.069887,12.701594,
-fotowebcam,"Dellach im Drautal Webcam;https://www.foto-webcam.eu/webcam/dellach/",,46.730812,13.088379,
-fotowebcam,"Lienz Zettersfeld Webcam;https://www.foto-webcam.eu/webcam/lienz/",,46.860338,12.803983,
-fotowebcam,"Lienz Faschingalm Webcam;https://www.foto-webcam.eu/webcam/faschingalm/",,46.86035,12.80399,
-fotowebcam,"Feldkopf Ost Webcam;https://www.foto-webcam.eu/webcam/feldkopf/",,46.928982,12.789711,
-fotowebcam,"Feldkopf West Webcam;https://www.foto-webcam.eu/webcam/feldkopf-west/",,46.928982,12.789711,
-fotowebcam,"Kals Webcam;https://www.foto-webcam.eu/webcam/kals/",,47.007477,12.647537,
-fotowebcam,"Kals Nord Webcam;https://www.foto-webcam.eu/webcam/kals-nord/",,46.98332,12.626943,
-fotowebcam,"Grossglockner Zoom Webcam;https://www.foto-webcam.eu/webcam/grossglockner-zoom/",,47.020987,12.687957,
-fotowebcam,"Glocknerwinkel Webcam;https://www.foto-webcam.eu/webcam/glocknerwinkel/",,47.021832,12.689609,
-fotowebcam,"Lucknerhaus Webcam;https://www.foto-webcam.eu/webcam/lucknerhaus/",,47.020987,12.687957,
-fotowebcam,"St.Veit in Defereggen Webcam;https://www.foto-webcam.eu/webcam/stveit/",,46.927657,12.435715,
-fotowebcam,"Hopfgarten Webcam;https://www.foto-webcam.eu/webcam/hopfgarten/",,46.909794,12.479249,
-fotowebcam,"Virgen Sonnberg Webcam;https://www.foto-webcam.eu/webcam/virgen-west/",,47.00832,12.470775,
-fotowebcam,"Virgen Wuerfelehuette Webcam;https://www.foto-webcam.eu/webcam/virgen-nord/",,46.990593,12.44769,
-fotowebcam,"Eispark Osttirol Webcam;https://www.foto-webcam.eu/webcam/eispark-osttirol/",,47.126126,12.479778,
-fotowebcam,"Toblach Ratsberg Webcam;https://www.foto-webcam.eu/webcam/toblach/",,46.748771,12.217415,
-fotowebcam,"Neu-Toblach Webcam;https://www.foto-webcam.eu/webcam/neu-toblach/",,46.724241,12.222665,
-fotowebcam,"Drei Zinnenblick Webcam;https://www.foto-webcam.eu/webcam/dreizinnenblick/",,46.641364,12.23141,
-fotowebcam,"Niederdorf Webcam;https://www.foto-webcam.eu/webcam/niederdorf/",,46.7469037,12.1399113,
-fotowebcam,"Taisten Pustertal Webcam;https://www.foto-webcam.eu/webcam/taisten/",,46.766892,12.102741,
-fotowebcam,"Rein in Taufers Webcam;https://www.foto-webcam.eu/webcam/rein/",,46.948463,12.061304,
-fotowebcam,"St. Jakob Ahrntal Webcam;https://www.foto-webcam.eu/webcam/st-jakob/",,47.014746,12.019725,
-fotowebcam,"Olang Geiselsberg Webcam;https://www.foto-webcam.eu/webcam/olang/",,46.746433,12.001198,
-fotowebcam,"Kronplatz Webcam;https://www.foto-webcam.eu/webcam/kronplatz/",,46.740515,11.959224,
-fotowebcam,"Hofern - Kiens Webcam;https://www.foto-webcam.eu/webcam/kiens/",,46.820233,11.839075,
-fotowebcam,"Meransen Webcam;https://www.foto-webcam.eu/webcam/meransen/",,46.815739,11.663701,
-fotowebcam,"San Cassiano Webcam;https://www.foto-webcam.eu/webcam/st-kassian/",,46.581471,11.919009,
-fotowebcam,"St. Christina Groeden Webcam;https://www.foto-webcam.eu/webcam/st-christina/",,46.559822,11.716049,
-fotowebcam,"Gummer Webcam;https://www.foto-webcam.eu/webcam/gummer/",,46.453071,11.462664,
-fotowebcam,"Luesen Webcam;https://www.foto-webcam.eu/webcam/luesen/",,46.765186,11.718519,
-fotowebcam,"Ritten Webcam;https://www.foto-webcam.eu/webcam/ritten/",,46.563828,11.413713,
-fotowebcam,"St.Pauls - Eppan Webcam;https://www.foto-webcam.eu/webcam/huebenburg/",,46.475163,11.252172,
-fotowebcam,"Girlan - Eppan Webcam;https://www.foto-webcam.eu/webcam/eppan/",,46.450095,11.287846,
-fotowebcam,"Eppan Berg Webcam;https://www.foto-webcam.eu/webcam/eppan-berg/",,46.454609,11.240582,
-fotowebcam,"Kalterer See Webcam;https://www.foto-webcam.eu/webcam/kalterersee/",,46.385495,11.261942,
-fotowebcam,"Gantkofel Webcam;https://www.foto-webcam.eu/webcam/gantkofel/",,46.49324,11.21057,
-fotowebcam,"Meran Webcam;https://www.foto-webcam.eu/webcam/meran/",,46.662312,11.1279,
-fotowebcam,"Dorf Tirol Webcam;https://www.foto-webcam.eu/webcam/dorftirol/",,46.700145,11.157899,
-fotowebcam,"Meran Hochmuth Webcam;https://www.foto-webcam.eu/webcam/hochmuth/",,46.701997,11.131521,
-fotowebcam,"Rabland Partschins Webcam;https://www.foto-webcam.eu/webcam/rabland/",,46.67467,11.062217,
-fotowebcam,"Naturns Plaus Webcam;https://www.foto-webcam.eu/webcam/naturns/",,46.656854,11.042127,
-fotowebcam,"Piz Chavalatsch Webcam;https://www.foto-webcam.eu/webcam/chavalatsch/",,46.614799,10.492088,
-fotowebcam,"Mals Vinschgau Webcam;https://www.foto-webcam.eu/webcam/mals/",,46.701102,10.506797,
-fotowebcam,"Graun im Vinschgau Webcam;https://www.foto-webcam.eu/webcam/graun/",,46.839911,10.641531,
-fotowebcam,"Hintereisferner 1 Webcam;https://www.foto-webcam.eu/webcam/hintereisferner1/",,46.7959,10.7828,
-fotowebcam,"Hintereisferner 2 Webcam;https://www.foto-webcam.eu/webcam/hintereisferner2/",,46.7959,10.7828,
-fotowebcam,"Tisenjoch Webcam;https://www.foto-webcam.eu/webcam/tisenjoch/",,46.779567,10.840917,
-fotowebcam,"Brunnen Webcam;https://www.foto-webcam.eu/webcam/brunnen/",,46.995571,8.598627,
-fotowebcam,"Konkordiahuette Webcam;https://www.foto-webcam.eu/webcam/konkordiahuette/",,46.50027,8.053442,
-fotowebcam,"Glecksteinhuette Webcam;https://www.foto-webcam.eu/webcam/glecksteinhuette/",,46.62547,8.096951,
-fotowebcam,"Wildalpen Webcam;https://www.foto-webcam.eu/webcam/wildalpen/",,47.671391,14.984086,
-fotowebcam,"Hochkar Webcam;https://www.foto-webcam.eu/webcam/hochkar/",,47.708967,14.912624,
-fotowebcam,"Gernkogel Webcam;https://www.foto-webcam.eu/webcam/gernkogel/",,47.308876,13.232803,
-fotowebcam,"Hackel-Huette Webcam;https://www.foto-webcam.eu/webcam/hackelhuette/",,47.483955,13.290477,
-fotowebcam,"Hackelhuette Nord Webcam;https://www.foto-webcam.eu/webcam/hackelhuette-nord/",,47.480731,13.292459,
-fotowebcam,"Hochkoenig Webcam;https://www.foto-webcam.eu/webcam/hochkoenig/",,47.420139,13.06214,
-fotowebcam,"Goldbergkees Webcam;https://www.foto-webcam.eu/webcam/goldbergkees/",,47.051699,12.964414,
-fotowebcam,"Goldbergkees 2 Webcam;https://www.foto-webcam.eu/webcam/goldbergkees2/",,47.038717,12.967853,
-fotowebcam,"Sonnblick Webcam;https://www.foto-webcam.eu/webcam/sonnblick/",,47.053979,12.957484,
-fotowebcam,"Kleinfleisskees Webcam;https://www.foto-webcam.eu/webcam/kleinfleisskees/",,47.046266,12.943059,
-fotowebcam,"Kolm-Saigurn Webcam;https://www.foto-webcam.eu/webcam/sonnblickbasis/",,47.069481,12.984603,
-fotowebcam,"Rauris Webcam;https://www.foto-webcam.eu/webcam/rauris/",,47.136667,12.940556,
-fotowebcam,"Lofer Webcam;https://www.foto-webcam.eu/webcam/lofer/",,47.588412,12.694699,
-fotowebcam,"Saalfelden Webcam;https://www.foto-webcam.eu/webcam/saalfelden/",,47.416719,12.84778,
-fotowebcam,"Leogang - Asitz Webcam;https://www.foto-webcam.eu/webcam/asitz/",,47.402468,12.702289,
-fotowebcam,"Maishofen Sausteige Webcam;https://www.foto-webcam.eu/webcam/sausteige/",,47.382239,12.764779,
-fotowebcam,"Schloss Kammer Webcam;https://www.foto-webcam.eu/webcam/schlosskammer/",,47.365283,12.820947,
-fotowebcam,"Zell am See Webcam;https://www.foto-webcam.eu/webcam/zellamsee/",,47.334816,12.822689,
-fotowebcam,"Schwaigerhaus Webcam;https://www.foto-webcam.eu/webcam/schwaigerhaus/",,47.162799,12.738906,
-fotowebcam,"Mooserboden Webcam;https://www.foto-webcam.eu/webcam/mooserboden/",,47.166238,12.711459,
-fotowebcam,"Rudolfshuette Webcam;https://www.foto-webcam.eu/webcam/rudolfshuette/",,47.135232,12.627536,
-fotowebcam,"Pass Thurn Webcam;https://www.foto-webcam.eu/webcam/passthurn/",,47.295192,12.43088,
-fotowebcam,"Kuersingerhuette Webcam;https://www.foto-webcam.eu/webcam/kuersingerhuette/",,47.122508,12.299828,
-fotowebcam,"St. Johann i.T. Ost Webcam;https://www.foto-webcam.eu/webcam/st-johann-in-tirol/",,47.54576,12.39558,
-fotowebcam,"St. Johann i.T. West Webcam;https://www.foto-webcam.eu/webcam/st-johann-in-tirol-west/",,47.52612,12.487678,
-fotowebcam,"Wilder Kaiser Webcam;https://www.foto-webcam.eu/webcam/wilder-kaiser/",,47.52612,12.487678,
-fotowebcam,"Schlegeis Webcam;https://www.foto-webcam.eu/webcam/schlegeis/",,47.040543,11.702469,
-fotowebcam,"Gamshuette Webcam;https://www.foto-webcam.eu/webcam/gamshuette/",,47.129953,11.795856,
-fotowebcam,"Tristner Ginzling Webcam;https://www.foto-webcam.eu/webcam/tristner/",,47.109119,11.8257,
-fotowebcam,"Tuxertal Webcam;https://www.foto-webcam.eu/webcam/tuxertal/",,47.184268,11.775214,
-fotowebcam,"Das Kaltenbach Webcam;https://www.foto-webcam.eu/webcam/das-kaltenbach/",,47.284186,11.875363,
-fotowebcam,"Innsbruck Webcam;https://www.foto-webcam.eu/webcam/innsbruck/",,47.305572,11.377861,
-fotowebcam,"UNI Innsbruck Webcam;https://www.foto-webcam.eu/webcam/innsbruck-uni/",,47.259998,11.384167,
-fotowebcam,"UNI Innsbruck West Webcam;https://www.foto-webcam.eu/webcam/innsbruck-uni-west/",,47.264167,11.384111,
-fotowebcam,"Trins Webcam;https://www.foto-webcam.eu/webcam/trins/",,47.088028,11.420534,
-fotowebcam,"Burg Altpernstein Webcam;https://www.foto-webcam.eu/webcam/burg-altpernstein/",,47.885125,14.157028,
-fotowebcam,"Traunstein West Webcam;https://www.foto-webcam.eu/webcam/traunstein/",,47.872985,13.833632,
-fotowebcam,"Traunstein Sued Webcam;https://www.foto-webcam.eu/webcam/traunstein-sued/",,47.872932,13.833658,
-fotowebcam,"Seekarspitz Tal Webcam;https://www.foto-webcam.eu/webcam/obertauern1/",,47.264331,13.563861,
-fotowebcam,"Seekarspitz Berg Webcam;https://www.foto-webcam.eu/webcam/obertauern2/",,47.270653,13.546783,
-fotowebcam,"Seekarhaus Webcam;https://www.foto-webcam.eu/webcam/obertauern3/",,47.26401,13.565353,
-fotowebcam,"Fanningberg Webcam;https://www.foto-webcam.eu/webcam/fanningberg/",,47.169367,13.69333,
-fotowebcam,"Funtenseetauern Webcam;https://www.foto-webcam.eu/webcam/funtenseetauern/",,47.486425,12.971453,
-fotowebcam,"Jenner Ost Webcam;https://www.foto-webcam.eu/webcam/jenner-ost/",,47.5756085,13.0246708,
-fotowebcam,"Jenner Sued Webcam;https://www.foto-webcam.eu/webcam/jenner-sued/",,47.5756085,13.0246708,
-fotowebcam,"Vorderloiplsau Webcam;https://www.foto-webcam.eu/webcam/vorderloiplsau/",,47.62069,12.91171,
-fotowebcam,"Hochstaufen Ost Webcam;https://www.foto-webcam.eu/webcam/salzburg/",,47.75505,12.8498,
-fotowebcam,"Bad Reichenhall Webcam;https://www.foto-webcam.eu/webcam/hochstaufen/",,47.755032,12.849792,
-fotowebcam,"Zeppezauerhaus Webcam;https://www.foto-webcam.eu/webcam/zeppezauerhaus/",,47.72282,13.007796,
-fotowebcam,"Carl-von-Stahl-Haus Webcam;https://www.foto-webcam.eu/webcam/stahlhaus/",,47.574606,13.042405,
-fotowebcam,"Marquartstein Webcam;https://www.foto-webcam.eu/webcam/marquartstein/",,47.762132,12.479953,
-fotowebcam,"Marquartstein Oed Webcam;https://www.foto-webcam.eu/webcam/oed/",,47.75,12.46,
-fotowebcam,"Kampenwand Webcam;https://www.foto-webcam.eu/webcam/kampenwand/",,47.754811,12.356723,
-fotowebcam,"Hochries Ost Webcam;https://www.foto-webcam.eu/webcam/hochries-ost/",,47.748005,12.250265,
-fotowebcam,"Hochries Sued Webcam;https://www.foto-webcam.eu/webcam/hochries-sued/",,47.7467,12.249175,
-fotowebcam,"Hochries West Webcam;https://www.foto-webcam.eu/webcam/hochries/",,47.747205,12.249036,
-fotowebcam,"Samerberg Webcam;https://www.foto-webcam.eu/webcam/samerberg/",,47.781651,12.207622,
-fotowebcam,"Pendling Ost Webcam;https://www.foto-webcam.eu/webcam/pendling-ost/",,47.57291,12.11221,
-fotowebcam,"Pendling West Webcam;https://www.foto-webcam.eu/webcam/pendling-west/",,47.57289,12.11197,
-fotowebcam,"Wendelstein Ost Webcam;https://www.foto-webcam.eu/webcam/wendelstein-ost/",,47.701793,12.012,
-fotowebcam,"Wendelstein West Webcam;https://www.foto-webcam.eu/webcam/wendelstein-west/",,47.7018,12.0118,
-fotowebcam,"Sonnenbichl Webcam;https://www.foto-webcam.eu/webcam/sonnenbichl/",,47.699882,11.710077,
-fotowebcam,"Brauneck Garland Webcam;https://www.foto-webcam.eu/webcam/garland/",,47.66347,11.526497,
-fotowebcam,"Murnau Webcam;https://www.foto-webcam.eu/webcam/murnau/",,47.669679,11.194753,
-fotowebcam,"Herzogstand Nord Webcam;https://www.foto-webcam.eu/webcam/kochelsee/",,47.607013,11.316456,
-fotowebcam,"Herzogstand Sued Webcam;https://www.foto-webcam.eu/webcam/herzogstand/",,47.606633,11.316126,
-fotowebcam,"Karwendelbahn Webcam;https://www.foto-webcam.eu/webcam/karwendel/",,47.430276,11.295627,
-fotowebcam,"Wankhaus Webcam;https://www.foto-webcam.eu/webcam/wank/",,47.50833,11.14322,
-fotowebcam,"Gsteig Webcam;https://www.foto-webcam.eu/webcam/gsteig/",,47.487315,11.128385,
-fotowebcam,"Zugspitze Bahnhof Webcam;https://www.foto-webcam.eu/webcam/bzb-bahnhof/",,47.48849,11.097162,
-fotowebcam,"Meilerhuette West Webcam;https://www.foto-webcam.eu/webcam/meilerhuette/",,47.41246,11.128825,
-fotowebcam,"Meilerhuette Nord Webcam;https://www.foto-webcam.eu/webcam/meilerhuette-nord/",,47.41246,11.128825,
-fotowebcam,"Meilerhuette Haus Webcam;https://www.foto-webcam.eu/webcam/meilerhuette-haus/",,47.412296,11.1273695,
-fotowebcam,"Hausberg Webcam;https://www.foto-webcam.eu/webcam/hausberg/",,47.463415,11.094441,
-fotowebcam,"Kandahar-Express Webcam;https://www.foto-webcam.eu/webcam/kandahar-express/",,47.452552,11.079449,
-fotowebcam,"Kreuzeck Webcam;https://www.foto-webcam.eu/webcam/kreuzeck/",,47.452252,11.074358,
-fotowebcam,"Zugspitze Gipfel Webcam;https://www.foto-webcam.eu/webcam/zugspitze/",,47.42083,10.98473,
-fotowebcam,"Zugspitze Sued Webcam;https://www.foto-webcam.eu/webcam/zugspitze-sued/",,47.42082,10.98472,
-fotowebcam,"Zugspitze Nord Webcam;https://www.foto-webcam.eu/webcam/zugspitze-nord/",,47.421483,10.985454,
-fotowebcam,"Zugspitze Ost Webcam;https://www.foto-webcam.eu/webcam/zugspitze-ost/",,47.421501,10.985628,
-fotowebcam,"Zugspitze West Webcam;https://www.foto-webcam.eu/webcam/bzb-gipfel/",,47.421449,10.984445,
-fotowebcam,"Eibsee Nord Webcam;https://www.foto-webcam.eu/webcam/eibsee-nord/",,47.4463836,10.987823,
-fotowebcam,"Zugspitze Tal Webcam;https://www.foto-webcam.eu/webcam/bzb-tal/",,47.454979,10.993231,
-fotowebcam,"Eibsee-Hotel Webcam;https://www.foto-webcam.eu/webcam/eibsee-hotel/",,47.45824,10.989387,
-fotowebcam,"Unterammergau Webcam;https://www.foto-webcam.eu/webcam/unterammergau/",,47.612942,11.029758,
-fotowebcam,"Tegelberghaus Webcam;https://www.foto-webcam.eu/webcam/tegelberg/",,47.559409,10.778108,
-fotowebcam,"Gruentenlifte Webcam;https://www.foto-webcam.eu/webcam/gruentenlifte/",,47.595681,10.308049,
-fotowebcam,"Nebelhorn Webcam;https://www.foto-webcam.eu/webcam/nebelhorn/",,47.421681,10.342512,
-fotowebcam,"Gerstruben Webcam;https://www.foto-webcam.eu/webcam/gerstruben/",,47.370428,10.313817,
-fotowebcam,"Oberstdorf Webcam;https://www.foto-webcam.eu/webcam/scheibenhaus/",,47.393347,10.281679,
-fotowebcam,"Skiflugschanze Webcam;https://www.foto-webcam.eu/webcam/skiflugschanze/",,47.377001,10.267085,
-fotowebcam,"Fellhorn Webcam;https://www.foto-webcam.eu/webcam/fellhorn/",,47.348075,10.216169,
-fotowebcam,"Jaegersberg Webcam;https://www.foto-webcam.eu/webcam/jaegersberg/",,47.432947,10.263093,
-fotowebcam,"Obermaiselstein Webcam;https://www.foto-webcam.eu/webcam/obermaiselstein/",,47.44399,10.23208,
-fotowebcam,"St. Anton Webcam;https://www.foto-webcam.eu/webcam/ewa/",,47.09494,10.225127,
-fotowebcam,"St. Anton Galzig Webcam;https://www.foto-webcam.eu/webcam/st-anton/",,47.13442,10.224083,
-fotowebcam,"Schroecken Webcam;https://www.foto-webcam.eu/webcam/schroecken/",,47.256754,10.094002,
-fotowebcam,"Koerbersee Webcam;https://www.foto-webcam.eu/webcam/koerbersee/",,47.256121,10.115857,
-fotowebcam,"Oberstaufen Webcam;https://www.foto-webcam.eu/webcam/oberstaufen/",,47.572375,10.043138,
-fotowebcam,"Andelsbuch Webcam;https://www.foto-webcam.eu/webcam/andelsbuch/",,47.4032,9.938801,
-fotowebcam,"Tschagguns Webcam;https://www.foto-webcam.eu/webcam/tschagguns/",,47.065405,9.912421,
-fotowebcam,"Schruns Webcam;https://www.foto-webcam.eu/webcam/schruns/",,47.0819366,9.9257658,
-fotowebcam,"Damuels Webcam;https://www.foto-webcam.eu/webcam/damuels/",,47.285447,9.890544,
-fotowebcam,"Hasenbuehel Webcam;https://www.foto-webcam.eu/webcam/hasenbuehel/",,47.307849,9.879913,
-fotowebcam,"Furkajoch Webcam;https://www.foto-webcam.eu/webcam/furkajoch/",,47.264004,9.827745,
-fotowebcam,"Feldkirch Webcam;https://www.foto-webcam.eu/webcam/feldkirch/",,47.232575,9.598371,
-fotowebcam,"Dornbirn Webcam;https://www.foto-webcam.eu/webcam/dornbirn/",,47.388064,9.75051,
-fotowebcam,"Roethis Ost Webcam;https://www.foto-webcam.eu/webcam/roethis-ost/",,47.306649,9.618008,
-fotowebcam,"Roethis West Webcam;https://www.foto-webcam.eu/webcam/roethis-west/",,47.306648,9.618187,
-fotowebcam,"Hoher Kasten Webcam;https://www.foto-webcam.eu/webcam/hoherkasten/",,47.283884,9.485686,
-fotowebcam,"Pizol Webcam;https://www.foto-webcam.eu/webcam/pizol/",,46.979739,9.436717,
-fotowebcam,"Rheinschlucht Webcam;https://www.foto-webcam.eu/webcam/rheinschlucht/",,46.78261,9.305091,
-fotowebcam,"Schwarzenbach Webcam;https://www.foto-webcam.eu/webcam/schwarzenbach/",,47.636144,16.361593,
-fotowebcam,"Hochwolkersdorf Webcam;https://www.foto-webcam.eu/webcam/hochwolkersdorf/",,47.673894,16.28241,
-fotowebcam,"Wien Donaustadt Webcam;https://www.foto-webcam.eu/webcam/wien/",,48.233518,16.411176,
-fotowebcam,"Wien Bisamberg Webcam;https://www.foto-webcam.eu/webcam/bisamberg/",,48.31067,16.38251,
-fotowebcam,"Bad Endorf Webcam;https://www.foto-webcam.eu/webcam/bad-endorf/",,47.909097,12.311897,
-fotowebcam,"Rosenheim Webcam;https://www.foto-webcam.eu/webcam/rosenheim/",,47.860299,12.131823,
-fotowebcam,"Freimann Nord Webcam;https://www.foto-webcam.eu/webcam/freimann/",,48.183971,11.611222,
-fotowebcam,"Freimann Sued Webcam;https://www.foto-webcam.eu/webcam/muenchen/",,48.183971,11.611222,
-fotowebcam,"TUM Olympiapark Webcam;https://www.foto-webcam.eu/webcam/tum-olympiapark/",,48.1743533,11.5529664,
-fotowebcam,"Dachau Webcam;https://www.foto-webcam.eu/webcam/dachau/",,48.259159,11.435332,
-fotowebcam,"Fuerstenfeld Webcam;https://www.foto-webcam.eu/webcam/fuerstenfeld/",,48.170295,11.247042,
-fotowebcam,"Hohenpeissenberg Webcam;https://www.foto-webcam.eu/webcam/peissenberg/",,47.800785,11.014571,
-fotowebcam,"Hanusel Hof Webcam;https://www.foto-webcam.eu/webcam/hanuselhof/",,47.658929,10.196552,
-fotowebcam,"Schwaerzenlifte Webcam;https://www.foto-webcam.eu/webcam/schwaerzenlifte/",,47.7072237,10.1941924,
-fotowebcam,"Max-Wild-Arena Webcam;https://www.foto-webcam.eu/webcam/max-wild-arena/",,47.684828,10.032576,
-fotowebcam,"Buchkopfturm Webcam;https://www.foto-webcam.eu/webcam/buchkopfturm/",,48.477345,8.236567,
-fotowebcam,"Grandsberg Webcam;https://www.foto-webcam.eu/webcam/grandsberg/",,48.948899,12.851912,
-fotowebcam,"Schareben Webcam;https://www.foto-webcam.eu/webcam/schareben/",,49.129557,13.052244,
-fotowebcam,"Darmstadt Ost Webcam;https://www.foto-webcam.eu/webcam/darmstadt-ost/",,49.875876,8.662653,
-fotowebcam,"Darmstadt West Webcam;https://www.foto-webcam.eu/webcam/darmstadt-west/",,49.875871,8.662596,
-fotowebcam,"Feldberg Taunus Webcam;https://www.foto-webcam.eu/webcam/feldberg-ts/",,50.232203,8.458489,
-fotowebcam,"Ettelsberg Webcam;https://www.foto-webcam.eu/webcam/ettelsberg/",,51.278463,8.599828,
-fotowebcam,"Flensburg Webcam;https://www.foto-webcam.eu/webcam/flensburg/",,54.781286,9.433995,
-fotowebcam,"Norderney Webcam;https://www.foto-webcam.eu/webcam/norderney/",,53.709701,7.143195,
-fotowebcam,"Genova Webcam;https://www.foto-webcam.eu/webcam/genova/",,44.42019,8.894048,
-fotowebcam,"Schelling Webcam;https://www.foto-webcam.eu/webcam/schelling/",,47.446645,9.755678,
-fotowebcam,"Kellerei St. Pauls Webcam;https://www.foto-webcam.eu/webcam/st-pauls/",,46.470622,11.26392,
-fotowebcam,"Freya Gletscher Webcam;https://www.foto-webcam.eu/webcam/freya1/",,74.38248,-20.78783,
-fotowebcam,"Freya Gletscher 2 Webcam;https://www.foto-webcam.eu/webcam/freya2/",,74.38248,-20.78783,
-fotowebcam,"Huaraz Webcam;https://www.foto-webcam.eu/webcam/huaraz/",,-9.530189,-77.531599,
-fotowebcam,"Pognana Lario Webcam;https://foto-webcam.ch/webcam/pognana1/",,45.878654,9.156812,
-fotowebcam,"Cully Genève Webcam;https://foto-webcam.ch/webcam/cully/",,46.487078,6.730716,
-fotowebcam,"Poertschach Sued Webcam;http://www.foto-webcam.com/webcam/poertschach-a-w/",,46.6439,14.130025,
-fotowebcam,"Amlach - Lienz Webcam;http://www.megacam.at/webcam/amlach/",,46.804819,12.77531,
-fotowebcam,"Kartitsch Webcam;http://www.megacam.at/webcam/kartitsch/",,46.725202,12.487433,
-fotowebcam,"Sillian Webcam;http://www.megacam.at/webcam/sillian/",,46.74814,12.414667,
-fotowebcam,"Villgraten Webcam;http://www.megacam.at/webcam/villgraten/",,46.807135,12.3209,
-fotowebcam,"Innervillgraten Webcam;http://www.megacam.at/webcam/innervillgraten/",,46.803662,12.378409,
-fotowebcam,"Innichen Webcam;http://www.megacam.at/webcam/innichen-Leitlhof/",,46.736847,12.285493,
-fotowebcam,"Klausberg Tal Webcam;http://klausberg.foto-webcam.eu/webcam/klausberg-talstation/",,46.984698,11.978986,
-fotowebcam,"Klausberg Almboden Webcam;http://klausberg.foto-webcam.eu/webcam/klausberg-almboden/",,46.983197,11.982073,
-fotowebcam,"Pfalzen Webcam;http://www.wetter-pfalzen.com/wettercam/",,46.810292,11.88087,
-fotowebcam,"Raas - Brixen Webcam;https://foto.weinberg-apartments.it/webcam/Raas/",,46.748654,11.657341,
-fotowebcam,"Sistrans Nord Webcam;https://www.stefanjud.net/webcam/sistrans-nord/",,47.233672,11.447284,
-fotowebcam,"Sistrans West Webcam;https://www.stefanjud.net/webcam/sistrans-west/",,47.233672,11.447284,
-fotowebcam,"Volderau Webcam;http://www.stwo.biz/webcam/Volderau/",,47.0685317,11.2526232,
-fotowebcam,"WuhrsteinAlm Webcam;https://www.terra-hd.de/wuhrsteinalm/",,47.700303,12.349734,
-fotowebcam,"Irschenberg Webcam;http://www.foto-webcam.org/webcam/irschenberg/",,47.828391,11.920891,
-fotowebcam,"Spitzingsee Webcam;http://www.foto-webcam.org/webcam/spitzingsee/",,47.66315,11.887791,
-fotowebcam,"Tegernsee Webcam;http://www.foto-webcam.org/webcam/tegernseewest/",,47.71852,11.762875,
-fotowebcam,"Prasserbad Webcam;http://www.foto-webcam.org/webcam/prasserbad/",,47.696484,11.74572,
-fotowebcam,"Wallberg Webcam;http://www.foto-webcam.org/webcam/wallberg/",,47.66061,11.79115,
-fotowebcam,"Buchstein Sued Webcam;http://www.foto-webcam.org/webcam/buchstein/",,47.632647,11.67811,
-fotowebcam,"Kandahar-Lodge Webcam;https://www.terra-hd.de/garmisch/",,47.489549,11.080574,
-fotowebcam,"Pfronten Webcam;http://www.foto-webcam.net/webcam/pfronten/",,47.58055,10.55083,
-fotowebcam,"Schlappin Klosters Webcam;http://www.foto-webcam.com/webcam/schlappin/",,46.909046,9.898859,
-fotowebcam,"Nussbaumen Webcam;https://foto-webcam.ch/webcam/nussbaumen/",,47.486845,8.292715,
-fotowebcam,"Untersiggenthal Webcam;https://foto-webcam.ch/webcam/untersiggenthal/",,47.505093,8.243199,
-fotowebcam,"Ramsau Hintersee Webcam;https://www.terra-hd.de/hintersee/",,47.608347,12.85297,
-fotowebcam,"Siegsdorf Webcam;https://www.terra-hd.de/osterham/",,47.816942,12.630683,
-fotowebcam,"Hochfelln-Alpen Webcam;https://www.terra-hd.de/hochfelln2/",,47.762584,12.560777,
-fotowebcam,"Hochfelln Nord Webcam;https://www.terra-hd.de/hochfelln/",,47.76267,12.560636,
-fotowebcam,"Hochfelln-Mittel Webcam;https://www.terra-hd.de/hochfelln-mittel/",,47.768985,12.575713,
-fotowebcam,"Rauschberg Webcam;https://www.terra-hd.de/rauschberg/",,47.732455,12.683147,
-fotowebcam,"Vachendorf Webcam;https://www.terra-hd.de/wimpasing/",,47.839843,12.624357,
-fotowebcam,"Chieming-Egerer Webcam;https://www.terra-hd.de/chieming/",,47.904964,12.537404,
-fotowebcam,"Chiemsee Gstadt Webcam;https://www.terra-hd.de/chiemsee/",,47.883324,12.417179,
-fotowebcam,"Seebruck Webcam;https://www.terra-hd.de/pullach/",,47.938973,12.473918,
-fotowebcam,"Grassau Webcam;https://www.terra-hd.de/grassau/",,47.790396,12.455823,
-fotowebcam,"Tiroler Ache Webcam;https://www.terra-hd.de/marquartstein/",,47.7522,12.464065,
-fotowebcam,"Staffn-Alm Webcam;https://www.terra-hd.de/staffn/",,47.767709,12.41222,
-fotowebcam,"Bernau Webcam;https://www.terra-hd.de/bernau1/",,47.801671,12.375674,
-fotowebcam,"Hittenkirchen Webcam;https://www.terra-hd.de/bernau2/",,47.822849,12.34099,
-fotowebcam,"Sachrang Webcam;https://www.terra-hd.de/sachrang/",,47.696319,12.260489,
-fotowebcam,"Dietramszell Webcam;http://www.foto-webcam.org/webcam/dietramszell/",,47.906821,11.594835,
-fotowebcam,"Woerthsee Webcam;http://www.foto-webcam.net/webcam/woerthsee/",,48.0648306,11.1876842,
-fotowebcam,"Burghausen Webcam;http://www.foto-webcam.net/webcam/burghausen2/",,48.1591,12.82135,
-fotowebcam,"Stroheim Webcam;https://webcam.wetterstation-stroheim.at/webcam1/",,48.338722,13.956558,
-fotowebcam,"Landshut Webcam;http://www.stwo.biz/webcam/DM0FFL/",,48.569434,12.112794,
-fotowebcam,"Hohenbogen Ost Webcam;https://www.asam-live.de/webcam/asamnet5/",,49.234571,12.933292,
-fotowebcam,"Hohenbogen West Webcam;https://www.asam-live.de/webcam/amberg1/",,49.234571,12.933292,
-fotowebcam,"OTH Regensburg Webcam;http://othcam.oth-regensburg.de/webcam/Regensburg/",,49.00281,12.096003,
-fotowebcam,"Amberg Webcam;https://www.asam-live.de/webcam/amberg92/",,49.45,11.87,
-fotowebcam,"Mariahilfberg Webcam;https://www.asam-live.de/webcam/mariahilfberg2/",,49.45,11.87,
-fotowebcam,"Amberg DL0AO Webcam;https://www.asam-live.de/webcam/mariahilfberg1/",,49.45,11.86,
-fotowebcam,"Massenricht Webcam;https://www.asam-live.de/webcam/roedlass1/",,49.5924,11.9533,
-fotowebcam,"Ursensollen Webcam;https://www.asam-live.de/webcam/sheepworld1/",,49.400263,11.763569,
-fotowebcam,"Maxhuette Webcam;https://www.asam-live.de/webcam/amberg33/",,49.493961,11.781469,
-fotowebcam,"Schlackenberg NO Webcam;https://www.asam-live.de/webcam/asamnet7/",,49.482008,11.762359,
-fotowebcam,"Schlackenberg NW Webcam;https://www.asam-live.de/webcam/asamnet6/",,49.482008,11.762359,
-fotowebcam,"Hesselberg Webcam;http://db0noe.spdns.org/webcam/db0hbg/",,49.066004,10.536117,
-fotowebcam,"Hochwaldturm Webcam;https://www.terra-hd.de/hochwald/",,50.825745,14.727734,
-fotowebcam,"Vallendar Webcam;http://www.wetterstation-vallendar.de/zeitraffer/richtung-neuwied-1/",,50.397104,7.623357,
-fotowebcam,"Koblenz Webcam;http://www.wetterstation-vallendar.de/zeitraffer/richtung-koblenz/",,50.397,7.623357,
-fotowebcam,"Koeppelturm Webcam;http://www.wetterstation-vallendar.de/zeitraffer/k%C3%B6ppelturm/",,50.430438,7.751312,
-fotowebcam,"Oelberg Webcam;http://webcam.ig-funk-siebengebirge.de/oelberg/",,50.681923,7.248277,
-fotowebcam,"Niederdielfen Webcam;https://www.jens-oerter.de/webcam/joeeos/",,50.853015,8.09787,
-fotowebcam,"Radevormwald Webcam;http://www.reisen-und-hobby.de/webcam/",,51.191393,7.313021,
-fotowebcam,"Diemelsee Webcam;https://www.sauerland.camera/webcam/diemelsee/",,51.3674736,8.7144246,
-fotowebcam,"Altastenberg Webcam;https://www.sauerland.camera/webcam/altastenberg/",,51.182879,8.488275,
-fotowebcam,"Winterberg Postwiese Webcam;https://webcams.webcam-sauerland.de/webcam/skiverleihpostwiese/",,51.166244,8.48676,
-fotowebcam,"Albrechtsplatz Webcam;https://www.sauerland.camera/webcam/albrechtsplatz/",,51.140374,8.440596,
-fotowebcam,"Erndtebrueck Webcam;https://www.sauerland.camera/webcam/erndtebrueck/",,50.99111,8.23921,
-fotowebcam,"Grafschaft Almert Webcam;https://www.sauerland.camera/webcam/grafschaft2/",,51.14663,8.34096,
-fotowebcam,"Langewiese Webcam;https://www.sauerland.camera/webcam/langewiese/",,51.15203,8.46248,
-fotowebcam,"Bielefeld Webcam;http://hamnet-bielefeld.de/webcam/bielefeld/",,52.015144,8.473544,
-fotowebcam,"Steinhagen Webcam;http://hamnet-bielefeld.de/webcam/steinhagen/",,52.015144,8.47354,
-fotowebcam,"Greifswald Webcam;https://foto-webcam-mv.de/webcam/greifswald/",,54.095333,13.377,
-fotowebcam,"Sunnyvale Webcam;http://mpcam.marklex.com/webcam/marklex/",,37.37,-122.04,
+fotowebcam,"Bardolino Webcam",,45.542968,10.725714,,https://www.foto-webcam.eu/webcam/bardolino/
+fotowebcam,"Malcesine Webcam",,45.744855,10.800445,,https://www.foto-webcam.eu/webcam/malcesine/
+fotowebcam,"Helmut List Halle Webcam",,47.079697,15.412366,,https://www.foto-webcam.eu/webcam/helmut-list-halle/
+fotowebcam,"Schulterkogel Webcam",,46.93127,14.762633,,https://www.foto-webcam.eu/webcam/schulterkogel/
+fotowebcam,"Poertschach Sued Webcam",,46.6439,14.130025,,https://www.foto-webcam.eu/webcam/poertschach-a-w/
+fotowebcam,"Gnesau Webcam",,46.779738,14.005642,,https://www.foto-webcam.eu/webcam/gnesau/
+fotowebcam,"Wernberg - Duel Webcam",,46.60787,13.947765,,https://www.foto-webcam.eu/webcam/duel/
+fotowebcam,"Turrach Ost Webcam",,46.921064,13.860498,,https://www.foto-webcam.eu/webcam/turrach-ost/
+fotowebcam,"Turrach West Webcam",,46.921556,13.889706,,https://www.foto-webcam.eu/webcam/turrach-west/
+fotowebcam,"Falkert Heidialm Webcam",,46.867848,13.832825,,https://www.foto-webcam.eu/webcam/falkert/
+fotowebcam,"Falkert Nord Webcam",,46.854345,13.823363,,https://www.foto-webcam.eu/webcam/falkert-nord/
+fotowebcam,"Heidi-Hotel Webcam",,46.861309,13.829691,,https://www.foto-webcam.eu/webcam/heidi-hotel/
+fotowebcam,"Heidi-Chalets Webcam",,46.861564,13.837807,,https://www.foto-webcam.eu/webcam/heidi-chalets/
+fotowebcam,"BKK - Strohsack Webcam",,46.790409,13.800447,,https://www.foto-webcam.eu/webcam/strohsack/
+fotowebcam,"BKK - Scharte Webcam",,46.847149,13.738741,,https://www.foto-webcam.eu/webcam/rosennockabfahrt/
+fotowebcam,"BKK - Kaiserburg Webcam",,46.786094,13.818127,,https://www.foto-webcam.eu/webcam/kaiserburg/
+fotowebcam,"BKK - Country Trail Webcam",,46.78337,13.826816,,https://www.foto-webcam.eu/webcam/countrytrail/
+fotowebcam,"BKK - Maibrunn Berg Webcam",,46.789666,13.793786,,https://www.foto-webcam.eu/webcam/maibrunn/
+fotowebcam,"BKK - Rollbob Webcam",,46.812242,13.798735,,https://www.foto-webcam.eu/webcam/rollbob/
+fotowebcam,"Kirchheimerhof Webcam",,46.81649,13.784527,,https://www.foto-webcam.eu/webcam/kirchheimerhof/
+fotowebcam,"BKK - Aktiv Park Webcam",,46.856838,13.750324,,https://www.foto-webcam.eu/webcam/brunnach/
+fotowebcam,"BKK - Brunnach Sued Webcam",,46.856838,13.750324,,https://www.foto-webcam.eu/webcam/brunnach-sued/
+fotowebcam,"Zechneralm Webcam",,46.946702,13.748674,,https://www.foto-webcam.eu/webcam/zechneralm/
+fotowebcam,"BKK - Sonnleitenlift Webcam",,46.844938,13.763769,,https://www.foto-webcam.eu/webcam/sonnleitenlift/
+fotowebcam,"BKK - Spitzeck Webcam",,46.849685,13.749365,,https://www.foto-webcam.eu/webcam/spitzeck/
+fotowebcam,"BKK - Spitzeck Berg Webcam",,46.849075,13.746617,,https://www.foto-webcam.eu/webcam/spitzeck-berg/
+fotowebcam,"BKK - Wiesernock Webcam",,46.829511,13.745009,,https://www.foto-webcam.eu/webcam/wiesernock/
+fotowebcam,"BKK - Panoramalift Webcam",,46.828107,13.742373,,https://www.foto-webcam.eu/webcam/nockalm/
+fotowebcam,"BKK - Nockalm Webcam",,46.828107,13.742373,,https://www.foto-webcam.eu/webcam/nockalm-berg/
+fotowebcam,"BKK - Thermenschuss Webcam",,46.813377,13.799184,,https://www.foto-webcam.eu/webcam/kaiserburg-tal/
+fotowebcam,"BKK - Roemerbad Webcam",,46.808375,13.799116,,https://www.foto-webcam.eu/webcam/thermenschuss/
+fotowebcam,"BKK - Golfplatz Webcam",,46.812408,13.844276,,https://www.foto-webcam.eu/webcam/golfbkk/
+fotowebcam,"BKK - Golfplatz Ost Webcam",,46.814714,13.843902,,https://www.foto-webcam.eu/webcam/golfplatzbkk/
+fotowebcam,"BKK - Bachareal Webcam",,46.812459,13.783802,,https://www.foto-webcam.eu/webcam/bachlift/
+fotowebcam,"Dobratsch Webcam",,46.60355,13.67034,,https://www.foto-webcam.eu/webcam/dobratsch/
+fotowebcam,"Polinik Webcam",,46.628185,12.982435,,https://www.foto-webcam.eu/webcam/polinik/
+fotowebcam,"Ossiacherberg Webcam",,46.669331,13.904653,,https://www.foto-webcam.eu/webcam/ossiacherberg/
+fotowebcam,"Ankogel Sued Webcam",,47.027039,13.19056,,https://www.foto-webcam.eu/webcam/ankogel-sued/
+fotowebcam,"Ankogel Nord Webcam",,47.027039,13.19056,,https://www.foto-webcam.eu/webcam/ankogel-nord/
+fotowebcam,"Gletscher - Schareck Webcam",,47.039846,13.02068,,https://www.foto-webcam.eu/webcam/gletscher-schareck/
+fotowebcam,"Gletscher - Eissee Webcam",,47.031013,13.01057,,https://www.foto-webcam.eu/webcam/gletscher-sued/
+fotowebcam,"Gletscher - Panorama Webcam",,47.031879,13.010373,,https://www.foto-webcam.eu/webcam/gletscher-nord/
+fotowebcam,"Gletscher - Alteck Webcam",,47.03193,12.983222,,https://www.foto-webcam.eu/webcam/gletscher-alteck/
+fotowebcam,"Gletscher - Schwarzkopf Webcam",,46.999863,13.022956,,https://www.foto-webcam.eu/webcam/gletscher-schwarzkopf/
+fotowebcam,"Obervellach Webcam",,46.948143,13.168184,,https://www.foto-webcam.eu/webcam/obervellach/
+fotowebcam,"Raggaschlucht Webcam",,46.924241,13.140799,,https://www.foto-webcam.eu/webcam/raggaschlucht/
+fotowebcam,"Flattach Webcam",,46.936398,13.077082,,https://www.foto-webcam.eu/webcam/flattach/
+fotowebcam,"Rangersdorf Webcam",,46.851116,12.928944,,https://www.foto-webcam.eu/webcam/rangersdorf/
+fotowebcam,"Ederplan Webcam",,46.824917,12.897797,,https://www.foto-webcam.eu/webcam/ederplan/
+fotowebcam,"Winklern Webcam",,46.872885,12.86306,,https://www.foto-webcam.eu/webcam/winklern/
+fotowebcam,"Moertschach Webcam",,46.896542,12.915701,,https://www.foto-webcam.eu/webcam/lorenzalm/
+fotowebcam,"Moertschachberg Webcam",,46.923418,12.921735,,https://www.foto-webcam.eu/webcam/moertschach/
+fotowebcam,"Astental Ost Webcam",,46.954847,12.961083,,https://www.foto-webcam.eu/webcam/sadnighaus/
+fotowebcam,"Astental West Webcam",,46.962005,12.98232,,https://www.foto-webcam.eu/webcam/burgstalleralm/
+fotowebcam,"Heiligenblut Webcam",,47.021,12.8773,,https://www.foto-webcam.eu/webcam/heiligenblut/
+fotowebcam,"Wallackhaus Sued Webcam",,47.072917,12.839589,,https://www.foto-webcam.eu/webcam/wallackhaus/
+fotowebcam,"Wallackhaus Nord Webcam",,47.069218,12.838868,,https://www.foto-webcam.eu/webcam/wallackhaus-nord/
+fotowebcam,"Freiwandeck Webcam",,47.078201,12.756396,,https://www.foto-webcam.eu/webcam/freiwandeck/
+fotowebcam,"Adlersruhe Webcam",,47.069958,12.701578,,https://www.foto-webcam.eu/webcam/adlersruhe/
+fotowebcam,"Adlersruhe Sued Webcam",,47.069887,12.701594,,https://www.foto-webcam.eu/webcam/adlersruhe-sued/
+fotowebcam,"Dellach im Drautal Webcam",,46.730812,13.088379,,https://www.foto-webcam.eu/webcam/dellach/
+fotowebcam,"Lienz Zettersfeld Webcam",,46.860338,12.803983,,https://www.foto-webcam.eu/webcam/lienz/
+fotowebcam,"Dolomitenhuette Webcam",,46.789667,12.78353,,https://www.foto-webcam.eu/webcam/dolomitenhuette/
+fotowebcam,"Lienz Faschingalm Webcam",,46.86035,12.80399,,https://www.foto-webcam.eu/webcam/faschingalm/
+fotowebcam,"Feldkopf Ost Webcam",,46.928982,12.789711,,https://www.foto-webcam.eu/webcam/feldkopf/
+fotowebcam,"Feldkopf West Webcam",,46.928982,12.789711,,https://www.foto-webcam.eu/webcam/feldkopf-west/
+fotowebcam,"Kals Webcam",,47.007477,12.647537,,https://www.foto-webcam.eu/webcam/kals/
+fotowebcam,"Kals Nord Webcam",,46.98332,12.626943,,https://www.foto-webcam.eu/webcam/kals-nord/
+fotowebcam,"Kalsertal Webcam",,46.913221,12.58326,,https://www.foto-webcam.eu/webcam/kalsertal/
+fotowebcam,"Grossglockner Zoom Webcam",,47.020987,12.687957,,https://www.foto-webcam.eu/webcam/grossglockner-zoom/
+fotowebcam,"Glocknerwinkel Webcam",,47.021832,12.689609,,https://www.foto-webcam.eu/webcam/glocknerwinkel/
+fotowebcam,"Lucknerhaus Webcam",,47.020987,12.687957,,https://www.foto-webcam.eu/webcam/lucknerhaus/
+fotowebcam,"St.Veit in Defereggen Webcam",,46.927657,12.435715,,https://www.foto-webcam.eu/webcam/stveit/
+fotowebcam,"St. Jakob i. Def. Webcam",,46.917213,12.322638,,https://www.foto-webcam.eu/webcam/stjakob/
+fotowebcam,"Hopfgarten Webcam",,46.909794,12.479249,,https://www.foto-webcam.eu/webcam/hopfgarten/
+fotowebcam,"Matrei - Bretterwand Webcam",,46.986122,12.530486,,https://www.foto-webcam.eu/webcam/bethuberhof/
+fotowebcam,"Matrei Hintereggkogel Webcam",,46.994612,12.547861,,https://www.foto-webcam.eu/webcam/steigerhof/
+fotowebcam,"Matrei - Goldried Webcam",,47.010288,12.518056,,https://www.foto-webcam.eu/webcam/strumerhof/
+fotowebcam,"Virgen Sonnberg Webcam",,47.00832,12.470775,,https://www.foto-webcam.eu/webcam/virgen-west/
+fotowebcam,"Virgen Wuerfelehuette Webcam",,46.990593,12.44769,,https://www.foto-webcam.eu/webcam/virgen-nord/
+fotowebcam,"Eispark Osttirol Webcam",,47.126126,12.479778,,https://www.foto-webcam.eu/webcam/eispark-osttirol/
+fotowebcam,"Sexten Sued Webcam",,46.691585,12.367589,,https://www.foto-webcam.eu/webcam/sexten-sued/
+fotowebcam,"Sexten West Webcam",,46.691585,12.367589,,https://www.foto-webcam.eu/webcam/sexten-west/
+fotowebcam,"Toblach Ratsberg Webcam",,46.748771,12.217415,,https://www.foto-webcam.eu/webcam/toblach/
+fotowebcam,"Neu-Toblach Webcam",,46.724241,12.222665,,https://www.foto-webcam.eu/webcam/neu-toblach/
+fotowebcam,"Drei Zinnenblick Webcam",,46.641364,12.23141,,https://www.foto-webcam.eu/webcam/dreizinnenblick/
+fotowebcam,"Niederdorf Webcam",,46.7469037,12.1399113,,https://www.foto-webcam.eu/webcam/niederdorf/
+fotowebcam,"Taisten Pustertal Webcam",,46.766892,12.102741,,https://www.foto-webcam.eu/webcam/taisten/
+fotowebcam,"Rein in Taufers Webcam",,46.948463,12.061304,,https://www.foto-webcam.eu/webcam/rein/
+fotowebcam,"Rieserferner Webcam",,46.927043,12.135505,,https://www.foto-webcam.eu/webcam/rieserferner/
+fotowebcam,"St. Jakob Ahrntal Webcam",,47.014746,12.019725,,https://www.foto-webcam.eu/webcam/st-jakob/
+fotowebcam,"Olang Geiselsberg Webcam",,46.746433,12.001198,,https://www.foto-webcam.eu/webcam/olang/
+fotowebcam,"Kronplatz Webcam",,46.740515,11.959224,,https://www.foto-webcam.eu/webcam/kronplatz/
+fotowebcam,"Golfclub Pustertal Webcam",,46.778463,11.931861,,https://www.foto-webcam.eu/webcam/golfpustertal/
+fotowebcam,"Hofern - Kiens Webcam",,46.820233,11.839075,,https://www.foto-webcam.eu/webcam/kiens/
+fotowebcam,"Meransen Webcam",,46.815739,11.663701,,https://www.foto-webcam.eu/webcam/meransen/
+fotowebcam,"Bruneck Webcam",,46.796379,11.941309,,https://www.foto-webcam.eu/webcam/bruneck/
+fotowebcam,"San Cassiano Webcam",,46.581471,11.919009,,https://www.foto-webcam.eu/webcam/st-kassian/
+fotowebcam,"St. Christina Groeden Webcam",,46.559822,11.716049,,https://www.foto-webcam.eu/webcam/st-christina/
+fotowebcam,"Gummer Webcam",,46.453071,11.462664,,https://www.foto-webcam.eu/webcam/gummer/
+fotowebcam,"Luesen Webcam",,46.765186,11.718519,,https://www.foto-webcam.eu/webcam/luesen/
+fotowebcam,"Seiser Alm Webcam",,46.511938,11.68872,,https://www.foto-webcam.eu/webcam/zallinger/
+fotowebcam,"Rittner Horn Webcam",,46.615522,11.460433,,https://www.foto-webcam.eu/webcam/rittnerhorn/
+fotowebcam,"Ritten Webcam",,46.563828,11.413713,,https://www.foto-webcam.eu/webcam/ritten/
+fotowebcam,"St.Pauls - Eppan Webcam",,46.475163,11.252172,,https://www.foto-webcam.eu/webcam/huebenburg/
+fotowebcam,"Girlan - Eppan Webcam",,46.450095,11.287846,,https://www.foto-webcam.eu/webcam/eppan/
+fotowebcam,"Eppan Berg Webcam",,46.454609,11.240582,,https://www.foto-webcam.eu/webcam/eppan-berg/
+fotowebcam,"Kalterer See Webcam",,46.385495,11.261942,,https://www.foto-webcam.eu/webcam/kalterersee/
+fotowebcam,"Gantkofel Webcam",,46.49324,11.21057,,https://www.foto-webcam.eu/webcam/gantkofel/
+fotowebcam,"Meran Webcam",,46.662312,11.1279,,https://www.foto-webcam.eu/webcam/meran/
+fotowebcam,"Meran Hochmuth Webcam",,46.701997,11.131521,,https://www.foto-webcam.eu/webcam/hochmuth/
+fotowebcam,"Rabland Partschins Webcam",,46.67467,11.062217,,https://www.foto-webcam.eu/webcam/rabland/
+fotowebcam,"Naturns Plaus Webcam",,46.656854,11.042127,,https://www.foto-webcam.eu/webcam/naturns/
+fotowebcam,"Weissbrunnferner Webcam",,46.488461,10.801753,,https://www.foto-webcam.eu/webcam/weissbrunnferner/
+fotowebcam,"Langenferner Webcam",,46.485263,10.621184,,https://www.foto-webcam.eu/webcam/langenferner/
+fotowebcam,"Piz Chavalatsch Webcam",,46.614799,10.492088,,https://www.foto-webcam.eu/webcam/chavalatsch/
+fotowebcam,"Trafoi Webcam",,46.569023,10.511569,,https://www.foto-webcam.eu/webcam/trafoi/
+fotowebcam,"Mals Vinschgau Webcam",,46.701102,10.506797,,https://www.foto-webcam.eu/webcam/mals/
+fotowebcam,"Graun im Vinschgau Webcam",,46.839911,10.641531,,https://www.foto-webcam.eu/webcam/graun/
+fotowebcam,"Hintereisferner 1 Webcam",,46.7959,10.7828,,https://www.foto-webcam.eu/webcam/hintereisferner1/
+fotowebcam,"Hintereisferner 2 Webcam",,46.7959,10.7828,,https://www.foto-webcam.eu/webcam/hintereisferner2/
+fotowebcam,"Tisenjoch Webcam",,46.779567,10.840917,,https://www.foto-webcam.eu/webcam/tisenjoch/
+fotowebcam,"Braunschweiger H. Webcam",,46.935176,10.909495,,https://www.foto-webcam.eu/webcam/braunschweigerhuette/
+fotowebcam,"Wannenkogel Webcam",,47.0217027,11.0733583,,https://www.foto-webcam.eu/webcam/wannenkogel/
+fotowebcam,"Sulzkogel Webcam",,47.0378416,11.0624805,,https://www.foto-webcam.eu/webcam/sulzkogel/
+fotowebcam,"Bockkogel Webcam",,47.025269,11.095297,,https://www.foto-webcam.eu/webcam/bockkogel/
+fotowebcam,"Becherhaus Webcam",,46.96076,11.192327,,https://www.foto-webcam.eu/webcam/becherhaus/
+fotowebcam,"Ridnaun Webcam",,46.96076,11.192327,,https://www.foto-webcam.eu/webcam/ridnaun/
+fotowebcam,"Brunnen Webcam",,46.995571,8.598627,,https://www.foto-webcam.eu/webcam/brunnen/
+fotowebcam,"Konkordiahuette Webcam",,46.50027,8.053442,,https://www.foto-webcam.eu/webcam/konkordiahuette/
+fotowebcam,"Glecksteinhuette Webcam",,46.62547,8.096951,,https://www.foto-webcam.eu/webcam/glecksteinhuette/
+fotowebcam,"Wildalpen Webcam",,47.671391,14.984086,,https://www.foto-webcam.eu/webcam/wildalpen/
+fotowebcam,"Hochkar Webcam",,47.708967,14.912624,,https://www.foto-webcam.eu/webcam/hochkar/
+fotowebcam,"Krakau Webcam",,47.186973,13.951427,,https://www.foto-webcam.eu/webcam/krakau/
+fotowebcam,"Grimming Webcam",,47.49606,14.065594,,https://www.foto-webcam.eu/webcam/grimming/
+fotowebcam,"Hochleckenhaus Webcam",,47.82876,13.605403,,https://www.foto-webcam.eu/webcam/hochleckenhaus/
+fotowebcam,"Simonyhuette Webcam",,47.500701,13.624408,,https://www.foto-webcam.eu/webcam/simonyhuette/
+fotowebcam,"Ramsau Webcam",,47.42725,13.644859,,https://www.foto-webcam.eu/webcam/hotel-lindenhof/
+fotowebcam,"Gernkogel Webcam",,47.308876,13.232803,,https://www.foto-webcam.eu/webcam/gernkogel/
+fotowebcam,"Hackel-Huette Webcam",,47.483955,13.290477,,https://www.foto-webcam.eu/webcam/hackelhuette/
+fotowebcam,"Hackelhuette Nord Webcam",,47.480731,13.292459,,https://www.foto-webcam.eu/webcam/hackelhuette-nord/
+fotowebcam,"Hochkoenig Webcam",,47.420139,13.06214,,https://www.foto-webcam.eu/webcam/hochkoenig/
+fotowebcam,"Goldbergkees Webcam",,47.051699,12.964414,,https://www.foto-webcam.eu/webcam/goldbergkees/
+fotowebcam,"Goldbergkees 2 Webcam",,47.038717,12.967853,,https://www.foto-webcam.eu/webcam/goldbergkees2/
+fotowebcam,"Sonnblick Webcam",,47.053979,12.957484,,https://www.foto-webcam.eu/webcam/sonnblick/
+fotowebcam,"Kleinfleisskees Webcam",,47.046266,12.943059,,https://www.foto-webcam.eu/webcam/kleinfleisskees/
+fotowebcam,"Kolm-Saigurn Webcam",,47.069481,12.984603,,https://www.foto-webcam.eu/webcam/sonnblickbasis/
+fotowebcam,"Rauris Webcam",,47.136667,12.940556,,https://www.foto-webcam.eu/webcam/rauris/
+fotowebcam,"Lofer Webcam",,47.588412,12.694699,,https://www.foto-webcam.eu/webcam/lofer/
+fotowebcam,"Saalfelden Webcam",,47.416719,12.84778,,https://www.foto-webcam.eu/webcam/saalfelden/
+fotowebcam,"Leogang - Asitz Webcam",,47.402468,12.702289,,https://www.foto-webcam.eu/webcam/asitz/
+fotowebcam,"Maishofen Sausteige Webcam",,47.382239,12.764779,,https://www.foto-webcam.eu/webcam/sausteige/
+fotowebcam,"Maishofen Dorfplatz Webcam",,47.36121327195,12.80524082032,,https://www.foto-webcam.eu/webcam/maishofen/
+fotowebcam,"Schloss Kammer Webcam",,47.365283,12.820947,,https://www.foto-webcam.eu/webcam/schlosskammer/
+fotowebcam,"Zell am See Webcam",,47.334816,12.822689,,https://www.foto-webcam.eu/webcam/zellamsee/
+fotowebcam,"Schwaigerhaus Webcam",,47.162799,12.738906,,https://www.foto-webcam.eu/webcam/schwaigerhaus/
+fotowebcam,"Mooserboden Webcam",,47.166238,12.711459,,https://www.foto-webcam.eu/webcam/mooserboden/
+fotowebcam,"Wasserfallboden Webcam",,47.18192,12.7006,,https://www.foto-webcam.eu/webcam/wasserfallboden/
+fotowebcam,"Rudolfshuette Webcam",,47.135232,12.627536,,https://www.foto-webcam.eu/webcam/rudolfshuette/
+fotowebcam,"Pass Thurn Webcam",,47.295192,12.43088,,https://www.foto-webcam.eu/webcam/passthurn/
+fotowebcam,"Kuersingerhuette Webcam",,47.122508,12.299828,,https://www.foto-webcam.eu/webcam/kuersingerhuette/
+fotowebcam,"Kitzbuehel Webcam",,47.425915,12.370907,,https://www.foto-webcam.eu/webcam/starthaus-hahnenkamm/
+fotowebcam,"St. Johann i.T. Ost Webcam",,47.54576,12.39558,,https://www.foto-webcam.eu/webcam/st-johann-in-tirol/
+fotowebcam,"St. Johann i.T. West Webcam",,47.52612,12.487678,,https://www.foto-webcam.eu/webcam/st-johann-in-tirol-west/
+fotowebcam,"Wilder Kaiser Webcam",,47.52612,12.487678,,https://www.foto-webcam.eu/webcam/wilder-kaiser/
+fotowebcam,"Schlegeis Webcam",,47.040543,11.702469,,https://www.foto-webcam.eu/webcam/schlegeis/
+fotowebcam,"Alpinhotel Berghaus Webcam",,47.126081,11.696721,,https://www.foto-webcam.eu/webcam/hotel-berghaus/
+fotowebcam,"Tuxertal Webcam",,47.184268,11.775214,,https://www.foto-webcam.eu/webcam/tuxertal/
+fotowebcam,"Gamshuette Webcam",,47.129953,11.795856,,https://www.foto-webcam.eu/webcam/gamshuette/
+fotowebcam,"Tristner Ginzling Webcam",,47.109119,11.8257,,https://www.foto-webcam.eu/webcam/tristner/
+fotowebcam,"Mayrhofen Webcam",,47.166807,11.860466,,https://www.foto-webcam.eu/webcam/mayrhofen/
+fotowebcam,"Kaltenbach Webcam",,47.284186,11.875363,,https://www.foto-webcam.eu/webcam/das-kaltenbach/
+fotowebcam,"Innsbruck Webcam",,47.305572,11.377861,,https://www.foto-webcam.eu/webcam/innsbruck/
+fotowebcam,"UNI Innsbruck Webcam",,47.259998,11.384167,,https://www.foto-webcam.eu/webcam/innsbruck-uni/
+fotowebcam,"UNI Innsbruck West Webcam",,47.264167,11.384111,,https://www.foto-webcam.eu/webcam/innsbruck-uni-west/
+fotowebcam,"Bremer Huette Webcam",,46.995787,11.26339,,https://www.foto-webcam.eu/webcam/bremerhuette/
+fotowebcam,"Trins Webcam",,47.088028,11.420534,,https://www.foto-webcam.eu/webcam/trins/
+fotowebcam,"Burg Altpernstein Webcam",,47.885125,14.157028,,https://www.foto-webcam.eu/webcam/burg-altpernstein/
+fotowebcam,"Traunstein West Webcam",,47.872985,13.833632,,https://www.foto-webcam.eu/webcam/traunstein/
+fotowebcam,"Traunstein Sued Webcam",,47.872932,13.833658,,https://www.foto-webcam.eu/webcam/traunstein-sued/
+fotowebcam,"Seekarspitz Tal Webcam",,47.264331,13.563861,,https://www.foto-webcam.eu/webcam/obertauern1/
+fotowebcam,"Seekarspitz Berg Webcam",,47.270653,13.546783,,https://www.foto-webcam.eu/webcam/obertauern2/
+fotowebcam,"Seekarhaus Webcam",,47.26401,13.565353,,https://www.foto-webcam.eu/webcam/obertauern3/
+fotowebcam,"Hundsfeldsee Webcam",,47.258751,13.563356,,https://www.foto-webcam.eu/webcam/hundsfeldsee/
+fotowebcam,"Fanningberg Webcam",,47.169367,13.69333,,https://www.foto-webcam.eu/webcam/fanningberg/
+fotowebcam,"Funtenseetauern Webcam",,47.486425,12.971453,,https://www.foto-webcam.eu/webcam/funtenseetauern/
+fotowebcam,"Funtensee Webcam",,47.495277,12.93716,,https://www.foto-webcam.eu/webcam/funtensee/
+fotowebcam,"Carl-von-Stahl-Haus Webcam",,47.574606,13.042405,,https://www.foto-webcam.eu/webcam/stahlhaus/
+fotowebcam,"Jenner Ost Webcam",,47.5756085,13.0246708,,https://www.foto-webcam.eu/webcam/jenner-ost/
+fotowebcam,"Jenner Sued Webcam",,47.5756085,13.0246708,,https://www.foto-webcam.eu/webcam/jenner-sued/
+fotowebcam,"Windbeutelbaron Webcam",,47.613461,13.017874,,https://www.foto-webcam.eu/webcam/windbeutelbaron/
+fotowebcam,"Vorderloiplsau Webcam",,47.62069,12.91171,,https://www.foto-webcam.eu/webcam/vorderloiplsau/
+fotowebcam,"Stoehrhaus Webcam",,47.6931,12.98049,,https://www.foto-webcam.eu/webcam/stoehrhaus/
+fotowebcam,"Hochstaufen Ost Webcam",,47.75505,12.8498,,https://www.foto-webcam.eu/webcam/salzburg/
+fotowebcam,"Bad Reichenhall Webcam",,47.755032,12.849792,,https://www.foto-webcam.eu/webcam/hochstaufen/
+fotowebcam,"Zeppezauerhaus Webcam",,47.72282,13.007796,,https://www.foto-webcam.eu/webcam/zeppezauerhaus/
+fotowebcam,"Marquartstein Webcam",,47.762132,12.479953,,https://www.foto-webcam.eu/webcam/marquartstein/
+fotowebcam,"Marquartstein Oed Webcam",,47.75,12.46,,https://www.foto-webcam.eu/webcam/oed/
+fotowebcam,"Schleching Webcam",,47.720568,12.434531,,https://www.foto-webcam.eu/webcam/schleching/
+fotowebcam,"Kampenwand Webcam",,47.754811,12.356723,,https://www.foto-webcam.eu/webcam/kampenwand/
+fotowebcam,"Hochries Nord Webcam",,47.747205,12.249036,,https://www.foto-webcam.eu/webcam/hochries-nord/
+fotowebcam,"Hochries Ost Webcam",,47.748005,12.250265,,https://www.foto-webcam.eu/webcam/hochries-ost/
+fotowebcam,"Hochries Sued Webcam",,47.7467,12.249175,,https://www.foto-webcam.eu/webcam/hochries-sued/
+fotowebcam,"Hochries West Webcam",,47.747205,12.249036,,https://www.foto-webcam.eu/webcam/hochries/
+fotowebcam,"Samerberg Webcam",,47.781651,12.207622,,https://www.foto-webcam.eu/webcam/samerberg/
+fotowebcam,"Pendling Ost Webcam",,47.57291,12.11221,,https://www.foto-webcam.eu/webcam/pendling-ost/
+fotowebcam,"Pendling West Webcam",,47.57289,12.11197,,https://www.foto-webcam.eu/webcam/pendling-west/
+fotowebcam,"Wendelstein Ost Webcam",,47.701793,12.012,,https://www.foto-webcam.eu/webcam/wendelstein-ost/
+fotowebcam,"Wendelstein West Webcam",,47.7018,12.0118,,https://www.foto-webcam.eu/webcam/wendelstein-west/
+fotowebcam,"Sonnenbichl Webcam",,47.699882,11.710077,,https://www.foto-webcam.eu/webcam/sonnenbichl/
+fotowebcam,"Brauneck Garland Webcam",,47.66347,11.526497,,https://www.foto-webcam.eu/webcam/garland/
+fotowebcam,"Murnau Webcam",,47.669679,11.194753,,https://www.foto-webcam.eu/webcam/murnau/
+fotowebcam,"Herzogstand Nord Webcam",,47.607013,11.316456,,https://www.foto-webcam.eu/webcam/kochelsee/
+fotowebcam,"Herzogstand Sued Webcam",,47.606633,11.316126,,https://www.foto-webcam.eu/webcam/herzogstand/
+fotowebcam,"Karwendelbahn Webcam",,47.430276,11.295627,,https://www.foto-webcam.eu/webcam/karwendel/
+fotowebcam,"Wankhaus Webcam",,47.50833,11.14322,,https://www.foto-webcam.eu/webcam/wank/
+fotowebcam,"Gsteig Webcam",,47.487315,11.128385,,https://www.foto-webcam.eu/webcam/gsteig/
+fotowebcam,"Meilerhuette West Webcam",,47.41246,11.128825,,https://www.foto-webcam.eu/webcam/meilerhuette/
+fotowebcam,"Meilerhuette Nord Webcam",,47.41246,11.128825,,https://www.foto-webcam.eu/webcam/meilerhuette-nord/
+fotowebcam,"Meilerhuette Haus Webcam",,47.412296,11.1273695,,https://www.foto-webcam.eu/webcam/meilerhuette-haus/
+fotowebcam,"Hausberg Webcam",,47.463415,11.094441,,https://www.foto-webcam.eu/webcam/hausberg/
+fotowebcam,"Kandahar-Express Webcam",,47.452552,11.079449,,https://www.foto-webcam.eu/webcam/kandahar-express/
+fotowebcam,"Kreuzeck Webcam",,47.452252,11.074358,,https://www.foto-webcam.eu/webcam/kreuzeck/
+fotowebcam,"Sonnalpin Webcam",,47.413465,10.97971,,https://www.foto-webcam.eu/webcam/sonnalpin/
+fotowebcam,"Zugspitze Gipfel Webcam",,47.42083,10.98473,,https://www.foto-webcam.eu/webcam/zugspitze/
+fotowebcam,"Zugspitze Sued Webcam",,47.42082,10.98472,,https://www.foto-webcam.eu/webcam/zugspitze-sued/
+fotowebcam,"Zugspitze Nord Webcam",,47.421483,10.985454,,https://www.foto-webcam.eu/webcam/zugspitze-nord/
+fotowebcam,"Zugspitze Ost Webcam",,47.421501,10.985628,,https://www.foto-webcam.eu/webcam/zugspitze-ost/
+fotowebcam,"Zugspitze West Webcam",,47.421449,10.984445,,https://www.foto-webcam.eu/webcam/bzb-gipfel/
+fotowebcam,"Eibsee Nord Webcam",,47.4463836,10.987823,,https://www.foto-webcam.eu/webcam/eibsee-nord/
+fotowebcam,"Zugspitze Tal Webcam",,47.454979,10.993231,,https://www.foto-webcam.eu/webcam/bzb-tal/
+fotowebcam,"Eibsee-Hotel Webcam",,47.45824,10.989387,,https://www.foto-webcam.eu/webcam/eibsee-hotel/
+fotowebcam,"Unterammergau Webcam",,47.612942,11.029758,,https://www.foto-webcam.eu/webcam/unterammergau/
+fotowebcam,"Tegelberg Webcam",,47.559653,10.7790032,,https://www.foto-webcam.eu/webcam/tegelberg/
+fotowebcam,"Tannheimertal Webcam",,47.50004,10.506507,,https://www.foto-webcam.eu/webcam/tannheimertal/
+fotowebcam,"Gruentenlifte Webcam",,47.595681,10.308049,,https://www.foto-webcam.eu/webcam/gruentenlifte/
+fotowebcam,"Sonthofen Webcam",,47.48474,10.327536,,https://www.foto-webcam.eu/webcam/sonthofen/
+fotowebcam,"Nebelhorn Webcam",,47.421681,10.342512,,https://www.foto-webcam.eu/webcam/nebelhorn/
+fotowebcam,"Gerstruben Webcam",,47.370428,10.313817,,https://www.foto-webcam.eu/webcam/gerstruben/
+fotowebcam,"Oberstdorf Webcam",,47.393347,10.281679,,https://www.foto-webcam.eu/webcam/scheibenhaus/
+fotowebcam,"Skiflugschanze Webcam",,47.377001,10.267085,,https://www.foto-webcam.eu/webcam/skiflugschanze/
+fotowebcam,"Fellhorn Webcam",,47.348075,10.216169,,https://www.foto-webcam.eu/webcam/fellhorn/
+fotowebcam,"Jaegersberg Webcam",,47.432947,10.263093,,https://www.foto-webcam.eu/webcam/jaegersberg/
+fotowebcam,"Kleinwalsertal Webcam",,47.35123,10.148186,,https://www.foto-webcam.eu/webcam/kueren/
+fotowebcam,"Obermaiselstein Webcam",,47.44399,10.23208,,https://www.foto-webcam.eu/webcam/obermaiselstein/
+fotowebcam,"Balderschwang Webcam",,47.458518,10.144696,,https://www.foto-webcam.eu/webcam/balderschwang-kreuzle/
+fotowebcam,"St. Anton Webcam",,47.09494,10.225127,,https://www.foto-webcam.eu/webcam/ewa/
+fotowebcam,"St. Anton Galzig Webcam",,47.13442,10.224083,,https://www.foto-webcam.eu/webcam/st-anton/
+fotowebcam,"Stuben Webcam",,47.149496,10.165952,,https://www.foto-webcam.eu/webcam/stuben/
+fotowebcam,"Schroecken Webcam",,47.256754,10.094002,,https://www.foto-webcam.eu/webcam/schroecken/
+fotowebcam,"Lech am Arlberg Webcam",,47.21977,10.1718,,https://www.foto-webcam.eu/webcam/lech/
+fotowebcam,"Pension Bergland Webcam",,47.217168,10.144845,,https://www.foto-webcam.eu/webcam/oberlech/
+fotowebcam,"Koerbersee Webcam",,47.256121,10.115857,,https://www.foto-webcam.eu/webcam/koerbersee/
+fotowebcam,"Oberstaufen Webcam",,47.572375,10.043138,,https://www.foto-webcam.eu/webcam/oberstaufen/
+fotowebcam,"Diedamskopf Webcam",,47.34574,10.025573,,https://www.foto-webcam.eu/webcam/diedamskopf/
+fotowebcam,"Andelsbuch Webcam",,47.4032,9.938801,,https://www.foto-webcam.eu/webcam/andelsbuch/
+fotowebcam,"Kristberg Webcam",,47.10736796649214,9.98752639246594,,https://www.foto-webcam.eu/webcam/kristberg/
+fotowebcam,"Tschagguns Webcam",,47.065405,9.912421,,https://www.foto-webcam.eu/webcam/tschagguns/
+fotowebcam,"Schruns Webcam",,47.0819366,9.9257658,,https://www.foto-webcam.eu/webcam/schruns/
+fotowebcam,"Schlappin Webcam",,46.909046,9.898859,,https://www.foto-webcam.eu/webcam/schlappin/
+fotowebcam,"Jamtalferner Webcam",,46.850675,10.167946,,https://www.foto-webcam.eu/webcam/jamtalferner/
+fotowebcam,"Damuels Webcam",,47.285447,9.890544,,https://www.foto-webcam.eu/webcam/damuels/
+fotowebcam,"Hasenbuehel Webcam",,47.307849,9.879913,,https://www.foto-webcam.eu/webcam/hasenbuehel/
+fotowebcam,"Furkajoch Webcam",,47.264004,9.827745,,https://www.foto-webcam.eu/webcam/furkajoch/
+fotowebcam,"Bludenz Webcam",,47.156955,9.818069,,https://www.foto-webcam.eu/webcam/bludenz/
+fotowebcam,"Feldkirch Webcam",,47.232575,9.598371,,https://www.foto-webcam.eu/webcam/feldkirch/
+fotowebcam,"Dornbirn Webcam",,47.388064,9.75051,,https://www.foto-webcam.eu/webcam/dornbirn/
+fotowebcam,"Roethis Ost Webcam",,47.306649,9.618008,,https://www.foto-webcam.eu/webcam/roethis-ost/
+fotowebcam,"Roethis West Webcam",,47.306648,9.618187,,https://www.foto-webcam.eu/webcam/roethis-west/
+fotowebcam,"Hoher Kasten Webcam",,47.283884,9.485686,,https://www.foto-webcam.eu/webcam/hoherkasten/
+fotowebcam,"Hochhamm Webcam",,47.314954,9.239525,,https://www.foto-webcam.eu/webcam/hochhamm/
+fotowebcam,"Wildhaus Webcam",,47.158949,9.337852,,https://www.foto-webcam.eu/webcam/wildhaus/
+fotowebcam,"Pfaelzerhuette Webcam",,47.072833,9.602583,,https://www.foto-webcam.eu/webcam/pfaelzerhuette/
+fotowebcam,"Pizol Webcam",,46.979739,9.436717,,https://www.foto-webcam.eu/webcam/pizol/
+fotowebcam,"Rheinschlucht Webcam",,46.78261,9.305091,,https://www.foto-webcam.eu/webcam/rheinschlucht/
+fotowebcam,"Schwarzenbach Webcam",,47.636144,16.361593,,https://www.foto-webcam.eu/webcam/schwarzenbach/
+fotowebcam,"Hochwolkersdorf Webcam",,47.673894,16.28241,,https://www.foto-webcam.eu/webcam/hochwolkersdorf/
+fotowebcam,"Wien Donaustadt Webcam",,48.233518,16.411176,,https://www.foto-webcam.eu/webcam/wien/
+fotowebcam,"Wien Bisamberg Webcam",,48.31067,16.38251,,https://www.foto-webcam.eu/webcam/bisamberg/
+fotowebcam,"Bad Endorf Webcam",,47.909097,12.311897,,https://www.foto-webcam.eu/webcam/bad-endorf/
+fotowebcam,"Rosenheim Webcam",,47.860299,12.131823,,https://www.foto-webcam.eu/webcam/rosenheim/
+fotowebcam,"TUM Olympiapark Webcam",,48.1743533,11.5529664,,https://www.foto-webcam.eu/webcam/tum-olympiapark/
+fotowebcam,"Dachau Webcam",,48.259159,11.435332,,https://www.foto-webcam.eu/webcam/dachau/
+fotowebcam,"Fuerstenfeld Webcam",,48.170295,11.247042,,https://www.foto-webcam.eu/webcam/fuerstenfeld/
+fotowebcam,"Hohenpeissenberg Webcam",,47.800785,11.014571,,https://www.foto-webcam.eu/webcam/peissenberg/
+fotowebcam,"Hanusel Hof Webcam",,47.658929,10.196552,,https://www.foto-webcam.eu/webcam/hanuselhof/
+fotowebcam,"Schwaerzenlifte Webcam",,47.7072237,10.1941924,,https://www.foto-webcam.eu/webcam/schwaerzenlifte/
+fotowebcam,"Max-Wild-Arena Webcam",,47.683198,10.032582,,https://www.foto-webcam.eu/webcam/max-wild-arena/
+fotowebcam,"Hochblauen Webcam",,47.776844,7.701002,,https://www.foto-webcam.eu/webcam/hochblauen/
+fotowebcam,"Buchkopfturm Webcam",,48.477345,8.236567,,https://www.foto-webcam.eu/webcam/buchkopfturm/
+fotowebcam,"Grandsberg Webcam",,48.948899,12.851912,,https://www.foto-webcam.eu/webcam/grandsberg/
+fotowebcam,"Waldwipfelweg Webcam",,49.011064,12.779928,,https://www.foto-webcam.eu/webcam/waldwipfelweg/
+fotowebcam,"Berghaus Sonnenfels Webcam",,49.1266957,13.134359,,https://www.foto-webcam.eu/webcam/berghaus-sonnenfels/
+fotowebcam,"Frauenau Webcam",,48.985602,13.293626,,https://www.foto-webcam.eu/webcam/frauenau/
+fotowebcam,"Hotel Lindenwirt Webcam",,49.083583,13.028734,,https://www.foto-webcam.eu/webcam/hotel-lindenwirt/
+fotowebcam,"Schareben Webcam",,49.129557,13.052244,,https://www.foto-webcam.eu/webcam/schareben/
+fotowebcam,"Darmstadt Ost Webcam",,49.875876,8.662653,,https://www.foto-webcam.eu/webcam/darmstadt-ost/
+fotowebcam,"Darmstadt West Webcam",,49.875871,8.662596,,https://www.foto-webcam.eu/webcam/darmstadt-west/
+fotowebcam,"Luisenplatz Webcam",,49.872609,8.652256,,https://www.foto-webcam.eu/webcam/luisenplatz/
+fotowebcam,"Feldberg Taunus Webcam",,50.232203,8.458489,,https://www.foto-webcam.eu/webcam/feldberg-ts/
+fotowebcam,"Ettelsberg Webcam",,51.278463,8.599828,,https://www.foto-webcam.eu/webcam/ettelsberg/
+fotowebcam,"Graf Stolberg Huette Webcam",,51.263331,8.650448,,https://www.foto-webcam.eu/webcam/graf-stolberg-huette/
+fotowebcam,"Flensburg Webcam",,54.781286,9.433995,,https://www.foto-webcam.eu/webcam/flensburg/
+fotowebcam,"Norderney Webcam",,53.709701,7.143195,,https://www.foto-webcam.eu/webcam/norderney/
+fotowebcam,"Husum Bruecke Webcam",,54.474171,9.0459823,,https://www.foto-webcam.eu/webcam/husum-hafenklappbruecke/
+fotowebcam,"Husum Schlosspark Webcam",,54.481859,9.050309,,https://www.foto-webcam.eu/webcam/husum-schlosspark/
+fotowebcam,"Husum Dockkoog Webcam",,54.47987,9.004177,,https://www.foto-webcam.eu/webcam/husum-dockkoog/
+fotowebcam,"Husum Marktplatz Webcam",,54.477235,9.050917,,https://www.foto-webcam.eu/webcam/husum-marktplatz/
+fotowebcam,"Schelling Webcam",,47.446645,9.755678,,https://www.foto-webcam.eu/webcam/schelling/
+fotowebcam,"Freya Gletscher Webcam",,74.38248,-20.78783,,https://www.foto-webcam.eu/webcam/freya1/
+fotowebcam,"Freya Gletscher 2 Webcam",,74.38248,-20.78783,,https://www.foto-webcam.eu/webcam/freya2/
+fotowebcam,"Huaraz Webcam",,-9.530189,-77.531599,,https://www.foto-webcam.eu/webcam/huaraz/
+fotowebcam,"Cully Genève Webcam",,46.487078,6.730716,,https://foto-webcam.ch/webcam/cully/
+fotowebcam,"Amlach - Lienz Webcam",,46.804819,12.77531,,http://www.megacam.at/webcam/amlach/
+fotowebcam,"Kartitsch Webcam",,46.725202,12.487433,,http://www.megacam.at/webcam/kartitsch/
+fotowebcam,"Sillian Webcam",,46.74814,12.414667,,http://www.megacam.at/webcam/sillian/
+fotowebcam,"Villgraten Webcam",,46.807135,12.3209,,http://www.megacam.at/webcam/villgraten/
+fotowebcam,"Innervillgraten Webcam",,46.803662,12.378409,,http://www.megacam.at/webcam/innervillgraten/
+fotowebcam,"Innichen Webcam",,46.736847,12.285493,,http://www.megacam.at/webcam/innichen-Leitlhof/
+fotowebcam,"Klausberg Tal Webcam",,46.984698,11.978986,,https://klausberg.foto-webcam.eu/webcam/klausberg-talstation/
+fotowebcam,"Klausberg Almboden Webcam",,46.983197,11.982073,,https://klausberg.foto-webcam.eu/webcam/klausberg-almboden/
+fotowebcam,"Pfalzen Webcam",,46.810292,11.88087,,http://www.wetter-pfalzen.com/wettercam/
+fotowebcam,"Raas - Brixen Webcam",,46.748654,11.657341,,https://foto.weinberg-apartments.it/webcam/Raas/
+fotowebcam,"Sistrans Nord Webcam",,47.233672,11.447284,,https://www.stefanjud.net/webcam/sistrans-nord/
+fotowebcam,"Sistrans West Webcam",,47.233672,11.447284,,https://www.stefanjud.net/webcam/sistrans-west/
+fotowebcam,"Spitzingsee Webcam",,47.66315,11.887791,,https://www.foto-webcam.org/webcam/spitzingsee/
+fotowebcam,"Tegernsee Webcam",,47.71852,11.762875,,https://www.foto-webcam.org/webcam/tegernseewest/
+fotowebcam,"Prasserbad Webcam",,47.696484,11.74572,,https://www.foto-webcam.org/webcam/prasserbad/
+fotowebcam,"Wallberg Webcam",,47.66061,11.79115,,https://www.foto-webcam.org/webcam/wallberg/
+fotowebcam,"Kandahar-Lodge Webcam",,47.48956,11.08049,,https://www.terra-hd.de/garmisch/
+fotowebcam,"Pfronten Webcam",,47.58055,10.55083,,http://www.foto-webcam.net/webcam/pfronten/
+fotowebcam,"Untersiggenthal Webcam",,47.505093,8.243199,,https://foto-webcam.ch/webcam/untersiggenthal/
+fotowebcam,"Attersee-Salzkammergut Webcam",,47.91355,13.59553,,https://www.terra-hd.de/attersee/
+fotowebcam,"Attersee-Hoellengebirge Webcam",,47.91355,13.59552,,https://www.terra-hd.de/attersee2/
+fotowebcam,"Ramsau Hintersee Webcam",,47.608373,12.852905,,https://www.terra-hd.de/hintersee/
+fotowebcam,"Hoegl Webcam",,47.78827,12.90308,,https://www.terra-hd.de/hoegl/
+fotowebcam,"Siegsdorf Webcam",,47.818513,12.632884,,https://www.terra-hd.de/osterham/
+fotowebcam,"Hochfelln-Sued Webcam",,47.762629,12.560738,,https://www.terra-hd.de/hochfelln2/
+fotowebcam,"Hochfelln-Mittel Webcam",,47.76909,12.57566,,https://www.terra-hd.de/hochfelln-mittel/
+fotowebcam,"Rauschberg Webcam",,47.7327,12.68283,,https://www.terra-hd.de/rauschberg/
+fotowebcam,"Vachendorf Webcam",,47.840347,12.627631,,https://www.terra-hd.de/wimpasing/
+fotowebcam,"Stadt Traunstein Webcam",,47.87345,12.65452,,https://www.terra-hd.de/traunstein/
+fotowebcam,"Chiemsee Gstadt Webcam",,47.88326,12.4172,,https://www.terra-hd.de/chiemsee/
+fotowebcam,"Seebruck-Alz Webcam",,47.952297,12.480227,,https://www.terra-hd.de/pullach/
+fotowebcam,"Grassau Webcam",,47.790347,12.455812,,https://www.terra-hd.de/grassau2/
+fotowebcam,"Grassau-Mietenkam Webcam",,47.80341,12.47792,,https://www.terra-hd.de/mietenkam/
+fotowebcam,"Tiroler Achen Webcam",,47.811867,12.498845,,https://www.terra-hd.de/tiroler-achen/
+fotowebcam,"Staffn-Alm Webcam",,47.7693,12.41449,,https://www.terra-hd.de/staffn/
+fotowebcam,"Rottau Webcam",,47.79119,12.41197,,https://www.terra-hd.de/rottau/
+fotowebcam,"Bernau-Bergham Webcam",,47.80164,12.37565,,https://www.terra-hd.de/bernau1/
+fotowebcam,"Hittenkirchen Webcam",,47.822811,12.341008,,https://www.terra-hd.de/bernau2/
+fotowebcam,"Bernau-Felden Webcam",,47.83233,12.38485,,https://www.terra-hd.de/bernau-felden/
+fotowebcam,"Aschau Winkler Webcam",,47.779304,12.32206,,https://www.terra-hd.de/aschau3/
+fotowebcam,"Sachrang Webcam",,47.69363,12.26293,,https://www.terra-hd.de/sachrang/
+fotowebcam,"Bruennsteinhaus Webcam",,47.6446,12.09843,,https://www.terra-hd.de/bruennsteinhaus/
+fotowebcam,"Unken-Heutal Webcam",,47.66698,12.61317,,https://www.terra-hd.de/heutal/
+fotowebcam,"Niederndorferberg Webcam",,47.68391,12.24769,,https://www.terra-hd.de/niederndorferberg/
+fotowebcam,"Deutsches Museum NO Webcam",,48.12975,11.582016,,https://www.terra-hd.de/deutschesmuseum/
+fotowebcam,"Deutsches Museum SW Webcam",,48.12975,11.582016,,https://www.terra-hd.de/deutschesmuseum2/
+fotowebcam,"Woerthsee Webcam",,48.06476,11.19639,,http://www.foto-webcam.net/webcam/woerthsee/
+fotowebcam,"Oberstaufen-Steibis Webcam",,47.52394,10.0338,,https://www.terra-hd.de/oberstaufen2/
+fotowebcam,"Stroheim Webcam",,48.338722,13.956558,,https://webcam.wetterstation-stroheim.at/webcam1/
+fotowebcam,"Burghausen Webcam",,48.1591,12.82135,,http://www.foto-webcam.net/webcam/burghausen2/
+fotowebcam,"Wasserburg am Inn Webcam",,48.05896,12.233915,,https://www.terra-hd.de/wasserburg/
+fotowebcam,"Hohenbogen Ost Webcam",,49.234571,12.933292,,https://www.asam-live.de/webcam/asamnet5/
+fotowebcam,"Hohenbogen West Webcam",,49.234571,12.933292,,https://www.asam-live.de/webcam/amberg1/
+fotowebcam,"OTH Regensburg Webcam",,48.998867,12.093033,,http://othcam.oth-regensburg.de/webcam/Regensburg/
+fotowebcam,"Amberg Webcam",,49.45,11.87,,https://www.asam-live.de/webcam/amberg92/
+fotowebcam,"Mariahilfberg Webcam",,49.45,11.87,,https://www.asam-live.de/webcam/mariahilfberg2/
+fotowebcam,"Amberg DL0AO Webcam",,49.45,11.86,,https://www.asam-live.de/webcam/mariahilfberg1/
+fotowebcam,"Maxhuette Webcam",,49.493961,11.781469,,https://www.asam-live.de/webcam/amberg33/
+fotowebcam,"Starkenburg-Mosel Webcam",,49.95767,7.13828,,https://www.terra-hd.de/starkenburg/
+fotowebcam,"Krompach Webcam",,50.82971,14.70269,,https://www.terra-hd.de/krompach/
+fotowebcam,"Kaltennordheim Webcam",,50.63739,10.15946,,http://picture-cams.de/webcam/kaltennordheim/
+fotowebcam,"Schweizerweg Webcam",,50.729352,10.448213,,http://picture-cams.de/webcam/schweizerweg/
+fotowebcam,"Wilhelmsburg Webcam",,50.729352,10.448213,,http://picture-cams.de/webcam/wilhelmsburg/
+fotowebcam,"Kirschenkehle Webcam",,50.729238,10.444975,,http://picture-cams.de/webcam/kirschenkehle/
+fotowebcam,"Hochwaldturm Webcam",,50.82574,14.72767,,https://www.terra-hd.de/hochwald/
+fotowebcam,"Hochwald-West Webcam",,50.82573,14.72766,,https://www.terra-hd.de/hochwald2/
+fotowebcam,"Hochwald-Ost Webcam",,50.82249,14.72708,,https://www.terra-hd.de/hochwald3/
+fotowebcam,"Niederdielfen Webcam",,50.853015,8.09787,,https://www.jens-oerter.de/webcam/joeeos/
+fotowebcam,"Radevormwald Webcam",,51.191393,7.313021,,http://www.reisen-und-hobby.de/webcam/
+fotowebcam,"Albrechtsplatz Webcam",,51.14054,8.42372,,https://sauerland.camera/?site=webcam&cam=albrechtsplatz
+fotowebcam,"Diemelsee Webcam",,51.36426,8.71931,,https://sauerland.camera/?site=webcam&cam=diemelsee
+fotowebcam,"Erndtebrueck Webcam",,50.99126,8.23929,,https://sauerland.camera/?site=webcam&cam=erndtebrueck
+fotowebcam,"Grafschaft2 Webcam",,51.14651,8.34069,,https://sauerland.camera/?site=webcam&cam=grafschaft2
+fotowebcam,"Kahler Asten Webcam",,51.17943,8.48886,,https://sauerland.camera/?site=webcam&cam=kahler-asten-sw
+fotowebcam,"Langewiese Webcam",,51.15552,8.46033,,https://sauerland.camera/?site=webcam&cam=langewiese
+fotowebcam,"Olsberg Webcam",,51.36435,8.52175,,https://sauerland.camera/?site=webcam&cam=schinkenwirt
+fotowebcam,"Schmallenberg Webcam",,51.13,8.30549,,https://sauerland.camera/?site=webcam&cam=schmallenberg
+fotowebcam,"Bielefeld Webcam",,52.015144,8.473544,,http://hamnet-bielefeld.de/webcam/bielefeld/
+fotowebcam,"Greifswald Webcam",,54.095333,13.377,,https://foto-webcam-mv.de/webcam/greifswald/
+fotowebcam,"Sunnyvale Webcam",,37.37,-122.04,,http://mpcam.marklex.com/webcam/marklex/

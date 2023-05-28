@@ -25,8 +25,9 @@ my $no_hamnet=   $query->param("no_hamnet")+0;
 my $no_tunnel=   $query->param("no_tunnel")+0;
 my $no_radio=    $query->param("no_radio")+0;
 my $no_ism=      $query->param("no_ism")+0;
-my $radio=        $query->param("radio")+0;
-my $bgp=        $query->param("bgp")+0;
+my $radio=       $query->param("radio")+0;
+my $bgp=         $query->param("bgp")+0;
+my $sponsor=     $query->param("sponsor")+0;
 my $geojson=     $query->param("geojson")+0;
 #print qq(Content-Type: text/plain\nExpires: 0 \n\n);
 # The result arrays which are rendered as JSON or GeoJSON
@@ -58,7 +59,7 @@ if ($only_country) {
 if ($only_country || $only_as) {
   my $sth= $db->prepare(qq(select hamnet_host.site,hamnet_subnet.as_parent 
     from hamnet_subnet
-    left join hamnet_host on hamnet_host.rawip between begin_ip and end_ip 
+    left join hamnet_host on hamnet_host.rawip between begin_ip and end_ip-1 
     where hamnet_host.site<>'' 
     order by hamnet_host.typ
   ));
@@ -111,9 +112,9 @@ my $sth= $db->prepare(qq(select hamnet_host.ip,hamnet_subnet.ip,
   hamnet_host.typ,hamnet_subnet.typ,
   hamnet_host.radioparam,hamnet_subnet.radioparam,
   hamnet_host.site,
-  hamnet_subnet.begin_ip, hamnet_subnet.end_ip
+  hamnet_subnet.begin_ip, hamnet_subnet.end_ip-1
   from hamnet_subnet
-  left join hamnet_host on hamnet_host.rawip between begin_ip and end_ip
+  left join hamnet_host on hamnet_host.rawip between begin_ip and end_ip-1
   where hamnet_host.ip is not null and hamnet_subnet.typ like 'Backbone-%'
 ));
 #as_parent,
@@ -260,6 +261,37 @@ foreach $net (sort keys %all_hosts) {
           }
         }
       } 
+      if ($sponsor && ($typ=~/radio/i || $typ=~/ISM/i)) {
+        my $monitor_left;
+        my $rssi= 0;
+        my $sth= $db->prepare(qq(select 
+          host.ip, ck.value
+          from hamnet_host as host
+          join hamnet_check as ck on ck.ip = host.ip
+          where 
+            ck.service = 'sponsor' and 
+            ((host.rawip > $subnet_begin{$net} and 
+             host.rawip < $subnet_end{$net} and host.site='$sites[0]')
+            OR
+              (host.rawip > $subnet_begin{$net} and
+              host.rawip < $subnet_end{$net} and host.site='$sites[1]'))
+          ORDER BY
+            ck.ts
+          LIMIT 2      
+        ));
+        $sth->execute;
+        while (@line= $sth->fetchrow_array) {
+          my $idx= 0;
+          $monitor_left= $line[$idx++];
+          $rssi= $line[$idx++];
+        }
+        next if (!$rssi);
+          if (length($rssi) >=1) {
+            if ($rssi <= 400) {
+              $style = "sponsor";
+          } 
+        }
+      } 
       push(@allEdges, "$style;$net;$sites[0];$sites[1]");
     }
   }
@@ -323,7 +355,7 @@ foreach my $callsign (@allCallsigns) {
 }
 # -------------------------------------------------------------------------
 # Prepare edges explicitely stored in the database
-if(!$bgp && !$only_radio) {
+if(!$sponsor && !$bgp && !$only_radio) {
   my $sth= $db->prepare(qq(select left_site,right_site,hamnet_edge.typ
     from hamnet_edge
   ));

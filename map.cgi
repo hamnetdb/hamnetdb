@@ -340,7 +340,7 @@ print qq(
   <span id="rfSnow2s">snow line distribution&nbsp;±<label id='rfSnow2lbl' for='rfSnow2'>500 m</label> 
   <input type="range" id='rfSnow2' min="0" max="2000" value="500" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>
   <span id="rfSun1">sun azimuth&nbsp;<label id='rfSunAzlbl' for='rfSunAz'>0°</label> 
-  <input type="range" id='rfSunAz' min="70" max="290" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>       
+  <input type="range" id='rfSunAz' min="0" max="350" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>       
   <span id="rfSun2">sun elevation&nbsp;<label id='rfSunEllbl' for='rfSunEl'>0°</label> 
   <input type="range" id='rfSunEl' min="0" max="90" value="0" oninput='rfPanUpd();' onchange='rfPanUpd();' ><br></span>       
   <input type="checkbox" name="rfDesert" id="rfDesert" value="rfDesert" onchange='rfValUpd();' >desert mode<br>

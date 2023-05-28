@@ -514,8 +514,11 @@ sub timespan {
   elsif ($timespan < (48*3600)) {
     $ret= int($timespan/3600)."h";
   }
-  else {
+  elsif ($timespan < (3600*24*730)) {
     $ret= int($timespan/(3600*24))."d";
+  }
+  else {
+    $ret= int($timespan/(3600*24*365))."y";
   }
   return $ret;
 }

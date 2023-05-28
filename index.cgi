@@ -24,7 +24,7 @@ $sortDefault= "c";
 
 $m= $query->param("m");
 $m= "as" unless $m;
-$m=~s/[^a-z]//i;
+$m=~s/[^a-z]//ig;
 $hostWhere= "1";
 $siteWhere= "1";
 $subnetWhere= "1";
@@ -359,6 +359,15 @@ if ($m=~/help/i) {
   }
   print qq(</div>);
 }
+if ($m=~/centservices/i) {
+  print qq(<div class="help">);
+  if (open(HELP,"<services.html")) {
+    print(<HELP>);
+    close(HELP);
+  }
+  print qq(</div>);
+}
+
 
 if ($m=~/login/i) {
   print qq(</form><div class="utility vgrad" style="padding:10px;">);
@@ -1547,22 +1556,38 @@ sub hostList {
       if ($range=~/^(\d+)-(\d+)$/) {
         my $begin= $1;
         my $end= $2;
-        my $comment= "assigned dynamically";
+        my $count= ($end-$begin)+1;
+        my $comment= "$count IPs assigned dynamically";
 
         for ($i= $begin; $i<=$end; $i++) {
           my $ip= $netip.$i;
           my $netipSlash = $netip;
           $netipSlash=~s/\./-/g;
+
+          # do not display the whole range for the sake of clarity
+          if ($i>$begin && $i<$end) {
+            next;
+          }
           
           unless ($ipHasHost{$ip}) {
             my $name= "dhcp-$netipSlash$i.$lastSite";
-
+            # ellipsis to clarify the abbreviation of the range
+            my $elb= "";
+            my $ele= "";
+            if ($count>2) {
+              if ($i==$begin) {
+                $ele= "...";
+              }
+              if ($i==$end) {
+                $elb= "...";
+              }
+            }
             my $ret= qq(<tr class='listentry'>);
             $ret.= qq(<td></td>) if &editIcon($t);
-            $ret.= qq(<td>$ip</td>);
+            $ret.= qq(<td>$elb$ip$ele</td>);
             $sort= sprintf("%8d", &aton($ip)) if ($scrit eq "c");
             
-            $ret.= "<td></td><td valign=top>$name</td>\n"; 
+            $ret.= "<td></td><td valign=top>$elb$name$ele</td>\n"; 
             $sort= $name if ($scrit eq "n");
 
             $ret.= "<td valign=top>DHCP-Range</td>\n"; 
