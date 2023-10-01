@@ -398,7 +398,7 @@ sub checkValues {
      my $test = 0;
   }    
   else {
-    unless ($callsign=~/^[a-z0-9]{3,6}-*\d*$/ && $callsign=~/[0-9][a-z]-*\d*/) {
+    unless ($callsign=~/^([a-z]{2}|[a-z][2-9]|[2-9][a-z])[0-9][a-z]{1,4}-*\d*$/ && $callsign=~/[0-9][a-z]-*\d*/) {
       $inputStatus= "Callsign seems to have incorrect format";
     }
     if ($no_check==3) {
