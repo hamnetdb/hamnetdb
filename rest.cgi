@@ -19,7 +19,7 @@ if ($query->param('m') eq "querycall") {
   print("Content-Type: application/json\nExpires: 0\n\n");
   &json_obj();
   my $callsign=lc($query->param('call'));
-  if ($callsign =~ /^[a-z]{1,2}[0-9][a-z]{1,3}(-\d{1,2})?$/ || $callsign =~ /^nocall_\d+$/) {
+  if ($callsign =~ /^([a-z]{2}|[a-z][2-9]|[2-9][a-z])[0-9][a-z]{1,4}(-\d{1,2})?$/ || $callsign =~ /^nocall_\d+$/) {
     my $search = $db->quote($callsign);
     my $sth= $db->prepare(qq(
       select callsign,latitude,longitude,elevation from hamnet_site
