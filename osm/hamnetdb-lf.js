@@ -1136,6 +1136,13 @@ function profileDraw () {
       L.DomUtil.setPosition(profilePopup._wrapper.parentNode,pos);
       var draggable = new L.Draggable(profilePopup._container, profilePopup._wrapper);
       draggable.enable();
+
+      // save new position after dragging
+      draggable.on('dragend', function() {
+        var pos = map.layerPointToLatLng(this._newPos);
+        profilePopup.setLatLng(pos);
+      });
+
       map.setView(new L.LatLng((Number(lat1) + Number(lat2))/2, (Number(lon1)+Number(lon2))/2));
       deleteProfileMpos();
       document.getElementById("profile-marker").style.visibility = "hidden";
@@ -1897,6 +1904,13 @@ function panoramaDraw()
       L.DomUtil.setPosition(rfPanoramaPopup._wrapper.parentNode,pos);
       var draggable = new L.Draggable(rfPanoramaPopup._container, rfPanoramaPopup._wrapper);
       draggable.enable();
+
+      // save new position after dragging
+      draggable.on('dragend', function() {
+        var pos = map.layerPointToLatLng(this._newPos);
+        rfPanoramaPopup.setLatLng(pos);
+      });
+
       map.setView(new L.LatLng((Number(lat1) + Number(lat2))/2, (Number(lon1)+Number(lon2))/2));
       document.getElementById("panorama-loading").style.display = "inline"; 
       document.getElementById("panorama-img").src = "";
